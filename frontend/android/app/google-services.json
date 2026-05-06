@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "175761970134",
+    "project_id": "medicalq",
+    "storage_bucket": "medicalq.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:175761970134:android:674157f854739134f04a77",
+        "android_client_info": {
+          "package_name": "com.example.frontend"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtDlMSJDtmeka4pntO6BEFT7NEEdLCUro"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,35 @@
+healthlicenseprep.com, www.healthlicenseprep.com {
+    # Gzip/Zstd compression
+    encode gzip zstd
+
+    # Security Headers
+    header {
+        X-Frame-Options "SAMEORIGIN"
+        X-XSS-Protection "1; mode=block"
+        X-Content-Type-Options "nosniff"
+        -Server
+    }
+
+    # API and Backend - Preserve /api prefix
+    handle /api/* {
+        reverse_proxy backend:5000
+    }
+
+    # Uploads
+    handle /uploads/* {
+        reverse_proxy backend:5000
+    }
+
+    # Admin Dashboard - SPA handling
+    handle {
+        reverse_proxy admin:80 {
+            header_up Host {host}
+            header_up X-Real-IP {remote_host}
+            header_up X-Forwarded-Proto {scheme}
+        }
+    }
+
+    log {
+        output file /var/log/caddy/access.log
+    }
+}

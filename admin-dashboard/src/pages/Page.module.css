@@ -1,0 +1,332 @@
+/* Shared page utilities */
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.search {
+    flex: 1;
+    max-width: 320px;
+    padding: 9px 14px;
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+}
+
+.search:focus {
+    border-color: #3b82f6;
+}
+
+.count {
+    color: #64748b;
+    font-size: 13px;
+    margin-left: auto;
+}
+
+.badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.15s;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btnPrimary {
+    background: #3b82f6;
+    color: #fff;
+}
+
+.btnDanger {
+    background: #ef444422;
+    color: #fca5a5;
+}
+
+.btnGhost {
+    background: #1e293b;
+    color: #94a3b8;
+}
+
+.btnSuccess {
+    background: #059669;
+    color: #fff;
+}
+
+.form {
+    display: grid;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input {
+    padding: 10px 14px;
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input:focus {
+    border-color: #3b82f6;
+}
+
+.textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.label {
+    color: #94a3b8;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: block;
+    font-weight: 500;
+}
+
+.select {
+    padding: 9px 12px;
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 14px;
+    outline: none;
+    min-width: 150px;
+}
+
+.select:focus {
+    border-color: #3b82f6;
+}
+
+.select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Modal Styles */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modalCard {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.modalHeader {
+    padding: 20px 24px;
+    border-bottom: 1px solid #1e293b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modalHeader h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #f8fafc;
+}
+
+.closeBtn {
+    background: transparent;
+    border: none;
+    color: #64748b;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.modalFooter {
+    padding: 20px 24px;
+    border-top: 1px solid #1e293b;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+/* Form Styles */
+.form {
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formRow {
+    display: flex;
+    gap: 16px;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+}
+
+.formGroup label {
+    font-size: 13px;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.formGroup input, .formGroup select, .formGroup textarea {
+    padding: 10px 14px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    color: #f8fafc;
+    font-size: 14px;
+    outline: none;
+}
+
+.formGroup input:focus, .formGroup select:focus, .formGroup textarea:focus {
+    border-color: #3b82f6;
+}
+
+.formSection {
+    border: 1px solid #1e293b;
+    border-radius: 12px;
+    padding: 16px;
+    background: #0f172a88;
+}
+
+.sectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.sectionHeader label {
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+/* Options Management */
+.optionRow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.optionRow input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.btnRemove {
+    background: #ef444422;
+    color: #ef4444;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btnAddSmall {
+    background: #3b82f622;
+    color: #3b82f6;
+    border: 1px solid #3b82f644;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Page Utils */
+.pageContainer {
+    padding: 24px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.filters {
+    display: flex;
+    gap: 12px;
+    flex: 1;
+}
+
+.btnSmall {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btnSecondary {
+    background: #1e293b;
+    color: #94a3b8;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btnSmall {
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+}

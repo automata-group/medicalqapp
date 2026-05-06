@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#368ce2",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#111921",
+                        "success": "#34c759",
+                        "error": "#ff3b30",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "IBM+Plex+Sans+Arabic", "sans-serif"],
+                        "arabic": ["IBM Plex Sans Arabic", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', 'Lexend', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ios-shadow {
+            box-shadow: 0 4px 20px -2px rgba(54, 140, 226, 0.08);
+        }
+
+        .option-card-selected {
+            border: 2px solid #368ce2;
+            background-color: rgba(54, 140, 226, 0.05);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #e2e8f0;
+            border-radius: 10px;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen flex flex-col items-center">
+    <!-- iOS Status Bar Simulation -->
+    <div class="w-full max-w-[402px] bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="px-6 py-3 flex justify-between items-center">
+            <span class="text-sm font-semibold font-display">9:41</span>
+            <div class="flex gap-1.5 items-center">
+                <span class="material-icons-round text-sm">signal_cellular_alt</span>
+                <span class="material-icons-round text-sm">wifi</span>
+                <span class="material-icons-round text-sm rotate-90">battery_full</span>
+            </div>
+        </div>
+        <!-- Progress & Header -->
+        <div class="px-6 pb-4">
+            <div class="flex justify-between items-center mb-2">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="material-icons-round text-primary text-lg">timer</span>
+                    </div>
+                    <span class="text-sm font-medium text-slate-500 dark:text-slate-400 font-display">14:22</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm font-bold text-primary">السؤال ١٢ من ٥٠</span>
+                </div>
+                <button class="w-8 h-8 rounded-full flex items-center justify-center bg-slate-100 dark:bg-slate-800">
+                    <span class="material-icons-round text-slate-600 dark:text-slate-300 text-lg">close</span>
+                </button>
+            </div>
+            <div class="h-1.5 w-full bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div class="h-full bg-primary w-[24%] rounded-full"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Main Content Area (iPhone dimensions simulated) -->
+    <main class="w-full max-w-[402px] flex-1 px-5 py-4 pb-40 overflow-y-auto">
+        <!-- Question Section -->
+        <div class="mb-8">
+            <div class="inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold mb-4">
+                تخصص: طب القلب
+            </div>
+            <h1 class="text-xl font-bold leading-relaxed text-slate-800 dark:text-white">
+                رجل يبلغ من العمر ٥٨ عاماً حضر إلى الطوارئ يشكو من ألم حاد في الصدر يمتد إلى الظهر. ضغط الدم ١٩٠/١١٠ في
+                الذراع الأيمن و ١٥٠/٩٠ في الذراع الأيسر. ما هو الإجراء التشخيصي الأكثر دقة في هذه الحالة؟
+            </h1>
+        </div>
+        <!-- Options List -->
+        <div class="space-y-4">
+            <!-- Option 1 -->
+            <div
+                class="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border-2 border-transparent ios-shadow cursor-pointer transition-all hover:border-primary/30">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-700 flex items-center justify-center font-display font-bold text-slate-400 group-hover:text-primary transition-colors">
+                            أ
+                        </div>
+                        <span class="font-medium text-slate-700 dark:text-slate-200">تخطيط صدى القلب عبر الصدر
+                            (TTE)</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-600"></div>
+                </div>
+            </div>
+            <!-- Option 2 (Correct State Simulation) -->
+            <div
+                class="group relative bg-primary/5 dark:bg-primary/10 p-5 rounded-xl border-2 border-primary ios-shadow cursor-pointer transition-all">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center font-display font-bold text-white">
+                            ب
+                        </div>
+                        <span class="font-bold text-primary">تصوير الشريان الأبهر الطبقي المبرمج (CT Aortogram)</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full bg-primary flex items-center justify-center">
+                        <span class="material-icons-round text-white text-xs">done</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Option 3 -->
+            <div
+                class="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border-2 border-transparent ios-shadow cursor-pointer transition-all hover:border-primary/30">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-700 flex items-center justify-center font-display font-bold text-slate-400 group-hover:text-primary transition-colors">
+                            ج
+                        </div>
+                        <span class="font-medium text-slate-700 dark:text-slate-200">تخطيط كهربائية القلب (ECG)</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-600"></div>
+                </div>
+            </div>
+            <!-- Option 4 -->
+            <div
+                class="group relative bg-white dark:bg-slate-800 p-5 rounded-xl border-2 border-transparent ios-shadow cursor-pointer transition-all hover:border-primary/30">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-8 h-8 rounded-lg bg-slate-50 dark:bg-slate-700 flex items-center justify-center font-display font-bold text-slate-400 group-hover:text-primary transition-colors">
+                            د
+                        </div>
+                        <span class="font-medium text-slate-700 dark:text-slate-200">إنزيمات القلب (Troponin I)</span>
+                    </div>
+                    <div class="w-5 h-5 rounded-full border-2 border-slate-200 dark:border-slate-600"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Illustration / Contextual Image (Optional subtle graphic) -->
+        <div class="mt-8 rounded-2xl overflow-hidden bg-slate-200 aspect-[16/9] relative">
+            <img alt="Clinical setting" class="w-full h-full object-cover opacity-60 mix-blend-multiply"
+                data-alt="Modern medical diagnostic imaging equipment in a hospital"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBrHZztqYKD2su1vpHB43--VuOpvLEEFECn1W8tY8ncaHNpRQbG1rZjz8KQ1p1oifPg1VjTOUjLh8rT79QheUENZiy8TkVKBChOYlBAGMi-IIHlKiQYSno77HKoB7pLeilJIanXV-2_z1oxWxT-3S-1MX338WbdDwdcr9PS86PIWEQzeGKJucbQ85Wr67QOEEFxHYAzffIJqAVHHUnp7KhyH5iFZqzCd8otLBzCCk7CNRC6KcdW74EpIN0UfvKWNqGqyokbE1nDo5A" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+        </div>
+    </main>
+    <!-- Slide-up Explanation Panel -->
+    <div
+        class="fixed bottom-0 w-full max-w-[402px] bg-white dark:bg-slate-900 rounded-t-[2.5rem] shadow-[0_-10px_50px_-15px_rgba(0,0,0,0.15)] z-[60] border-t border-slate-100 dark:border-slate-800">
+        <!-- Handle -->
+        <div class="w-12 h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full mx-auto mt-4 mb-2"></div>
+        <div class="px-6 py-4 max-h-[60vh] overflow-y-auto custom-scrollbar">
+            <!-- Header of Explanation -->
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-full bg-success/10 flex items-center justify-center">
+                    <span class="material-icons-round text-success">check_circle</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800 dark:text-white leading-tight">إجابة صحيحة!</h3>
+                    <p class="text-xs text-slate-500 font-medium">تصوير الشريان الأبهر الطبقي المبرمج</p>
+                </div>
+            </div>
+            <!-- Explanation Content -->
+            <div class="space-y-6 pb-20">
+                <div class="bg-primary/5 rounded-2xl p-4 border border-primary/10">
+                    <h4 class="text-primary font-bold text-sm mb-2 flex items-center gap-2">
+                        <span class="material-icons-round text-sm">lightbulb</span>
+                        لماذا هذه هي الإجابة؟
+                    </h4>
+                    <p class="text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                        الأعراض المتمثلة في ألم الصدر الممتد للظهر مع اختلاف الضغط الشرياني بين الذراعين تشير بقوة إلى
+                        <strong>تسلخ الأبهر (Aortic Dissection)</strong>. يعد التصوير المقطعي المحوسب (CT Aortogram)
+                        المعيار الذهبي للتشخيص السريع والدقيق في حالة استقرار المريض.
+                    </p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl">
+                        <span class="material-icons-round text-primary text-xl mb-2">error_outline</span>
+                        <h5 class="text-xs font-bold text-slate-500 mb-1">علامة فارقة</h5>
+                        <p class="text-xs font-medium text-slate-700 dark:text-slate-200 leading-tight">فرق الضغط &gt;
+                            20mmHg بين الذراعين</p>
+                    </div>
+                    <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl">
+                        <span class="material-icons-round text-primary text-xl mb-2">biotech</span>
+                        <h5 class="text-xs font-bold text-slate-500 mb-1">التصنيف</h5>
+                        <p class="text-xs font-medium text-slate-700 dark:text-slate-200 leading-tight">يصنف حسب نظام
+                            ستانفورد (Stanford) A أو B</p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm mb-3 flex items-center gap-2">
+                        <span class="material-icons-round text-primary text-sm">format_list_bulleted</span>
+                        نقاط سريرية هامة
+                    </h4>
+                    <ul class="space-y-3">
+                        <li class="flex gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+                            التحكم السريع في ضغط الدم ومعدل ضربات القلب هو الأولوية الأولى.
+                        </li>
+                        <li class="flex gap-3 text-sm text-slate-600 dark:text-slate-300">
+                            <span class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0"></span>
+                            يتم استخدام حاصرات بيتا (Beta-blockers) مثل Labetalol.
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                    <div class="flex gap-2">
+                        <button
+                            class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                            <span class="material-icons-round text-sm">bookmark_border</span>
+                            حفظ
+                        </button>
+                        <button
+                            class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center gap-2">
+                            <span class="material-icons-round text-sm">share</span>
+                            مشاركة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bottom Navigation Bar (Persistent Actions) -->
+    <div
+        class="fixed bottom-0 w-full max-w-[402px] bg-white dark:bg-slate-900 px-6 py-6 border-t border-slate-100 dark:border-slate-800 z-[70] flex gap-4">
+        <button
+            class="flex-1 bg-primary text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/30 flex items-center justify-center gap-2 active:scale-95 transition-transform">
+            <span>السؤال التالي</span>
+            <span class="material-icons-round">chevron_left</span>
+        </button>
+    </div>
+</body>
+
+</html>

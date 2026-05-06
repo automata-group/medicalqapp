@@ -1,0 +1,116 @@
+.pageTitle {
+    color: #f1f5f9;
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 24px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.card {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-left: 4px solid;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.cardIcon {
+    font-size: 28px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cardValue {
+    color: #f1f5f9;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.cardLabel {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+.error {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+/* Shared table styles (used by sub-pages too) */
+.tableWrap {
+    background: #161b27;
+    border-radius: 14px;
+    border: 1px solid #1e293b;
+    overflow-x: auto;
+}
+
+.chartsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.chartCard {
+    background: #161b27;
+    border: 1px solid #1e293b;
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.chartCard h3 {
+    color: #f1f5f9;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.chartContainer {
+    height: 300px;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+th {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+td {
+    padding: 12px 16px;
+    color: #e2e8f0;
+    border-top: 1px solid #1e293b;
+    vertical-align: middle;
+}
+
+tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+}

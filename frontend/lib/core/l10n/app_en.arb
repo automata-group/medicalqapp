@@ -1,0 +1,181 @@
+{
+  "appTitle": "Medical Q",
+  "mockExams": "Mock Exams",
+  "noExamsAvailable": "No exams available at the moment.",
+  "free": "Free",
+  "minutes": "mins",
+  "questions": "Questions",
+  "startExam": "Start Exam",
+  "finishExam": "Finish Exam",
+  "continueRevision": "Continue Revision",
+  "recentPractice": "Recent Practice",
+  "weekly": "Weekly",
+  "monthly": "Monthly",
+  "performanceTrend": "Performance Trend",
+  "achievements": "Achievements",
+  "noAchievements": "No achievements yet. Keep practicing!",
+  "startRevision": "Start Revision",
+  "continueAction": "Continue",
+  "examPassed": "Congratulations!",
+  "examFailed": "Keep Practicing!",
+  "yourScore": "Your Score",
+  "correct": "Correct",
+  "total": "Total",
+  "backToHome": "Back to Home",
+  "noResultData": "No result data available",
+  "login": "Login",
+  "startOffline": "Start Offline",
+  "connectionTimeout": "Connection is taking too long",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "forgotPassword": "Forgot Password?",
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+  "signIn": "Sign In",
+  "signUp": "Sign Up",
+  "selectSpecialty": "Select Specialty",
+  "searchSpecialty": "Search for a specialty...",
+  "continueText": "Continue",
+  "createAccount": "Create Account",
+  "fieldRequired": "This field is required",
+  "invalidEmail": "Please enter a valid email",
+  "questionsAvailable": "{count} Questions Available",
+  "@questionsAvailable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "setStudyGoal": "Set Your Goal",
+  "studyGoalSubtitle": "Define your exam date and study hours.",
+  "examDate": "Exam Date",
+  "selectDate": "Select Date",
+  "dailyStudyHours": "Daily Study Hours",
+  "hours": "Hours",
+  "home": "Home",
+  "library": "Library",
+  "stats": "Stats",
+  "profile": "Profile",
+  "welcomeBack": "Welcome, {name}",
+  "@welcomeBack": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "readyForChallenge": "Ready for today's challenge?",
+  "weeklyProgress": "Weekly Progress",
+  "answeredQuestions": "You answered {count} questions this week",
+  "@answeredQuestions": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "medicalSpecialties": "Medical Specialties",
+  "seeAll": "See All",
+  "keepRevising": "Keep Revising",
+  "quickExam": "Quick Exam",
+  "questionsProgress": "{count}/100 questions",
+  "@questionsProgress": {
+    "description": "Progress message showing number of questions completed",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "studyStreak": "Study Streak",
+  "activeDays": "Active Days",
+  "orthodontics": "Orthodontics",
+  "endodontics": "Endodontics",
+  "prosthodontics": "Prosthodontics",
+  "periodontics": "Periodontics",
+  "pediatricDentistry": "Pediatric Dentistry",
+  "restorative": "Restorative Dentistry",
+  "dentalSurgery": "Dental Surgery",
+  "oralMedicine": "Oral Medicine & Pathology",
+  "dentalEthics": "Dental Ethics",
+  "hoursAgo": "{count} hours ago • {phase}",
+  "yesterday": "Yesterday • {phase}",
+  "resume": "Resume",
+  "back": "Back",
+  "next": "Next Question",
+  "submit": "Submit Answer",
+  "explanation": "Explanation",
+  "bookmarks": "Bookmarks",
+  "account": "Account",
+  "editProfile": "Edit Profile",
+  "changePassword": "Change Password",
+  "appSettings": "App Settings",
+  "notifications": "Notifications",
+  "language": "Language",
+  "logout": "Logout",
+  "logoutConfirmation": "Are you sure you want to logout?",
+  "upgradeToPremium": "Upgrade to Premium",
+  "unlockUnlimitedAccess": "Unlock Unlimited Access",
+  "premiumDescription": "Get access to all questions, mock exams, and advanced statistics.",
+  "unlimitedQuestions": "Unlimited Questions & Exams",
+  "detailedExplanations": "Detailed Explanations & AI Insights",
+  "advancedStats": "Advanced Performance Stats",
+  "adFree": "Ad-Free Experience",
+  "monthlyPlan": "Monthly",
+  "yearlyPlan": "Yearly",
+  "bestValue": "BEST VALUE",
+  "recurringBilling": "Recurring billing, cancel anytime.",
+  "subscribeNow": "Subscribe Now",
+  "checkoutTitle": "Checkout",
+  "paymentSuccessful": "Payment Successful",
+  "premiumSuccessMessage": "You are now a Premium member! Enjoy unlimited access.",
+  "paymentDetails": "Payment Details",
+  "cardHolderName": "Card Holder Name",
+  "cardNumber": "Card Number",
+  "expiryDate": "Expiry (MM/YY)",
+  "cvv": "CVV",
+  "invalidCardNumber": "Invalid Card Number",
+  "pay": "Pay {amount}",
+  "@pay": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "securePaymentMoyasar": "Secure Payment via Moyasar",
+  "mockExams": "Mock Exams",
+  "noExamsAvailable": "No exams available at the moment.",
+  "free": "FREE",
+  "minutes": "mins",
+  "questions": "questions",
+  "startExam": "Start Exam",
+  "premiumRequired": "Premium Required",
+  "premiumRequiredMessage": "This exam is only available for Premium members. Upgrade to unlock.",
+  "cancel": "Cancel",
+  "upgrade": "Upgrade",
+  "rateApp": "Rate the App",
+  "aiCoach": "AI Study Coach",
+  "refreshAnalysis": "Refresh Analysis",
+  "tryAgain": "Try Again",
+  "letAiAnalyze": "Let AI Analyze Your Mistakes",
+  "aiAnalyzeDescription": "We will analyze your last 15 incorrect questions to provide personalized advice.",
+  "startAnalysis": "Start Analysis Now",
+  "analysisValidPeriod": "This analysis is valid for 7 days and will be deleted automatically.",
+  "smartPerformanceAnalysis": "Smart Performance Analysis",
+  "createdAt": "Created at: {date}",
+  "@createdAt": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "accuracy": "Accuracy",
+  "questionBank": "Question Bank",
+  "allSpecialties": "All Specialties",
+  "shuffleQuestions": "Shuffle Questions",
+  "finishExam": "Finish Exam"
+}

@@ -1,0 +1,418 @@
+// ignore: unused_import
+import 'package:intl/intl.dart' as intl;
+import 'app_localizations.dart';
+
+// ignore_for_file: type=lint
+
+/// The translations for Arabic (`ar`).
+class AppLocalizationsAr extends AppLocalizations {
+  AppLocalizationsAr([String locale = 'ar']) : super(locale);
+
+  @override
+  String get appTitle => 'بنك الأسئلة الطبي';
+
+  @override
+  String get mockExams => 'اختبارات تجريبية';
+
+  @override
+  String get noExamsAvailable => 'لا توجد اختبارات متاحة حاليا.';
+
+  @override
+  String get free => 'مجاني';
+
+  @override
+  String get minutes => 'دقيقة';
+
+  @override
+  String get questions => 'سؤال';
+
+  @override
+  String get startExam => 'ابدأ الاختبار';
+
+  @override
+  String get finishExam => 'إنهاء الاختبار';
+
+  @override
+  String get continueRevision => 'واصل المراجعة';
+
+  @override
+  String get recentPractice => 'ممارسة حديثة';
+
+  @override
+  String get weekly => 'أسبوعي';
+
+  @override
+  String get monthly => 'شهري';
+
+  @override
+  String get performanceTrend => 'مؤشر الأداء';
+
+  @override
+  String get achievements => 'الإنجازات';
+
+  @override
+  String get noAchievements => 'لا توجد إنجازات بعد. واصل التدريب!';
+
+  @override
+  String get startRevision => 'ابدأ المراجعة';
+
+  @override
+  String get continueAction => 'استكمال';
+
+  @override
+  String get examPassed => 'مبارك! أحسنت';
+
+  @override
+  String get examFailed => 'واصل المحاولة!';
+
+  @override
+  String get yourScore => 'نتيجتـك';
+
+  @override
+  String get correct => 'صحيحة';
+
+  @override
+  String get total => 'المجموع';
+
+  @override
+  String get backToHome => 'العودة للرئيسية';
+
+  @override
+  String get noResultData => 'لا توجد نتائج للعرض';
+
+  @override
+  String get login => 'تسجيل الدخول';
+
+  @override
+  String get startOffline => 'البدء بدون إنترنت';
+
+  @override
+  String get connectionTimeout => 'الاتصال يستغرق وقتًا طويلاً';
+
+  @override
+  String get register => 'إنشاء حساب';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get forgotPassword => 'نسيت كلمة المرور؟';
+
+  @override
+  String get dontHaveAccount => 'ليس لديك حساب؟';
+
+  @override
+  String get alreadyHaveAccount => 'لديك حساب بالفعل؟';
+
+  @override
+  String get signIn => 'دخول';
+
+  @override
+  String get signUp => 'إنشاء حساب';
+
+  @override
+  String get selectSpecialty => 'اختر التخصص';
+
+  @override
+  String get searchSpecialty => 'ابحث عن تخصص طبي...';
+
+  @override
+  String get continueText => 'متابعة';
+
+  @override
+  String get createAccount => 'إنشاء حساب جديد';
+
+  @override
+  String get fieldRequired => 'هذا الحقل مطلوب';
+
+  @override
+  String get invalidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
+
+  @override
+  String questionsAvailable(int count) {
+    return '$count سؤال متاح';
+  }
+
+  @override
+  String get setStudyGoal => 'حدد هدفك';
+
+  @override
+  String get studyGoalSubtitle => 'حدد موعد الاختبار وساعات المذاكرة اليومية.';
+
+  @override
+  String get examDate => 'موعد الاختبار';
+
+  @override
+  String get selectDate => 'اختر التاريخ';
+
+  @override
+  String get dailyStudyHours => 'ساعات المذاكرة اليومية';
+
+  @override
+  String get hours => 'ساعات';
+
+  @override
+  String get home => 'الرئيسية';
+
+  @override
+  String get library => 'المكتبة';
+
+  @override
+  String get stats => 'الإحصائيات';
+
+  @override
+  String get profile => 'حسابي';
+
+  @override
+  String welcomeBack(String name) {
+    return 'أهلاً بك، $name';
+  }
+
+  @override
+  String get readyForChallenge => 'مستعد لتحدي اليوم؟';
+
+  @override
+  String get weeklyProgress => 'الإنجاز الأسبوعي';
+
+  @override
+  String answeredQuestions(int count) {
+    return 'أجبت على $count سؤالاً هذا الأسبوع';
+  }
+
+  @override
+  String get medicalSpecialties => 'التخصصات الطبية';
+
+  @override
+  String get seeAll => 'عرض الكل';
+
+  @override
+  String get keepRevising => 'واصل المراجعة';
+
+  @override
+  String get quickExam => 'اختبار سريع';
+
+  @override
+  String questionsProgress(int count) {
+    return '$count/100 سؤال';
+  }
+
+  @override
+  String get studyStreak => 'سجل المذاكرة';
+
+  @override
+  String get activeDays => 'أيام النشاط';
+
+  @override
+  String get orthodontics => 'تقويم الأسنان';
+
+  @override
+  String get endodontics => 'علاج الجذور';
+
+  @override
+  String get prosthodontics => 'الاستعاضة السنية';
+
+  @override
+  String get periodontics => 'أمراض اللثة';
+
+  @override
+  String get pediatricDentistry => 'طب أسنان الأطفال';
+
+  @override
+  String get restorative => 'العلاج التحفظي';
+
+  @override
+  String get dentalSurgery => 'جراحة الأسنان';
+
+  @override
+  String get oralMedicine => 'طب وأمراض الفم';
+
+  @override
+  String get dentalEthics => 'أخلاقيات طب الأسنان';
+
+  @override
+  String hoursAgo(Object count, Object phase) {
+    return 'منذ $count ساعات • $phase';
+  }
+
+  @override
+  String yesterday(Object phase) {
+    return 'الأمس • $phase';
+  }
+
+  @override
+  String get resume => 'اكمل';
+
+  @override
+  String get back => 'رجوع';
+
+  @override
+  String get next => 'السؤال التالي';
+
+  @override
+  String get submit => 'إرسال الإجابة';
+
+  @override
+  String get explanation => 'الشرح';
+
+  @override
+  String get bookmarks => 'المحفوظات';
+
+  @override
+  String get account => 'الحساب';
+
+  @override
+  String get editProfile => 'تعديل الملف الشخصي';
+
+  @override
+  String get changePassword => 'تغيير كلمة المرور';
+
+  @override
+  String get appSettings => 'إعدادات التطبيق';
+
+  @override
+  String get notifications => 'الإشعارات';
+
+  @override
+  String get language => 'اللغة';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logoutConfirmation => 'هل أنت متأكد من تسجيل الخروج؟';
+
+  @override
+  String get upgradeToPremium => 'الترقية للبريميوم';
+
+  @override
+  String get unlockUnlimitedAccess => 'افتح وصول غير محدود';
+
+  @override
+  String get premiumDescription =>
+      'احصل على جميع الأسئلة، الاختبارات التجريبية، وإحصائيات متقدمة.';
+
+  @override
+  String get unlimitedQuestions => 'أسئلة واختبارات غير محدودة';
+
+  @override
+  String get detailedExplanations => 'شرح مفصل ورؤى الذكاء الاصطناعي';
+
+  @override
+  String get advancedStats => 'إحصائيات أداء متقدمة';
+
+  @override
+  String get adFree => 'تجربة خالية من الإعلانات';
+
+  @override
+  String get monthlyPlan => 'شهري';
+
+  @override
+  String get yearlyPlan => 'سنوي';
+
+  @override
+  String get bestValue => 'الأفضل قيمة';
+
+  @override
+  String get recurringBilling => 'تجديد تلقائي، إلغاء في أي وقت.';
+
+  @override
+  String get subscribeNow => 'اشترك الآن';
+
+  @override
+  String get checkoutTitle => 'الدفع';
+
+  @override
+  String get paymentSuccessful => 'تم الدفع بنجاح';
+
+  @override
+  String get premiumSuccessMessage =>
+      'أنت الآن عضو مميز! استمتع بوصول غير محدود.';
+
+  @override
+  String get paymentDetails => 'تفاصيل الدفع';
+
+  @override
+  String get cardHolderName => 'اسم حامل البطاقة';
+
+  @override
+  String get cardNumber => 'رقم البطاقة';
+
+  @override
+  String get expiryDate => 'تاريخ الانتهاء (MM/YY)';
+
+  @override
+  String get cvv => 'رمز الأمان (CVV)';
+
+  @override
+  String get invalidCardNumber => 'رقم البطاقة غير صحيح';
+
+  @override
+  String pay(String amount) {
+    return 'ادفع $amount';
+  }
+
+  @override
+  String get securePaymentMoyasar => 'دفع آمن عبر مويسر';
+
+  @override
+  String get premiumRequired => 'يتطلب اشتراك مميز';
+
+  @override
+  String get premiumRequiredMessage =>
+      'هذا الاختبار متاح فقط للأعضاء المميزين. قم بالترقية لفتح القفل.';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get upgrade => 'ترقية';
+
+  @override
+  String get rateApp => 'تقييم التطبيق';
+
+  @override
+  String get aiCoach => 'مدرب المذاكرة الذكي';
+
+  @override
+  String get refreshAnalysis => 'تحديث التحليل';
+
+  @override
+  String get tryAgain => 'حاول مرة أخرى';
+
+  @override
+  String get letAiAnalyze => 'دع الذكاء الاصطناعي يحلل أخطائك';
+
+  @override
+  String get aiAnalyzeDescription =>
+      'سنقوم بتحليل آخر 15 سؤال أخطأت فيهم لتزويدك بنصائح مخصصة.';
+
+  @override
+  String get startAnalysis => 'ابدأ التحليل الآن';
+
+  @override
+  String get analysisValidPeriod =>
+      'هذا التحليل صالح لمدة 7 أيام وسيتم حذفه تلقائياً.';
+
+  @override
+  String get smartPerformanceAnalysis => 'تحليل الأداء الذكي';
+
+  @override
+  String createdAt(String date) {
+    return 'تم الإنشاء في: $date';
+  }
+
+  @override
+  String get accuracy => 'الدقة';
+
+  @override
+  String get questionBank => 'بنك الأسئلة';
+
+  @override
+  String get allSpecialties => 'جميع التخصصات';
+
+  @override
+  String get shuffleQuestions => 'خلط الأسئلة';
+}

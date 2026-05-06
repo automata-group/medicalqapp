@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="ar">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=Noto+Sans+Arabic:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "card-red": "#fff1f1",
+                        "card-blue": "#f0f7ff",
+                        "card-green": "#f0fdf4",
+                        "card-purple": "#faf5ff",
+                        "card-orange": "#fffaf0",
+                        "card-teal": "#f0fdfa",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Noto Sans Arabic", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Lexend', 'Noto Sans Arabic', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen pb-20">
+    <!-- iOS Status Bar Spacer -->
+    <div class="h-12 w-full"></div>
+    <!-- Header Section -->
+    <header class="px-5 py-4 sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 ios-blur">
+        <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                    <img alt="Doctor Profile" class="w-full h-full rounded-full"
+                        data-alt="Doctor profile picture wearing a white coat"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8g-QFflyeIni_zbWpemssrK1xcxnxhha6_7cuC6OC9_2pKWQCkqFiPJymh9wiLv2dg9CHta2rEq6qJKDj9UUKzqOI_2PiiBvY5BIVK4uej3iVIeQHZHvMeUq5HlrIBPY7NMuOJgSw7m2_hi0R5zkcoqQMf1QF6su1S40HlYbnExmsL_aDp4sZLLpEDQov-D-CMtc_rOwdEqjE3zDRg4nRGiZMnEs8VnDpXrFKzgEMAf9eK6QnXVwvrnxvBzN9ZJ9vdXJNl8KQvuY" />
+                </div>
+                <div>
+                    <h2 class="text-xs text-slate-500 dark:text-slate-400 font-medium">مرحباً دكتور،</h2>
+                    <h1 class="text-lg font-bold">أحمد العلي</h1>
+                </div>
+            </div>
+            <button
+                class="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center border border-slate-100 dark:border-slate-700">
+                <span class="material-icons-round text-primary">notifications_none</span>
+            </button>
+        </div>
+        <!-- Search Bar -->
+        <div class="relative mb-6">
+            <span class="material-icons-round absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+            <input
+                class="w-full bg-white dark:bg-slate-800 border-none rounded-xl py-3.5 pr-12 pl-4 text-sm shadow-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none placeholder:text-slate-400"
+                placeholder="ابحث عن تخصص طبي..." type="text" />
+        </div>
+        <!-- Filter Chips -->
+        <div class="flex gap-2 overflow-x-auto hide-scrollbar -mx-5 px-5">
+            <button
+                class="px-5 py-2 rounded-full bg-primary text-white text-sm font-medium whitespace-nowrap">الكل</button>
+            <button
+                class="px-5 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 text-sm font-medium whitespace-nowrap">جراحة</button>
+            <button
+                class="px-5 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 text-sm font-medium whitespace-nowrap">باطنية</button>
+            <button
+                class="px-5 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 text-sm font-medium whitespace-nowrap">أطفال</button>
+            <button
+                class="px-5 py-2 rounded-full bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-100 dark:border-slate-700 text-sm font-medium whitespace-nowrap">طوارئ</button>
+        </div>
+    </header>
+    <!-- Main Grid -->
+    <main class="px-5 mt-4">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-base font-bold">التخصصات المتاحة</h3>
+            <span class="text-xs text-primary font-medium">عرض الكل</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <!-- Cardiology Card -->
+            <div
+                class="bg-card-red dark:bg-red-950/20 p-4 rounded-xl border border-red-100/50 dark:border-red-900/30 flex flex-col gap-3 relative overflow-hidden group">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-red-500 text-2xl">favorite</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">القلب والأوعية</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٤٥٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-red-600">٧٥٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-red-200/50 dark:bg-red-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-red-500 rounded-full" style="width: 75%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Neurology Card -->
+            <div
+                class="bg-card-blue dark:bg-blue-950/20 p-4 rounded-xl border border-blue-100/50 dark:border-blue-900/30 flex flex-col gap-3 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-primary text-2xl">psychology</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">أمراض الأعصاب</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٣٢٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-primary">٤٠٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-blue-200/50 dark:bg-blue-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-primary rounded-full" style="width: 40%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Pediatrics Card -->
+            <div
+                class="bg-card-green dark:bg-green-950/20 p-4 rounded-xl border border-green-100/50 dark:border-green-900/30 flex flex-col gap-3 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-green-500 text-2xl">child_care</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">طب الأطفال</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٦٠٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-green-600">٩٠٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-green-200/50 dark:bg-green-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-green-500 rounded-full" style="width: 90%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Orthopedics Card -->
+            <div
+                class="bg-card-orange dark:bg-orange-950/20 p-4 rounded-xl border border-orange-100/50 dark:border-orange-900/30 flex flex-col gap-3 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-orange-500 text-2xl">accessibility_new</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">جراحة العظام</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٢٨٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-orange-600">١٥٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-orange-200/50 dark:bg-orange-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-orange-500 rounded-full" style="width: 15%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Dermatology Card -->
+            <div
+                class="bg-card-purple dark:bg-purple-950/20 p-4 rounded-xl border border-purple-100/50 dark:border-purple-900/30 flex flex-col gap-3 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-purple-500 text-2xl">face</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">الجلدية</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٢١٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-purple-600">٥٥٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-purple-200/50 dark:bg-purple-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-purple-500 rounded-full" style="width: 55%"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Emergency Card -->
+            <div
+                class="bg-card-teal dark:bg-teal-950/20 p-4 rounded-xl border border-teal-100/50 dark:border-teal-900/30 flex flex-col gap-3 relative overflow-hidden">
+                <div class="w-12 h-12 rounded-xl bg-white dark:bg-slate-800 shadow-sm flex items-center justify-center">
+                    <span class="material-icons-round text-teal-500 text-2xl">medical_services</span>
+                </div>
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 dark:text-slate-100">طب الطوارئ</h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">٥٣٠ سؤال متاح</p>
+                </div>
+                <div class="mt-2">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-[10px] font-bold text-teal-600">٣٠٪ مكتمل</span>
+                    </div>
+                    <div class="w-full h-1.5 bg-teal-200/50 dark:bg-teal-900/40 rounded-full overflow-hidden">
+                        <div class="h-full bg-teal-500 rounded-full" style="width: 30%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Featured Study Plan -->
+        <div class="mt-8 mb-4">
+            <h3 class="text-base font-bold mb-4">خطة المذاكرة الموصى بها</h3>
+            <div class="bg-primary rounded-2xl p-5 text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <span class="bg-white/20 text-[10px] uppercase font-bold px-2 py-1 rounded-md">خطة مكثفة</span>
+                    <h4 class="text-lg font-bold mt-2 leading-tight">الاستعداد للاختبار الشامل<br />المرحلة الأولى</h4>
+                    <div class="flex items-center gap-4 mt-4">
+                        <div class="flex flex-col">
+                            <span class="text-xs opacity-80">التقدم الإجمالي</span>
+                            <span class="font-bold">٦٥٪</span>
+                        </div>
+                        <div class="h-8 w-[1px] bg-white/30"></div>
+                        <div class="flex flex-col">
+                            <span class="text-xs opacity-80">الأيام المتبقية</span>
+                            <span class="font-bold">١٤ يوم</span>
+                        </div>
+                    </div>
+                    <button
+                        class="mt-5 w-full bg-white text-primary font-bold py-2.5 rounded-xl text-sm active:scale-95 transition-transform">متابعة
+                        المذاكرة</button>
+                </div>
+                <!-- Abstract Pattern Background -->
+                <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute -left-10 -top-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
+            </div>
+        </div>
+    </main>
+    <!-- Bottom Navigation Bar (iOS Style) -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 bg-white/80 dark:bg-slate-900/80 ios-blur border-t border-slate-100 dark:border-slate-800 px-6 pt-3 pb-8 flex justify-between items-center z-[100]">
+        <div class="flex flex-col items-center gap-1 group">
+            <span class="material-icons-round text-primary">grid_view</span>
+            <span class="text-[10px] font-bold text-primary">التخصصات</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 group opacity-40">
+            <span class="material-icons-round text-slate-500 dark:text-slate-400">auto_awesome</span>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">الاختبارات</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 group opacity-40">
+            <div
+                class="w-12 h-12 bg-primary rounded-full -mt-10 shadow-lg shadow-primary/40 flex items-center justify-center">
+                <span class="material-icons-round text-white text-3xl">add</span>
+            </div>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400 mt-1">جديد</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 group opacity-40">
+            <span class="material-icons-round text-slate-500 dark:text-slate-400">trending_up</span>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">إحصائيات</span>
+        </div>
+        <div class="flex flex-col items-center gap-1 group opacity-40">
+            <span class="material-icons-round text-slate-500 dark:text-slate-400">person_outline</span>
+            <span class="text-[10px] font-medium text-slate-500 dark:text-slate-400">حسابي</span>
+        </div>
+    </nav>
+</body>
+
+</html>

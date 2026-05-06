@@ -1,0 +1,145 @@
+.sidebar {
+    width: 240px;
+    min-height: 100vh;
+    background: #0f172a;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255, 255, 255, 0.07);
+    transition: width 0.25s ease;
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed {
+    width: 68px;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.logo {
+    font-size: 28px;
+    flex-shrink: 0;
+}
+
+.title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 18px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.toggle {
+    background: rgba(255, 255, 255, 0.07);
+    border: none;
+    color: #94a3b8;
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.nav {
+    flex: 1;
+    padding: 12px 0;
+}
+
+.link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 16px;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s;
+    margin: 2px 8px;
+    border-radius: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #e2e8f0;
+}
+
+.link.active {
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+}
+
+.icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.label {
+    overflow: hidden;
+}
+
+.footer {
+    padding: 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.adminInfo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    overflow: hidden;
+}
+
+.adminAvatar {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.adminName {
+    color: #e2e8f0;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adminRole {
+    color: #64748b;
+    font-size: 11px;
+}
+
+.logoutBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 6px;
+    transition: background 0.15s;
+}
+
+.logoutBtn:hover {
+    background: rgba(239, 68, 68, 0.15);
+}

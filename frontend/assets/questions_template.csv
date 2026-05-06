@@ -1,0 +1,3 @@
+Question Text,Specialty ID,Difficulty,Option A,Option A Is Correct,Option B,Option B Is Correct,Option C,Option C Is Correct,Option D,Option D Is Correct,Explanation Text,Explanation References
+"What is the most common cause of community-acquired pneumonia?",1,medium,"Streptococcus pneumoniae",TRUE,"Haemophilus influenzae",FALSE,"Mycoplasma pneumoniae",FALSE,"Staphylococcus aureus",FALSE,"Streptococcus pneumoniae is the most common cause of CAP.","Harrison's Internal Medicine"
+"Which of the following is a symptom of hyperthyroidism?",2,easy,"Weight gain",FALSE,"Bradycardia",FALSE,"Heat intolerance",TRUE,"Constipation",FALSE,"Heat intolerance is a classic symptom of hyperthyroidism due to increased metabolic rate.","Robbins Pathology"
