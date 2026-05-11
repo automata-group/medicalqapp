@@ -37,6 +37,9 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
             });
             _checkSuccessRedirect(url);
           },
+          onWebResourceError: (WebResourceError error) {
+            debugPrint('WebView Resource Error: ${error.description}');
+          },
           onNavigationRequest: (NavigationRequest request) {
             final url = request.url;
             if (_checkSuccessRedirect(url)) {
@@ -46,6 +49,9 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
           },
         ),
       )
+      ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
+        debugPrint('WebView Console: ${message.message}');
+      })
       ..loadRequest(Uri.parse(widget.checkoutUrl));
   }
 
