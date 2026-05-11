@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../core/l10n/generated/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../providers/ai_feedback_provider.dart';
+import '../../providers/auth_provider.dart';
+import '../subscription/pricing_screen.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -36,8 +38,17 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            onPressed: () =>
-                context.read<AIFeedbackProvider>().generateNewFeedback(),
+            onPressed: () {
+              final authProvider = context.read<AuthProvider>();
+              if (!(authProvider.user?.isPremium ?? false)) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PricingScreen()),
+                );
+                return;
+              }
+              context.read<AIFeedbackProvider>().generateNewFeedback();
+            },
             tooltip: l10n.refreshAnalysis,
           ),
         ],
@@ -49,43 +60,48 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
           }
 
           if (provider.error != null && provider.latestFeedback == null) {
-            final isNotEnough = provider.error!.contains('1') || provider.error!.contains('أخطاء') || provider.error!.contains('خطأ');
+            final isNotEnough = provider.error!.toLowerCase().contains('at least one') || provider.error!.contains('خطأ واحد');
+            final isLimitExceeded = provider.error!.toLowerCase().contains('weekly limit') || provider.error!.contains('الحد الأسبوعي');
+            
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    isNotEnough ? Icons.quiz_outlined : Icons.error_outline,
+                    isLimitExceeded ? Icons.timer_outlined : (isNotEnough ? Icons.quiz_outlined : Icons.error_outline),
                     size: 64,
-                    color: isNotEnough ? Colors.orange : Colors.grey,
+                    color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    isNotEnough
-                        ? 'تحتاج إلى خطأ واحد على الأقل\nلإنشاء تحليل ذكي'
-                        : provider.error!,
+                    isLimitExceeded 
+                        ? 'لقد وصلت للحد الأقصى الأسبوعي\n(مرتين فقط في الأسبوع)'
+                        : (isNotEnough ? 'تحتاج إلى خطأ واحد على الأقل\nلإنشاء تحليل ذكي' : provider.error!),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
-                      color: isNotEnough ? Colors.orange : Colors.grey,
+                      color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  if (isNotEnough) ...[
-                    const SizedBox(height: 8),
+                  const SizedBox(height: 16),
+                  if (isNotEnough)
                     const Text(
                       'أجب على بعض الأسئلة أولاً\nوسيقوم النظام بتحليل أخطائك تلقائياً',
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey, fontSize: 13),
                     ),
-                  ],
-                  if (!isNotEnough) ...[
-                    const SizedBox(height: 16),
+                  if (isLimitExceeded)
+                    const Text(
+                      'يمكنك طلب تحليل جديد بعد مرور أسبوع\nعلى طلبك الأول',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey, fontSize: 13),
+                    ),
+                  if (!isNotEnough && !isLimitExceeded)
                     ElevatedButton(
                       onPressed: () => provider.generateNewFeedback(),
                       child: Text(l10n.tryAgain),
                     ),
-                  ],
                 ],
               ),
             );
@@ -116,17 +132,17 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: () => provider.generateNewFeedback(),
+                        onPressed: () {
+                          final authProvider = context.read<AuthProvider>();
+                          if (!(authProvider.user?.isPremium ?? false)) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const PricingScreen()),
+                            );
+                            return;
+                          }
+                          provider.generateNewFeedback();
+                        },
                         child: Text(l10n.startAnalysis),
                       ),
                     ),

@@ -7,7 +7,33 @@ const { Op } = require('sequelize');
 // @access  Private
 exports.generateFeedback = async (req, res, next) => {
     try {
-        // 1. Get last 15 incorrect attempts
+        // 1. Premium Check
+        if (!req.user.isPremium) {
+            return res.status(403).json({
+                success: false,
+                message: 'AI Coach is a premium feature. Please upgrade your plan to access it.',
+                message_ar: 'مدرب الذكاء الاصطناعي ميزة للمشتركين فقط. يرجى ترقية خطتك للوصول إليها.'
+            });
+        }
+
+        // 2. Weekly Limit Check (2 times per 7 days)
+        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+        const weeklyUsage = await AIFeedback.count({
+            where: {
+                userId: req.user.id,
+                createdAt: { [Op.gte]: sevenDaysAgo }
+            }
+        });
+
+        if (weeklyUsage >= 2) {
+            return res.status(429).json({
+                success: false,
+                message: 'You have reached your weekly limit for AI Coach (2 reports per week).',
+                message_ar: 'لقد وصلت إلى الحد الأسبوعي لمدرب الذكاء الاصطناعي (تقريرين فقط في الأسبوع).'
+            });
+        }
+
+        // 3. Get last 15 incorrect attempts
         const attempts = await QuestionAttempt.findAll({
             where: {
                 userId: req.user.id,
@@ -29,22 +55,24 @@ exports.generateFeedback = async (req, res, next) => {
         if (attempts.length < 1) {
             return res.status(400).json({
                 success: false,
-                message: 'تحتاج إلى خطأ واحد على الأقل لإنشاء تحليل.'
+                message: 'You need at least one mistake to generate an analysis.',
+                message_ar: 'تحتاج إلى خطأ واحد على الأقل لإنشاء تحليل.'
             });
         }
 
-        // 2. Format content for AI
+        // 4. Format content for AI
         const mistakeList = attempts.map(a => {
             const topicName = a.question?.topic?.name || a.question?.specialty?.name || 'عام';
             const questionText = a.question?.text ? a.question.text.substring(0, 100) : 'سؤال غير معروف';
-            return `- السؤال: ${questionText}\n  الموضوع: ${topicName}`;
+            return `- Question: ${questionText}\n  Topic: ${topicName}`;
         }).join('\n');
-        const prompt = `هيا حلل أخطائي الأخيرة في المذاكرة الطبية:\n${mistakeList}\nيرجى تزويدي بجدول ملخص ونصيحة للتحسين.`;
+        
+        const prompt = `Analyze my recent medical study mistakes:\n${mistakeList}\nPlease provide a summary table and advice for improvement in English.`;
 
-        // 3. Call AI
+        // 5. Call AI
         const analysis = await aiService.generateAnalysis(prompt);
 
-        // 4. Save to DB
+        // 6. Save to DB
         const feedback = await AIFeedback.create({
             userId: req.user.id,
             content: analysis,
