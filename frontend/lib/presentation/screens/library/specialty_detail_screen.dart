@@ -71,11 +71,23 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                       color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      Icons.medical_services_outlined,
-                      size: 48,
-                      color: AppColors.primary,
-                    ),
+                    child: widget.specialty.icon != null && widget.specialty.icon!.contains('/uploads/')
+                        ? ClipRRect(
+                            borderRadius: BorderRadius.circular(40),
+                            child: Image.network(
+                              'https://healthlicenseprep.com${widget.specialty.icon}',
+                              width: 80,
+                              height: 80,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) =>
+                                  Icon(Icons.medical_services_outlined, size: 48, color: AppColors.primary),
+                            ),
+                          )
+                        : Icon(
+                            Icons.medical_services_outlined,
+                            size: 48,
+                            color: AppColors.primary,
+                          ),
                   ),
                   const SizedBox(height: 16),
                   Text(
