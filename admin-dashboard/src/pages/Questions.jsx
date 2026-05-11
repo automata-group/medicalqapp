@@ -189,7 +189,8 @@ export default function Questions() {
 
         try {
             const token = localStorage.getItem('adminToken');
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+            const apiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+            const API_STATIC_URL = (import.meta.env.VITE_API_URL || '').replace('/api/v1', '');
 
             const response = await fetch(`${apiUrl}/admin/questions/bulk-import-docx`, {
                 method: 'POST',

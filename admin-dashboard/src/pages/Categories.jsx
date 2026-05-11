@@ -3,7 +3,7 @@ import { getSpecialties, createSpecialty, updateSpecialty, deleteSpecialty, uplo
 import styles from './Dashboard.module.css';
 import pageStyles from './Page.module.css';
 
-const API_STATIC_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1').replace('/api/v1', '');
+const API_STATIC_URL = (import.meta.env.VITE_API_URL || '').replace('/api/v1', '');
 
 export default function Categories() {
     const [categories, setCategories] = useState([]);
