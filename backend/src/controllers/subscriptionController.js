@@ -205,7 +205,7 @@ exports.renderCheckoutPage = (req, res) => {
         return res.status(500).send('<h1>Payment system configuration error</h1><p>Please try again later.</p>');
     }
 
-    const html = `<!DOCTYPE html>
+    const htmlPart1 = `<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
@@ -274,7 +274,12 @@ exports.renderCheckoutPage = (req, res) => {
     </div>
   </div>
 
-  <script>${moyasarJS}</script>
+  <script>`;
+
+    // moyasarJS is concatenated as a plain string — NOT inside a template literal
+    // This prevents Node.js from corrupting ${ } expressions inside the SDK code
+
+    const htmlPart2 = `</script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -310,6 +315,8 @@ exports.renderCheckoutPage = (req, res) => {
   </script>
 </body>
 </html>`;
+
+    const html = htmlPart1 + moyasarJS + htmlPart2;
 
     // Delete session after serving (one-time use)
     checkoutSessions.delete(token);
