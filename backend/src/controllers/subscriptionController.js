@@ -203,23 +203,40 @@ exports.renderCheckoutPage = (req, res) => {
       background: #f8fafc;
       padding: 16px;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .payment-container { max-width: 480px; margin: 0 auto; }
+    .payment-container { width: 100%; max-width: 480px; margin: 0 auto; flex: 1; }
     .payment-header {
-      text-align: center; margin-bottom: 24px; padding: 20px;
-      background: white; border-radius: 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      text-align: center; margin-bottom: 24px; padding: 24px;
+      background: white; border-radius: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
-    .payment-header h2 { font-size: 18px; color: #1e293b; margin-bottom: 8px; }
-    .payment-header .amount { font-size: 32px; font-weight: 900; color: #2563eb; }
-    .payment-header .currency { font-size: 14px; color: #64748b; margin-top: 4px; }
+    .payment-header h2 { font-size: 16px; color: #64748b; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .payment-header .amount { font-size: 36px; font-weight: 800; color: #1e293b; }
+    .payment-header .currency { font-size: 14px; color: #94a3b8; font-weight: 600; margin-top: 4px; }
+    
     .mysr-form {
-      background: white; border-radius: 16px; padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+      background: white; border-radius: 20px; padding: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
-    .payment-secured {
-      text-align: center; margin-top: 20px; color: #94a3b8; font-size: 13px;
+    
+    .payment-footer {
+      text-align: center; margin-top: 32px; padding-bottom: 24px;
     }
+    .payment-footer p { color: #94a3b8; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    
+    /* Center the loader if JS takes time */
+    #loading-indicator {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 40px; color: #64748b;
+    }
+    .spinner {
+      border: 3px solid #f3f3f3; border-top: 3px solid #2563eb;
+      border-radius: 50%; width: 30px; height: 30px;
+      animation: spin 1s linear infinite; margin-bottom: 12px;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -229,24 +246,53 @@ exports.renderCheckoutPage = (req, res) => {
       <div class="amount">${displayAmount}</div>
       <div class="currency">${currency}</div>
     </div>
+    
+    <div id="loading-indicator">
+      <div class="spinner"></div>
+      <p>Loading Payment Form...</p>
+    </div>
+
     <div class="mysr-form"></div>
-    <div class="payment-secured">🔒 Secured by Moyasar</div>
+    
+    <div class="payment-footer">
+      <p>🔒 Secure Payment powered by Moyasar</p>
+    </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"><\/script>
+  <script src="https://cdn.jsdelivr.net/npm/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"></script>
   <script>
-    Moyasar.init({
-      element: '.mysr-form',
-      amount: ${amount},
-      currency: '${currency}',
-      description: '${description.replace(/'/g, "\\'")}',
-      publishable_api_key: '${publishableKey}',
-      callback_url: '${callbackUrl}',
-      metadata: ${metadataJson},
-      supported_networks: ['visa', 'mastercard', 'mada'],
-      methods: ['creditcard', 'stcpay', 'applepay']
+    document.addEventListener('DOMContentLoaded', function() {
+      try {
+        console.log("Initializing Moyasar with amount: ${amount}");
+        Moyasar.init({
+          element: '.mysr-form',
+          amount: ${amount},
+          currency: '${currency}',
+          description: '${description.replace(/'/g, "\\'")}',
+          publishable_api_key: '${publishableKey}',
+          callback_url: '${callbackUrl}',
+          metadata: ${metadataJson},
+          supported_networks: ['visa', 'mastercard', 'mada'],
+          methods: ['creditcard', 'applepay', 'stcpay'],
+          on_completed: function(payment) {
+             console.log("Payment completed via SDK:", payment.status);
+             // The SDK usually redirects automatically, but we can log it
+          },
+          on_error: function(error) {
+             console.error("Moyasar SDK Error:", error);
+             alert("Payment form failed to load. Please try again.");
+          }
+        });
+        
+        // Hide loading indicator once initialized
+        document.getElementById('loading-indicator').style.display = 'none';
+        console.log("Moyasar initialized successfully");
+      } catch (e) {
+        console.error("Initialization Script Error:", e);
+        document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Error loading payment form. Please contact support.</p>';
+      }
     });
-  <\/script>
+  </script>
 </body>
 </html>`;
 

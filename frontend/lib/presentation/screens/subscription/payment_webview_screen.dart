@@ -23,6 +23,7 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
 
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setDomStorageEnabled(true)
       ..setBackgroundColor(Colors.white)
       ..setNavigationDelegate(
         NavigationDelegate(
