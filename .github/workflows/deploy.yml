@@ -135,7 +135,22 @@ jobs:
                 echo "$SUDO_PW" | sudo -S docker compose logs backend
                 exit 1
             fi
-            echo "✅ Backend health check passed!"
+            echo "✅ Backend HTTP health check passed!"
+
+            echo "--- Log Verification ---"
+            LOGS=$(echo "$SUDO_PW" | sudo -S docker compose logs --tail=100 backend)
+            
+            CHECK_DB=$(echo "$LOGS" | grep "Database connected successfully" || echo "")
+            CHECK_MODELS=$(echo "$LOGS" | grep "All models synchronized successfully" || echo "")
+            CHECK_RUNNING=$(echo "$LOGS" | grep "Server running on port" || echo "")
+
+            if [ -z "$CHECK_DB" ] || [ -z "$CHECK_MODELS" ] || [ -z "$CHECK_RUNNING" ]; then
+                echo "❌ Log verification failed! One or more success messages are missing."
+                echo "--- Backend Logs ---"
+                echo "$LOGS"
+                exit 1
+            fi
+            echo "✅ Log verification passed! Database connected and models synced."
 
             echo "--- Admin Health Check ---"
             echo "Waiting for Caddy to issue SSL certificates (30s)..."
