@@ -3,7 +3,7 @@ import '../../../core/theme/app_colors.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
-import 'payment_webview_screen.dart';
+import 'native_payment_screen.dart';
 import '../../../core/utils/toast_utils.dart';
 
 class CheckoutScreen extends StatefulWidget {
@@ -351,16 +351,22 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       Navigator.pop(context); // Close loading dialog
 
       if (response.data['success'] == true) {
-        // The backend returns a relative URL like /api/v1/subscriptions/checkout-page/TOKEN
-        // We need to prepend the base URL (without /api/v1)
-        final relativePath = response.data['checkoutUrl'];
-        final baseHost = _baseUrl.replaceAll('/api/v1', '');
-        final fullCheckoutUrl = '$baseHost$relativePath';
+        final publishableKey = response.data['publishableKey'];
+        final amount = response.data['amount'];
+        final currency = response.data['currency'];
+        final description = response.data['description'];
+        final metadata = response.data['metadata'] as Map<String, dynamic>;
 
         final bool? paymentSuccess = await Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PaymentWebviewScreen(checkoutUrl: fullCheckoutUrl),
+            builder: (_) => NativePaymentScreen(
+              publishableKey: publishableKey,
+              amount: amount,
+              currency: currency,
+              description: description,
+              metadata: metadata,
+            ),
           ),
         );
 

@@ -155,12 +155,23 @@ exports.createCheckoutSession = async (req, res, next) => {
         // Auto-cleanup after 30 minutes
         setTimeout(() => checkoutSessions.delete(sessionToken), 30 * 60 * 1000);
 
-        // Return the checkout page URL
+        // Return the checkout details for Native SDK
         res.status(200).json({
             success: true,
-            checkoutUrl: `/api/v1/subscriptions/checkout-page/${sessionToken}`,
+            checkoutUrl: `/api/v1/subscriptions/checkout-page/${sessionToken}`, // Kept for backward compatibility
             finalPrice,
-            appliedDiscount
+            appliedDiscount,
+            publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
+            amount: amount,
+            currency: plan.currency || 'SAR',
+            description: `Medical Q ${plan.name}`,
+            metadata: {
+                user_id: req.user.id.toString(),
+                plan_id: plan.id.toString(),
+                promo_code: appliedDiscount ? appliedDiscount.code : '',
+                original_price: plan.price.toString(),
+                final_price: finalPrice.toString()
+            }
         });
 
     } catch (err) {
