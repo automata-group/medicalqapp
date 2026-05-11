@@ -486,3 +486,101 @@ exports.validatePromoCode = async (req, res, next) => {
         next(err);
     }
 };
+
+// @desc    Verify payment manually from client and activate subscription
+// @route   POST /api/v1/subscriptions/verify-payment
+// @access  Private
+exports.verifyPayment = async (req, res, next) => {
+    const { paymentId } = req.body;
+    const userId = req.user.id;
+
+    if (!paymentId) {
+        return res.status(400).json({ success: false, message: 'Payment ID is required' });
+    }
+
+    try {
+        // 1. Fetch payment from Moyasar API to prevent spoofing
+        const axios = require('axios');
+        const secretKey = process.env.MOYASAR_SECRET_KEY;
+        
+        if (!secretKey) {
+            return res.status(500).json({ success: false, message: 'Server configuration error' });
+        }
+
+        const authHeader = 'Basic ' + Buffer.from(secretKey + ':').toString('base64');
+        const moyasarRes = await axios.get(`https://api.moyasar.com/v1/payments/${paymentId}`, {
+            headers: { 'Authorization': authHeader }
+        });
+
+        const paymentData = moyasarRes.data;
+
+        // 2. Validate payment status and user
+        if (paymentData.status !== 'paid') {
+            return res.status(400).json({ success: false, message: 'Payment is not completed' });
+        }
+
+        const metadataUserId = paymentData.metadata && paymentData.metadata.user_id;
+        if (!metadataUserId || metadataUserId.toString() !== userId.toString()) {
+            return res.status(403).json({ success: false, message: 'Payment does not belong to this user' });
+        }
+
+        const planId = paymentData.metadata && paymentData.metadata.plan_id;
+        const plan = await SubscriptionPlan.findByPk(planId);
+        
+        if (!plan) {
+            return res.status(404).json({ success: false, message: 'Subscription plan not found' });
+        }
+
+        // 3. Idempotency Check (Check if already processed)
+        const existingPayment = await Payment.findOne({ where: { transactionId: paymentId } });
+        if (existingPayment) {
+            return res.status(200).json({ success: true, message: 'Subscription already active' });
+        }
+
+        // 4. Activate Subscription
+        const duration = plan.durationInDays || 30;
+        const startDate = new Date();
+        const endDate = new Date();
+        endDate.setDate(startDate.getDate() + duration);
+
+        await Payment.create({
+            userId: userId,
+            amount: paymentData.amount / 100,
+            currency: paymentData.currency || 'SAR',
+            status: 'completed',
+            provider: 'moyasar',
+            transactionId: paymentId,
+            paymentMethod: paymentData.source ? paymentData.source.type : 'unknown',
+            description: `${plan.name} subscription`,
+            metadata: paymentData.metadata || {}
+        });
+
+        const existingSub = await Subscription.findOne({ where: { userId } });
+
+        if (existingSub) {
+            await existingSub.update({
+                status: 'active',
+                planId: plan.id,
+                startDate,
+                endDate,
+                paymentId: paymentId,
+                autoRenew: true
+            });
+        } else {
+            await Subscription.create({
+                userId,
+                planId: plan.id,
+                status: 'active',
+                startDate,
+                endDate,
+                paymentId: paymentId,
+                autoRenew: true
+            });
+        }
+
+        res.status(200).json({ success: true, message: 'Subscription activated successfully' });
+    } catch (error) {
+        console.error('Verify Payment Error:', error.response?.data || error.message);
+        res.status(500).json({ success: false, message: 'Failed to verify payment' });
+    }
+};

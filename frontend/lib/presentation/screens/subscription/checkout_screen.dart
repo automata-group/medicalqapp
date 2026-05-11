@@ -351,13 +351,13 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       Navigator.pop(context); // Close loading dialog
 
       if (response.data['success'] == true) {
-        final publishableKey = response.data['publishableKey'];
-        final amount = response.data['amount'];
-        final currency = response.data['currency'];
-        final description = response.data['description'];
-        final metadata = response.data['metadata'] as Map<String, dynamic>;
+        final publishableKey = response.data['publishableKey'] ?? '';
+        final amount = response.data['amount'] ?? 0;
+        final currency = response.data['currency'] ?? 'SAR';
+        final description = response.data['description'] ?? 'Subscription';
+        final metadata = (response.data['metadata'] as Map<String, dynamic>?) ?? {};
 
-        final bool? paymentSuccess = await Navigator.push(
+        final dynamic paymentResult = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => NativePaymentScreen(
@@ -370,9 +370,34 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
         );
 
-        if (paymentSuccess == true) {
-          _showSuccessDialog();
-        } else if (paymentSuccess == false) {
+        if (paymentResult is String) {
+          // Send verification request to backend
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (ctx) => const Center(child: CircularProgressIndicator()),
+          );
+          try {
+            final verifyResponse = await dio.post(
+              '/subscriptions/verify-payment',
+              data: {'paymentId': paymentResult},
+              options: Options(headers: {'Authorization': 'Bearer $token'}),
+            );
+            
+            if (!mounted) return;
+            Navigator.pop(context); // close loader
+            
+            if (verifyResponse.data['success'] == true) {
+               _showSuccessDialog();
+            } else {
+               ToastUtils.showError(context, 'Payment verified but activation failed.');
+            }
+          } catch (e) {
+            if (!mounted) return;
+            Navigator.pop(context); // close loader
+            ToastUtils.showError(context, 'Error verifying payment: $e');
+          }
+        } else if (paymentResult == false) {
           if (!mounted) return;
           ToastUtils.showError(context, 'Payment Failed or Canceled');
         }
