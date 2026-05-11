@@ -28,29 +28,29 @@ function generateLocalAnalysis(content) {
 
     const totalMistakes = Object.values(topicCounts).reduce((a, b) => a + b, 0);
 
-    let report = `## 📊 تحليل أخطائك الأخيرة\n\n`;
-    report += `لقد راجعت **${totalMistakes} خطأ** من إجاباتك الأخيرة.\n\n`;
+    let report = `## 📊 Your Recent Mistake Analysis\n\n`;
+    report += `I have reviewed **${totalMistakes} mistakes** from your recent answers.\n\n`;
     report += `---\n\n`;
-    report += `### 🎯 المواضيع التي تحتاج إلى مراجعة\n\n`;
-    report += `| الموضوع | عدد الأخطاء | الأولوية |\n`;
+    report += `### 🎯 Topics Needing Review\n\n`;
+    report += `| Topic | Mistake Count | Priority |\n`;
     report += `|---------|-------------|----------|\n`;
 
     sortedTopics.forEach(([topic, count]) => {
-        const priority = count >= 3 ? '🔴 عالية' : count >= 2 ? '🟡 متوسطة' : '🟢 منخفضة';
+        const priority = count >= 3 ? '🔴 High' : count >= 2 ? '🟡 Medium' : '🟢 Low';
         report += `| ${topic} | ${count} | ${priority} |\n`;
     });
 
     report += `\n---\n\n`;
-    report += `### 💡 نصائح للتحسين\n\n`;
+    report += `### 💡 Tips for Improvement\n\n`;
 
     if (sortedTopics.length > 0) {
         const topTopic = sortedTopics[0][0];
-        report += `- 🎯 **ابدأ بمراجعة**: "${topTopic}" — فهذا الموضوع سجّل أعلى نسبة أخطاء لديك.\n`;
+        report += `- 🎯 **Start by reviewing**: "${topTopic}" — this topic has your highest error rate.\n`;
     }
-    report += `- 📖 **راجع الأسئلة الخاطئة** مرة ثانية باستخدام وضع "مراجعة الأخطاء".\n`;
-    report += `- ⏰ **خصص 15 دقيقة يومياً** للمراجعة المتكررة (Spaced Repetition).\n`;
-    report += `- 💪 **لا تستسلم** — الخطأ هو أول خطوة في التعلم الحقيقي!\n\n`;
-    report += `---\n_📌 ملاحظة: لتفعيل التحليل الذكي بالذكاء الاصطناعي الكامل، يرجى تكوين OPENAI\\_API\\_KEY في إعدادات السيرفر._`;
+    report += `- 📖 **Review incorrect questions** again using "Mistake Review" mode.\n`;
+    report += `- ⏰ **Dedicate 15 minutes daily** to spaced repetition review.\n`;
+    report += `- 💪 **Don't give up** — mistakes are the first step to real learning!\n\n`;
+    report += `---\n_📌 Note: To enable full smart AI analysis, please configure OPENAI\\_API\\_KEY in server settings._`;
 
     return report;
 }
@@ -66,7 +66,7 @@ exports.generateAnalysis = async (content) => {
             messages: [
                 {
                     role: "system",
-                    content: "You are a medical study assistant. Analyze the user's mistakes and provide a clear, encouraging summary in Arabic. Use markdown tables and emojis to organize the information. Show which topics need most attention."
+                    content: "You are a medical study assistant. Analyze the user's mistakes and provide a clear, encouraging summary in English. Use markdown tables and emojis to organize the information. Show which topics need most attention."
                 },
                 {
                     role: "user",
