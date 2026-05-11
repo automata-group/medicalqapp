@@ -107,7 +107,10 @@ jobs:
             echo "$SUDO_PW" | sudo -S systemctl disable nginx || true
             
             echo "4. Restarting services with Caddy and Secure Network..."
-            echo "$SUDO_PW" | sudo -S docker compose up -d --force-recreate
+            export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
+            export MOYASAR_API_KEY="${{ secrets.MOYASAR_API_KEY }}"
+            export MOYASAR_PUBLISHABLE_KEY="${{ secrets.MOYASAR_PUBLISHABLE_KEY }}"
+            echo "$SUDO_PW" | sudo -E -S docker compose up -d --force-recreate
             
             echo "4. Checking for early crashes..."
             sleep 15

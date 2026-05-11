@@ -45,6 +45,9 @@ services:
       - JWT_SECRET=${JWT_SECRET:-your_super_secret_jwt_key}
       - JWT_EXPIRE=30d
       - CORS_ORIGIN=*
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - MOYASAR_API_KEY=${MOYASAR_API_KEY}
+      - MOYASAR_PUBLISHABLE_KEY=${MOYASAR_PUBLISHABLE_KEY}
     depends_on:
       - db
     # Port 5000 is internal only now
@@ -92,6 +95,7 @@ services:
       - DB_DIALECT=mysql
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - db
       - redis

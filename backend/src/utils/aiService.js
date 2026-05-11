@@ -2,9 +2,14 @@ const { OpenAI } = require('openai');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+let openai;
+if (process.env.OPENAI_API_KEY) {
+    openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+    });
+} else {
+    console.warn('⚠️ OPENAI_API_KEY is missing. AI services will use local fallback.');
+}
 
 /**
  * Local smart analysis when no API key is configured.
