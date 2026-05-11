@@ -32,7 +32,7 @@ class AuthProvider extends ChangeNotifier {
         Future.microtask(() => notifyListeners());
 
         // Trigger background refresh but DON'T wait for it to return true
-        _refreshProfileInBackground();
+        refreshProfile();
         return true;
       } catch (e) {
         debugPrint('Error loading cached user: $e');
@@ -51,7 +51,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> _refreshProfileInBackground() async {
+  Future<void> refreshProfile() async {
     try {
       final updatedUser = await authRepository.getProfile();
       _user = updatedUser;

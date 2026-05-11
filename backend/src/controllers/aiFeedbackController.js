@@ -8,7 +8,15 @@ const { Op } = require('sequelize');
 exports.generateFeedback = async (req, res, next) => {
     try {
         // 1. Premium Check
-        if (!req.user.isPremium) {
+        const { Subscription } = require('../models');
+        const activeSub = await Subscription.findOne({
+            where: { userId: req.user.id, status: 'active' },
+            order: [['endDate', 'DESC']]
+        });
+        
+        const isPremium = activeSub && new Date() <= activeSub.endDate;
+
+        if (!isPremium) {
             return res.status(403).json({
                 success: false,
                 message: 'AI Coach is a premium feature. Please upgrade your plan to access it.',

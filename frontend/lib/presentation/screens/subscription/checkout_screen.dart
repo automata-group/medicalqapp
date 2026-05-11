@@ -5,6 +5,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dio/dio.dart';
 import 'native_payment_screen.dart';
 import '../../../core/utils/toast_utils.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final String planId;
@@ -388,6 +390,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             Navigator.pop(context); // close loader
             
             if (verifyResponse.data['success'] == true) {
+               // Update user's subscription state so UI reflects it without a restart
+               if (mounted) {
+                 await Provider.of<AuthProvider>(context, listen: false).refreshProfile();
+               }
                _showSuccessDialog();
             } else {
                ToastUtils.showError(context, 'Payment verified but activation failed.');
