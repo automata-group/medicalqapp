@@ -1,6 +1,8 @@
 const { Subscription, User, SubscriptionPlan, Payment, DiscountCode } = require('../models');
 const axios = require('axios');
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 
 // ─── Helper: Verify Moyasar Webhook Signature ──────────────────────
 const verifyMoyasarWebhook = (req) => {
@@ -189,13 +191,27 @@ exports.renderCheckoutPage = (req, res) => {
     const metadataJson = JSON.stringify(metadata);
     const displayAmount = (amount / 100).toFixed(2);
 
+    // Read Moyasar SDK files from disk and inline them
+    let moyasarCSS = '';
+    let moyasarJS = '';
+    try {
+        const cssPath = path.join(__dirname, '..', '..', 'public', 'static', 'moyasar.css');
+        const jsPath = path.join(__dirname, '..', '..', 'public', 'static', 'moyasar.js');
+        moyasarCSS = fs.readFileSync(cssPath, 'utf8');
+        moyasarJS = fs.readFileSync(jsPath, 'utf8');
+        console.log('✅ Moyasar SDK files loaded from disk for inline rendering');
+    } catch (fileErr) {
+        console.error('❌ Failed to read Moyasar SDK files:', fileErr.message);
+        return res.status(500).send('<h1>Payment system configuration error</h1><p>Please try again later.</p>');
+    }
+
     const html = `<!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Complete Payment</title>
-  <link rel="stylesheet" href="/static/moyasar.css" />
+  <style>${moyasarCSS}</style>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -226,7 +242,6 @@ exports.renderCheckoutPage = (req, res) => {
     }
     .payment-footer p { color: #94a3b8; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
     
-    /* Center the loader if JS takes time */
     #loading-indicator {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       padding: 40px; color: #64748b;
@@ -257,69 +272,18 @@ exports.renderCheckoutPage = (req, res) => {
     <div class="payment-footer">
       <p>🔒 Secure Payment powered by Moyasar</p>
     </div>
-
-    <!-- On-Screen Debug Console -->
-    <div id="debug-console" style="margin-top: 20px; padding: 10px; background: #1e293b; color: #10b981; border-radius: 8px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 11px; text-align: left; display: block;">
-      <div>[System] Debug Console Initialized</div>
-    </div>
   </div>
 
-  <script>
-    // 1. Intercept console messages FIRST
-    const debugConsole = document.getElementById('debug-console');
-    const originalLog = console.log;
-    const originalError = console.error;
-
-    function logToScreen(msg, isError) {
-      if(!debugConsole) return;
-      const color = isError ? '#ef4444' : '#10b981';
-      const prefix = isError ? '[ERROR] ' : '[INFO] ';
-      const div = document.createElement('div');
-      div.style.color = color;
-      div.style.marginBottom = '4px';
-      div.style.wordBreak = 'break-all';
-      div.textContent = prefix + msg;
-      debugConsole.appendChild(div);
-      debugConsole.scrollTop = debugConsole.scrollHeight;
-    }
-
-    console.log = function(...args) {
-      logToScreen(args.join(' '), false);
-      originalLog.apply(console, args);
-    };
-
-    console.error = function(...args) {
-      const msg = args.map(a => (a && a.message) ? a.message : String(a)).join(' ');
-      logToScreen(msg, true);
-      originalError.apply(console, args);
-    };
-
-    console.log("Starting payment page load...");
-
-    // 2. Watchdog timer for CDN blocking
-    setTimeout(() => {
-      if (typeof Moyasar === 'undefined') {
-        console.error("Moyasar SDK failed to load after 10 seconds. The CDN might be blocked by your internet provider.");
-        document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Failed to load payment form. Please try another network.</p>';
-      }
-    }, 10000);
-  </script>
-
-  <!-- Self-hosted Moyasar SDK to bypass CDN blocking -->
-  <script src="/static/moyasar.js"></script>
+  <script>${moyasarJS}</script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       try {
-        console.log("DOM loaded. Checking Moyasar object...");
         if (typeof Moyasar === 'undefined') {
-            console.error("Moyasar object is missing!");
+            document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Payment SDK failed to load.</p>';
             return;
         }
 
-        console.log("Checking Publishable Key: " + ('${publishableKey}'.substring(0, 10)) + "...");
-        console.log("Initializing Moyasar with amount: ${amount}");
-        
         Moyasar.init({
           element: '.mysr-form',
           amount: ${amount},
@@ -329,21 +293,18 @@ exports.renderCheckoutPage = (req, res) => {
           callback_url: '${callbackUrl}',
           metadata: ${metadataJson},
           supported_networks: ['visa', 'mastercard', 'mada'],
-          methods: ['creditcard', 'applepay', 'stcpay'],
+          methods: ['creditcard'],
           on_completed: function(payment) {
-             console.log("Payment completed via SDK. Status: " + payment.status);
+             console.log("Payment completed. Status: " + payment.status);
           },
           on_error: function(error) {
-             console.error("Moyasar Form Level Error: " + JSON.stringify(error));
+             console.error("Payment error: " + JSON.stringify(error));
           }
         });
         
-        // Hide loading indicator once initialized
         document.getElementById('loading-indicator').style.display = 'none';
-        console.log("Moyasar initialized successfully");
       } catch (e) {
-        console.error("Initialization Script Error:", e);
-        document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Error loading payment form. Please contact support.</p>';
+        document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Error: ' + e.message + '</p>';
       }
     });
   </script>
