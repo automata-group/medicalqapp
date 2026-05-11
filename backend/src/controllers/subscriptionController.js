@@ -199,6 +199,8 @@ exports.renderCheckoutPage = (req, res) => {
         const jsPath = path.join(__dirname, '..', '..', 'public', 'static', 'moyasar.js');
         moyasarCSS = fs.readFileSync(cssPath, 'utf8');
         moyasarJS = fs.readFileSync(jsPath, 'utf8');
+        // CRITICAL: Escape </script> inside JS code so browser doesn't prematurely close the tag
+        moyasarJS = moyasarJS.replace(/<\/script>/gi, '<\\/script>');
         console.log('✅ Moyasar SDK files loaded from disk for inline rendering');
     } catch (fileErr) {
         console.error('❌ Failed to read Moyasar SDK files:', fileErr.message);
