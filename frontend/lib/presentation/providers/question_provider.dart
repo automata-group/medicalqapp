@@ -154,15 +154,18 @@ class QuestionProvider with ChangeNotifier {
       else _currentSessionType = 'general';
     }
 
+    // Mark PREVIOUS question as attempted before moving to the next
+    if (_currentQuestion != null && !_isRetryMode) {
+      if (!_sessionAttemptedIds.contains(_currentQuestion!.id)) {
+        _sessionAttemptedIds.add(_currentQuestion!.id);
+      }
+    }
+
     // 1. Check if we have a prefetched question ready
     if (_prefetchedQuestion != null && !forceOffline && !_isRetryMode) {
       _currentQuestion = _prefetchedQuestion;
       _prefetchedQuestion = null;
       _status = QuestionStatus.loaded;
-
-      if (_currentQuestion != null && !_sessionAttemptedIds.contains(_currentQuestion!.id)) {
-        _sessionAttemptedIds.add(_currentQuestion!.id);
-      }
       
       // Reset answer state for the new question
       _answerStatus = AnswerStatus.initial;
@@ -216,9 +219,13 @@ class QuestionProvider with ChangeNotifier {
         _isRetryMode = false;
         _status = QuestionStatus.noQuestions;
       } else {
-        final excludeList = _sessionAttemptedIds.where((id) => id != questionId).toList();
-        final excludeString = excludeList.isNotEmpty
-            ? excludeList.join(',')
+        final currentExcludes = <int>{..._sessionAttemptedIds};
+        if (_currentQuestion != null) currentExcludes.add(_currentQuestion!.id);
+        // If we are trying to load a specific question (resume), ensure it's NOT excluded
+        if (questionId != null) currentExcludes.remove(questionId);
+
+        final excludeString = currentExcludes.isNotEmpty
+            ? currentExcludes.join(',')
             : null;
 
         final question = await repository.getNextQuestion(
@@ -240,9 +247,6 @@ class QuestionProvider with ChangeNotifier {
           }
           
           _totalInCategory = question.totalInCategory;
-          if (!_sessionAttemptedIds.contains(question.id)) {
-            _sessionAttemptedIds.add(question.id);
-          }
           _status = QuestionStatus.loaded;
 
           // After successful load, prefetch the NEXT one
@@ -275,8 +279,11 @@ class QuestionProvider with ChangeNotifier {
 
     _isPrefetching = true;
     try {
-      final excludeString = _sessionAttemptedIds.isNotEmpty
-          ? _sessionAttemptedIds.join(',')
+      final currentExcludes = <int>{..._sessionAttemptedIds};
+      if (_currentQuestion != null) currentExcludes.add(_currentQuestion!.id);
+
+      final excludeString = currentExcludes.isNotEmpty
+          ? currentExcludes.join(',')
           : null;
 
       final question = await repository.getNextQuestion(

@@ -15,7 +15,7 @@ exports.generateExplanation = async (questionText, correctOption) => {
                 { role: "system", content: "You are a medical expert helper." },
                 { role: "user", content: `Explain why the answer '${correctOption}' is correct for the question: '${questionText}'. Keep it concise.` }
             ],
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
         });
 
         return completion.choices[0].message.content;
@@ -36,7 +36,7 @@ exports.verifyQuestion = async (questionText, options) => {
                 { role: "system", content: "You are a medical question auditor." },
                 { role: "user", content: `Verify if this medical question is accurate and clear. Question: ${questionText}. Options: ${JSON.stringify(options)}.` }
             ],
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o-mini",
         });
 
         return {
@@ -150,7 +150,7 @@ FIELD RULES:
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
             ],
-            model: "gpt-5-mini",
+            model: "gpt-4o-mini",
             temperature: 1,
             response_format: { type: "json_object" }
         });
@@ -259,7 +259,7 @@ RULES:
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userPrompt }
             ],
-            model: "gpt-5-mini",
+            model: "gpt-4o-mini",
             temperature: 1,
             response_format: { type: "json_object" }
         });
