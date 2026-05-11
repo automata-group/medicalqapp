@@ -7,6 +7,7 @@ import '../../providers/auth_provider.dart';
 import '../subscription/pricing_screen.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/utils/toast_utils.dart';
 
 class AIFeedbackScreen extends StatefulWidget {
   const AIFeedbackScreen({super.key});
@@ -59,13 +60,7 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
           if (provider.error != null && provider.isLoading == false) {
              WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(provider.error!),
-                      backgroundColor: Colors.red,
-                      behavior: SnackBarBehavior.floating,
-                    ),
-                  );
+                  ToastUtils.showError(context, provider.error!);
                 }
              });
           }
