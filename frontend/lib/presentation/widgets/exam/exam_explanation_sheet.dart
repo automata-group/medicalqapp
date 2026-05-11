@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ExamExplanationSheet extends StatelessWidget {
   final bool isCorrect;
@@ -208,14 +210,22 @@ class ExamExplanationSheet extends StatelessWidget {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            Text(
-                              explanation,
-                              textAlign: TextAlign.left,
-                              textDirection: TextDirection.ltr,
-                              style: TextStyle(
-                                fontSize: 15,
-                                height: 1.6,
-                                color: Colors.grey.shade800,
+                            MarkdownBody(
+                              data: explanation,
+                              selectable: true,
+                              styleSheet: MarkdownStyleSheet(
+                                p: TextStyle(fontSize: 15, height: 1.6, color: Colors.grey.shade800),
+                                h1: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                h2: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                h3: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primary),
+                                listBullet: const TextStyle(fontSize: 15, color: AppColors.primary),
+                                tableBorder: TableBorder.all(color: Colors.grey.shade300, width: 1),
+                                tableCellsPadding: const EdgeInsets.all(12),
+                                blockquoteDecoration: BoxDecoration(
+                                  color: Colors.grey.shade100,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
+                                ),
                               ),
                             ),
                           ],

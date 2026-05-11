@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../../core/l10n/generated/app_localizations.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../providers/ai_feedback_provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AIFeedbackScreen extends StatefulWidget {
   const AIFeedbackScreen({super.key});
@@ -174,9 +176,25 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                   style: const TextStyle(color: Colors.grey, fontSize: 12),
                 ),
                 const Divider(height: 32),
-                SelectableText(
-                  feedback.content,
-                  style: const TextStyle(fontSize: 16, height: 1.5),
+                MarkdownBody(
+                  data: feedback.content,
+                  selectable: true,
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(fontSize: 16, height: 1.6, color: Colors.black87),
+                    h1: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
+                    h2: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
+                    h3: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
+                    listBullet: const TextStyle(fontSize: 16, color: AppColors.primary),
+                    tableBorder: TableBorder.all(color: Colors.grey.shade300, width: 1),
+                    tableHead: const TextStyle(fontWeight: FontWeight.bold),
+                    tableCellsPadding: const EdgeInsets.all(12),
+                    blockquote: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                    blockquoteDecoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                      border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 100),
               ],
