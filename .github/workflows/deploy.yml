@@ -99,7 +99,11 @@ jobs:
             echo "1. Logging into GHCR on server..."
             echo "$SUDO_PW" | sudo -S sh -c "echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
             
-            echo "2. Pulling latest images..."
+            echo "2. Cleaning up old Docker artifacts to free space..."
+            echo "$SUDO_PW" | sudo -S docker system prune -f
+            echo "$SUDO_PW" | sudo -S docker image prune -af
+
+            echo "3. Pulling latest images..."
             echo "$SUDO_PW" | sudo -S docker compose pull
             
             echo "3. Stopping host Nginx to free up ports 80/443..."
@@ -114,7 +118,8 @@ jobs:
             
             echo "4. Checking for early crashes..."
             sleep 15
-            BACKEND_STATUS=$(echo "$SUDO_PW" | sudo -S docker inspect -f '{{.State.Status}}' medical-qbank-backend-20 || echo "not_found")
+            BACKEND_CONTAINER_ID=$(echo "$SUDO_PW" | sudo -S docker compose ps -q backend)
+            BACKEND_STATUS=$(echo "$SUDO_PW" | sudo -S docker inspect -f '{{.State.Status}}' $BACKEND_CONTAINER_ID || echo "not_found")
             if [ "$BACKEND_STATUS" != "running" ]; then
                 echo "❌ Backend crashed on startup! Status: $BACKEND_STATUS"
                 echo "--- Crash Logs ---"
