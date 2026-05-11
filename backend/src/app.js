@@ -83,6 +83,34 @@ app.get('/', (req, res) => {
     });
 });
 
+// Payment Callback Route (Success/Failure landing page for WebView)
+app.get('/payment-callback', (req, res) => {
+    res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Payment Callback</title>
+            <style>
+                body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: #f8fafc; }
+                .loader { border: 4px solid #f3f3f3; border-top: 4px solid #2563eb; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+                @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+                h2 { color: #1e293b; }
+                p { color: #64748b; }
+            </style>
+        </head>
+        <body>
+            <div class="loader"></div>
+            <h2>Processing Payment...</h2>
+            <p>Please wait while we redirect you back to the app.</p>
+            <script>
+                // This page is a fallback. The app should intercept this URL.
+                console.log("Payment callback reached with status: " + new URLSearchParams(window.location.search).get('status'));
+            </script>
+        </body>
+        </html>
+    `);
+});
+
 // Swagger Documentation
 const swaggerUi = require('swagger-ui-express');
 const swaggerSpecs = require('./config/swagger');

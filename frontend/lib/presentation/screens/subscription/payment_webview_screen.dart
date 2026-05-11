@@ -50,7 +50,7 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
   }
 
   bool _checkSuccessRedirect(String url) {
-    if (url.startsWith('https://medicalq.app/payment-callback')) {
+    if (url.contains('/payment-callback')) {
       final uri = Uri.parse(url);
       final status = uri.queryParameters['status'];
 
