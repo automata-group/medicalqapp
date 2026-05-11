@@ -195,7 +195,7 @@ exports.renderCheckoutPage = (req, res) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Complete Payment</title>
-  <link rel="stylesheet" href="https://unpkg.com/moyasar-payment-form@2.2.7/dist/moyasar.css" />
+  <link rel="stylesheet" href="/static/moyasar.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -305,8 +305,8 @@ exports.renderCheckoutPage = (req, res) => {
     }, 10000);
   </script>
 
-  <!-- Use unpkg instead of jsdelivr to bypass potential ISP blocking -->
-  <script src="https://unpkg.com/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"></script>
+  <!-- Self-hosted Moyasar SDK to bypass CDN blocking -->
+  <script src="/static/moyasar.js"></script>
   
   <script>
     document.addEventListener('DOMContentLoaded', function() {

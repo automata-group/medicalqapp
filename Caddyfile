@@ -20,6 +20,11 @@ healthlicenseprep.com, www.healthlicenseprep.com {
         reverse_proxy backend:5000
     }
 
+    # Static files (Moyasar SDK, etc.)
+    handle /static/* {
+        reverse_proxy backend:5000
+    }
+
     # Admin Dashboard - SPA handling
     handle {
         reverse_proxy admin:80 {

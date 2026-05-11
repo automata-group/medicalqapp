@@ -13,6 +13,9 @@ dotenv.config();
 // Create Express app
 const app = express();
 
+// Serve static files (Moyasar SDK, etc.)
+app.use('/static', express.static(path.join(__dirname, '..', 'public', 'static')));
+
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: false, // Allow images to be loaded cross-origin
