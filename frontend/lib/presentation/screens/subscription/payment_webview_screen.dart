@@ -36,6 +36,9 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
               _isLoading = false;
             });
             _checkSuccessRedirect(url);
+            
+            // Extract HTML for debugging
+            _controller.runJavaScript("HtmlViewer.postMessage(document.documentElement.outerHTML);");
           },
           onWebResourceError: (WebResourceError error) {
             debugPrint('WebView Resource Error: ${error.description}');
@@ -49,6 +52,10 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
           },
         ),
       )
+      ..addJavaScriptChannel('HtmlViewer', onMessageReceived: (message) {
+        debugPrint('--- WEBVIEW HTML CONTENT ---');
+        debugPrint(message.message.length > 500 ? message.message.substring(0, 500) + '...' : message.message);
+      })
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         debugPrint('WebView Console: ${message.message}');
       });
