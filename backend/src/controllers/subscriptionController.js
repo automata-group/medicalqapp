@@ -257,13 +257,48 @@ exports.renderCheckoutPage = (req, res) => {
     <div class="payment-footer">
       <p>🔒 Secure Payment powered by Moyasar</p>
     </div>
+
+    <!-- On-Screen Debug Console -->
+    <div id="debug-console" style="margin-top: 20px; padding: 10px; background: #1e293b; color: #10b981; border-radius: 8px; max-height: 200px; overflow-y: auto; font-family: monospace; font-size: 11px; text-align: left; display: block;">
+      <div>[System] Debug Console Initialized</div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"></script>
   <script>
+    // Intercept console messages and show them on screen
+    const debugConsole = document.getElementById('debug-console');
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    function logToScreen(msg, isError) {
+      const color = isError ? '#ef4444' : '#10b981';
+      const prefix = isError ? '[ERROR] ' : '[INFO] ';
+      const div = document.createElement('div');
+      div.style.color = color;
+      div.style.marginBottom = '4px';
+      div.style.wordBreak = 'break-all';
+      div.textContent = prefix + msg;
+      debugConsole.appendChild(div);
+      debugConsole.scrollTop = debugConsole.scrollHeight;
+    }
+
+    console.log = function(...args) {
+      logToScreen(args.join(' '), false);
+      originalLog.apply(console, args);
+    };
+
+    console.error = function(...args) {
+      const msg = args.map(a => (a && a.message) ? a.message : String(a)).join(' ');
+      logToScreen(msg, true);
+      originalError.apply(console, args);
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
       try {
+        console.log("Checking Publishable Key: " + ('${publishableKey}'.substring(0, 10)) + "...");
         console.log("Initializing Moyasar with amount: ${amount}");
+        
         Moyasar.init({
           element: '.mysr-form',
           amount: ${amount},
@@ -275,12 +310,10 @@ exports.renderCheckoutPage = (req, res) => {
           supported_networks: ['visa', 'mastercard', 'mada'],
           methods: ['creditcard', 'applepay', 'stcpay'],
           on_completed: function(payment) {
-             console.log("Payment completed via SDK:", payment.status);
-             // The SDK usually redirects automatically, but we can log it
+             console.log("Payment completed via SDK. Status: " + payment.status);
           },
           on_error: function(error) {
-             console.error("Moyasar SDK Error:", error);
-             alert("Payment form failed to load. Please try again.");
+             console.error("Moyasar Form Level Error: " + JSON.stringify(error));
           }
         });
         
