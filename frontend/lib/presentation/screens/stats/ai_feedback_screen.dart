@@ -132,6 +132,16 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 32),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
                         onPressed: () {
                           final authProvider = context.read<AuthProvider>();
                           if (!(authProvider.user?.isPremium ?? false)) {
@@ -160,10 +170,10 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
+                    color: Colors.blue.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                     border:
-                        Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                        Border.all(color: Colors.blue.withOpacity(0.3)),
                   ),
                   child: Row(
                     children: [
