@@ -195,7 +195,7 @@ exports.renderCheckoutPage = (req, res) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Complete Payment</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/moyasar-payment-form@2.2.7/dist/moyasar.css" />
+  <link rel="stylesheet" href="https://unpkg.com/moyasar-payment-form@2.2.7/dist/moyasar.css" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
