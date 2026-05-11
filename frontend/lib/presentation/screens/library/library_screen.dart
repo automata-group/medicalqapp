@@ -235,8 +235,20 @@ class _LibraryScreenState extends State<LibraryScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.medical_services_outlined,
-                size: 32, color: AppColors.primary), // Placeholder icon
+            category.icon != null && category.icon.contains('/uploads/')
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      'https://healthlicenseprep.com${category.icon}',
+                      width: 48,
+                      height: 48,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          Icon(Icons.medical_services_outlined, size: 32, color: AppColors.primary),
+                    ),
+                  )
+                : Icon(Icons.medical_services_outlined,
+                    size: 32, color: AppColors.primary),
             const SizedBox(height: 12),
             Text(
               category.name,
