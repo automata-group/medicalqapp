@@ -19,6 +19,7 @@ app.use('/static', express.static(path.join(__dirname, '..', 'public', 'static')
 // Middleware
 app.use(helmet({
     crossOriginResourcePolicy: false, // Allow images to be loaded cross-origin
+    contentSecurityPolicy: false, // Disable CSP - required for Moyasar checkout page inline scripts
 }));
 app.use(cors({
     origin: process.env.CORS_ORIGIN || '*'
