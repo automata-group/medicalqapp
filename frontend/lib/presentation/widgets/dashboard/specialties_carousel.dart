@@ -88,13 +88,24 @@ class SpecialtiesCarousel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: const EdgeInsets.all(10),
+              width: 48,
+              height: 48,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.medical_services_rounded, 
-                color: AppColors.primary, size: 24),
+              child: specialty.icon != null && specialty.icon.contains('/uploads/')
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Image.network(
+                      'https://healthlicenseprep.com${specialty.icon}',
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const Icon(Icons.medical_services_rounded, color: AppColors.primary, size: 24),
+                    ),
+                  )
+                : const Icon(Icons.medical_services_rounded, 
+                    color: AppColors.primary, size: 24),
             ),
             const SizedBox(height: 12),
             Text(

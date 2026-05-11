@@ -276,7 +276,20 @@ class _SpecialtyCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  Icon(iconData, color: style.iconColor, size: 24),
+                  if (specialty.icon != null && specialty.icon!.contains('/uploads/'))
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        'https://healthlicenseprep.com${specialty.icon}',
+                        fit: BoxFit.cover,
+                        width: 48,
+                        height: 48,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Icon(iconData, color: style.iconColor, size: 24),
+                      ),
+                    )
+                  else
+                    Icon(iconData, color: style.iconColor, size: 24),
                   if (isLocked)
                     Positioned(
                       right: -4,
