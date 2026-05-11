@@ -264,14 +264,14 @@ exports.renderCheckoutPage = (req, res) => {
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"></script>
   <script>
-    // Intercept console messages and show them on screen
+    // 1. Intercept console messages FIRST
     const debugConsole = document.getElementById('debug-console');
     const originalLog = console.log;
     const originalError = console.error;
 
     function logToScreen(msg, isError) {
+      if(!debugConsole) return;
       const color = isError ? '#ef4444' : '#10b981';
       const prefix = isError ? '[ERROR] ' : '[INFO] ';
       const div = document.createElement('div');
@@ -294,8 +294,29 @@ exports.renderCheckoutPage = (req, res) => {
       originalError.apply(console, args);
     };
 
+    console.log("Starting payment page load...");
+
+    // 2. Watchdog timer for CDN blocking
+    setTimeout(() => {
+      if (typeof Moyasar === 'undefined') {
+        console.error("Moyasar SDK failed to load after 10 seconds. The CDN might be blocked by your internet provider.");
+        document.getElementById('loading-indicator').innerHTML = '<p style="color:red">Failed to load payment form. Please try another network.</p>';
+      }
+    }, 10000);
+  </script>
+
+  <!-- Use unpkg instead of jsdelivr to bypass potential ISP blocking -->
+  <script src="https://unpkg.com/moyasar-payment-form@2.2.7/dist/moyasar.umd.min.js"></script>
+  
+  <script>
     document.addEventListener('DOMContentLoaded', function() {
       try {
+        console.log("DOM loaded. Checking Moyasar object...");
+        if (typeof Moyasar === 'undefined') {
+            console.error("Moyasar object is missing!");
+            return;
+        }
+
         console.log("Checking Publishable Key: " + ('${publishableKey}'.substring(0, 10)) + "...");
         console.log("Initializing Moyasar with amount: ${amount}");
         

@@ -51,8 +51,21 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
       )
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         debugPrint('WebView Console: ${message.message}');
-      })
-      ..loadRequest(Uri.parse(widget.checkoutUrl));
+      });
+
+    // Clear cache to ensure we get the latest page from the server
+    _controller.clearCache().then((_) {
+      // Append a timestamp to the URL to bust the cache completely
+      final uri = Uri.parse(widget.checkoutUrl);
+      final cacheBustedUri = uri.replace(
+        queryParameters: {
+          ...uri.queryParameters,
+          'cb': DateTime.now().millisecondsSinceEpoch.toString(),
+        },
+      );
+      
+      _controller.loadRequest(cacheBustedUri);
+    });
   }
 
   bool _checkSuccessRedirect(String url) {
