@@ -55,6 +55,21 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
       ),
       body: Consumer<AIFeedbackProvider>(
         builder: (context, provider, child) {
+          // If we have an error and we just tried to refresh, show a toast
+          if (provider.error != null && provider.isLoading == false) {
+             WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(provider.error!),
+                      backgroundColor: Colors.red,
+                      behavior: SnackBarBehavior.floating,
+                    ),
+                  );
+                }
+             });
+          }
+
           if (provider.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }

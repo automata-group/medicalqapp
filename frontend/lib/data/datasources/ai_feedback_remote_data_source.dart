@@ -13,7 +13,7 @@ class AIFeedbackRemoteDataSource {
       return AIFeedbackModel.fromJson(response.data['data']);
     } on DioException catch (e) {
       throw Exception(
-          e.response?.data['message'] ?? 'Failed to fetch feedback');
+          e.response?.data['message_ar'] ?? e.response?.data['message'] ?? 'Failed to fetch feedback');
     }
   }
 
@@ -21,12 +21,12 @@ class AIFeedbackRemoteDataSource {
     try {
       final response = await dio.post('/ai-feedback/generate', data: {});
       if (response.data['success'] != true) {
-        throw Exception(response.data['message'] ?? 'Failed to generate feedback');
+        throw Exception(response.data['message_ar'] ?? response.data['message'] ?? 'Failed to generate feedback');
       }
       return AIFeedbackModel.fromJson(response.data['data']);
     } on DioException catch (e) {
       throw Exception(
-          e.response?.data['message'] ?? 'Failed to generate feedback');
+          e.response?.data['message_ar'] ?? e.response?.data['message'] ?? 'Failed to generate feedback');
     }
   }
 }
