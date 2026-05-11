@@ -501,7 +501,7 @@ exports.verifyPayment = async (req, res, next) => {
     try {
         // 1. Fetch payment from Moyasar API to prevent spoofing
         const axios = require('axios');
-        const secretKey = process.env.MOYASAR_SECRET_KEY;
+        const secretKey = process.env.MOYASAR_API_KEY || process.env.MOYASAR_SECRET_KEY;
         
         if (!secretKey) {
             return res.status(500).json({ success: false, message: 'Server configuration error' });
