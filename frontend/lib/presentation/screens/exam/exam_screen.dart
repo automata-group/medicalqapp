@@ -233,8 +233,8 @@ class _ExamScreenState extends State<ExamScreen> {
         (o) => o.id == result.correctOptionId,
         orElse: () => question.options.first);
 
-    const canRetry = false;
-    const attemptsLeft = 0;
+    final canRetry = !result.isCorrect && provider.currentQuestionAttempts < 3;
+    final attemptsLeft = 3 - provider.currentQuestionAttempts;
 
     showModalBottomSheet(
       context: context,
@@ -252,7 +252,16 @@ class _ExamScreenState extends State<ExamScreen> {
           userTimeSeconds: provider.lastTimeTaken,
           canRetry: canRetry,
           attemptsLeft: attemptsLeft,
-          onRetry: null,
+          onRetry: canRetry
+              ? () {
+                  Navigator.pop(context); // Close sheet
+                  setState(() {
+                    _selectedAnswerIndex = null;
+                    _isAnswerChecked = false;
+                  });
+                  provider.retryCurrentQuestion();
+                }
+              : null,
           onNext: () {
             Navigator.pop(context); // Close sheet
             _loadNextQuestion();
@@ -630,7 +639,7 @@ class _ExamScreenState extends State<ExamScreen> {
           children: [
             // Header
             ExamHeader(
-              currentQuestionIndex: provider.sessionTotalCount - 1,
+              currentQuestionIndex: provider.sessionTotalCount,
               totalQuestions: _getTotalQuestions(provider),
               timeElapsed: _formatTime(_secondsElapsed),
               progress: _calculateProgress(provider),

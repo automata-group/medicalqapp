@@ -19,6 +19,8 @@ exports.getAllSpecialties = async (req, res, next) => {
             include: [{
                 model: Question,
                 as: 'questions',
+                where: { isActive: true },
+                required: false,
                 attributes: []
             }],
             group: ['Specialty.id'],
@@ -107,6 +109,8 @@ exports.getUserSpecialties = async (req, res, next) => {
                 {
                     model: Question,
                     as: 'questions',
+                    where: { isActive: true },
+                    required: false,
                     attributes: []
                 }
             ],

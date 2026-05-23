@@ -7,6 +7,7 @@ import '../exam/exam_screen.dart';
 import 'bookmarks_screen.dart';
 import 'specialty_detail_screen.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/specialty_extension.dart';
 
 class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
@@ -64,16 +65,26 @@ class _LibraryScreenState extends State<LibraryScreen> {
             // Search Bar
             TextField(
               controller: _searchController,
+              style: const TextStyle(color: Color(0xFF1E293B)), // Force dark text color for contrast on white fillColor in both themes
               decoration: InputDecoration(
                 hintText: l10n.searchSpecialty,
+                hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                suffixIcon: _searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.grey),
+                        onPressed: () {
+                          _searchController.clear();
+                        },
+                      )
+                    : null,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 14),
+                contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               ),
             ),
             const SizedBox(height: 24),
@@ -124,8 +135,12 @@ class _LibraryScreenState extends State<LibraryScreen> {
                       ? baseSpecialties
                       : baseSpecialties
                           .where((s) => s.name
-                              .toLowerCase()
-                              .contains(_searchController.text.toLowerCase()))
+                                  .toLowerCase()
+                                  .contains(_searchController.text.toLowerCase()) ||
+                              s
+                                  .getLocalizedName(l10n)
+                                  .toLowerCase()
+                                  .contains(_searchController.text.toLowerCase()))
                           .toList();
 
                   if (filteredSpecialties.isEmpty) {
@@ -221,6 +236,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
 
   Widget _buildSpecialtyCard(
       BuildContext context, dynamic category, VoidCallback onTap) {
+    final l10n = AppLocalizations.of(context)!;
     // Assuming category is Specialty entity/model
     return InkWell(
       onTap: onTap,
@@ -251,7 +267,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     size: 32, color: AppColors.primary),
             const SizedBox(height: 12),
             Text(
-              category.name,
+              category.getLocalizedName(l10n),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

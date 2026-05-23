@@ -26,4 +26,9 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<UserModel> getProfile() async {
     return await remoteDataSource.getProfile();
   }
+
+  @override
+  Future<UserModel> updateProfile(String fullName) async {
+    return await remoteDataSource.updateProfile(fullName);
+  }
 }

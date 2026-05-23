@@ -108,4 +108,17 @@ class AuthProvider extends ChangeNotifier {
     _user = null;
     notifyListeners();
   }
+
+  Future<bool> updateProfile(String fullName) async {
+    try {
+      final updatedUser = await authRepository.updateProfile(fullName);
+      _user = updatedUser;
+      await prefs.setString('cached_user', json.encode(_user!.toJson()));
+      notifyListeners();
+      return true;
+    } catch (e) {
+      debugPrint('Error updating profile: $e');
+      return false;
+    }
+  }
 }

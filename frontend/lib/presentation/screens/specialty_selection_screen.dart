@@ -8,6 +8,7 @@ import '../../core/utils/toast_utils.dart';
 import 'study_goal_screen.dart';
 import '../providers/auth_provider.dart';
 import 'subscription/pricing_screen.dart';
+import '../../core/utils/specialty_extension.dart';
 
 class SpecialtySelectionScreen extends StatefulWidget {
   const SpecialtySelectionScreen({super.key});
@@ -32,14 +33,46 @@ class _SpecialtySelectionScreenState extends State<SpecialtySelectionScreen> {
   }
 }
 
-class _SpecialtySelectionView extends StatelessWidget {
+class _SpecialtySelectionView extends StatefulWidget {
   const _SpecialtySelectionView();
+
+  @override
+  State<_SpecialtySelectionView> createState() => _SpecialtySelectionViewState();
+}
+
+class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final provider = Provider.of<SpecialtyProvider>(context);
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    final filteredSpecialties = provider.specialties.where((specialty) {
+      if (_searchQuery.isEmpty) return true;
+      final name = specialty.name.toLowerCase();
+      final localizedName = specialty.getLocalizedName(l10n).toLowerCase();
+      final query = _searchQuery.toLowerCase();
+      return name.contains(query) || localizedName.contains(query);
+    }).toList();
 
     return Scaffold(
       backgroundColor: Colors.grey[50], // background-light
@@ -59,9 +92,20 @@ class _SpecialtySelectionView extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   TextField(
+                    controller: _searchController,
+                    style: const TextStyle(color: Color(0xFF1E293B)), // Force dark text color for contrast on white fillColor in both themes
                     decoration: InputDecoration(
                       hintText: l10n.searchSpecialty, // Add to ARB
+                      hintStyle: const TextStyle(color: Color(0xFF94A3B8)),
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, color: Colors.grey),
+                              onPressed: () {
+                                _searchController.clear();
+                              },
+                            )
+                          : null,
                       filled: true,
                       fillColor: Colors.white,
                       border: OutlineInputBorder(
@@ -80,44 +124,57 @@ class _SpecialtySelectionView extends StatelessWidget {
             Expanded(
               child: provider.isLoading
                   ? const Center(child: CircularProgressIndicator())
-                  : GridView.builder(
-                      padding: const EdgeInsets.all(20),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 16,
-                        mainAxisSpacing: 16,
-                        childAspectRatio: 0.85,
-                      ),
-                      itemCount: provider.specialties.length,
-                      itemBuilder: (context, index) {
-                        final specialty = provider.specialties[index];
-                        final isSelected = provider.isSelected(specialty.id);
-                        final isLocked = specialty.isPremium &&
-                            !(authProvider.user?.isPremium ?? false);
-                        // Cycle through the styles
-                        final style = _SpecialtyCardStyle
-                            .styles[index % _SpecialtyCardStyle.styles.length];
+                  : filteredSpecialties.isEmpty
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.search_off,
+                                  size: 64, color: Colors.grey.shade300),
+                              const SizedBox(height: 16),
+                              Text('No specialties found',
+                                  style: TextStyle(color: Colors.grey.shade400)),
+                            ],
+                          ),
+                        )
+                      : GridView.builder(
+                          padding: const EdgeInsets.all(20),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                            childAspectRatio: 0.85,
+                          ),
+                          itemCount: filteredSpecialties.length,
+                          itemBuilder: (context, index) {
+                            final specialty = filteredSpecialties[index];
+                            final isSelected = provider.isSelected(specialty.id);
+                            final isLocked = specialty.isPremium &&
+                                !(authProvider.user?.isPremium ?? false);
+                            // Cycle through the styles
+                            final style = _SpecialtyCardStyle
+                                .styles[index % _SpecialtyCardStyle.styles.length];
 
-                        return _SpecialtyCard(
-                          specialty: specialty,
-                          style: style,
-                          isSelected: isSelected,
-                          isLocked: isLocked,
-                          onTap: () {
-                            if (isLocked) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const PricingScreen()),
-                              );
-                              return;
-                            }
-                            provider.toggleSpecialty(specialty.id);
+                            return _SpecialtyCard(
+                              specialty: specialty,
+                              style: style,
+                              isSelected: isSelected,
+                              isLocked: isLocked,
+                              onTap: () {
+                                if (isLocked) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => const PricingScreen()),
+                                  );
+                                  return;
+                                }
+                                provider.toggleSpecialty(specialty.id);
+                              },
+                            );
                           },
-                        );
-                      },
-                    ),
+                        ),
             ),
 
             // Continue Button (Only visible if selection made)
@@ -191,31 +248,6 @@ class _SpecialtyCard extends StatelessWidget {
     required this.onTap,
   });
 
-  String _getLocalizedName(AppLocalizations l10n, String name) {
-    switch (name) {
-      case 'Orthodontics':
-        return l10n.orthodontics;
-      case 'Endodontics':
-        return l10n.endodontics;
-      case 'Prosthodontics':
-        return l10n.prosthodontics;
-      case 'Periodontics':
-        return l10n.periodontics;
-      case 'Pediatric Dentistry':
-        return l10n.pediatricDentistry;
-      case 'Restorative':
-        return l10n.restorative;
-      case 'Dental Surgery':
-        return l10n.dentalSurgery;
-      case 'Oral Medicine & Pathology':
-        return l10n.oralMedicine;
-      case 'Dental Ethics':
-        return l10n.dentalEthics;
-      default:
-        return name;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -276,7 +308,7 @@ class _SpecialtyCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (specialty.icon != null && specialty.icon!.contains('/uploads/'))
+                  if (specialty.icon != null && specialty.icon.contains('/uploads/'))
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(
@@ -318,7 +350,7 @@ class _SpecialtyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _getLocalizedName(l10n, specialty.name),
+                  specialty.getLocalizedName(l10n),
                   style: const TextStyle(
                     fontWeight: FontWeight.w700, // font-bold
                     fontSize: 14, // text-sm

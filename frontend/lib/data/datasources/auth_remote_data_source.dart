@@ -10,6 +10,7 @@ abstract class AuthRemoteDataSource {
   Future<void> forgotPassword(String email);
   Future<void> resetPassword(String token, String newPassword);
   Future<UserModel> getProfile();
+  Future<UserModel> updateProfile(String fullName);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -98,6 +99,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Failed to fetch profile');
+    }
+  }
+
+  @override
+  Future<UserModel> updateProfile(String fullName) async {
+    try {
+      final response = await dioClient.dio.put('/user/profile', data: {
+        'fullName': fullName,
+      });
+      final data = response.data;
+      if (data != null && data['success'] == true && data['data'] != null) {
+        return UserModel.fromJson(data['data']);
+      } else {
+        throw Exception('Invalid response format');
+      }
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Failed to update profile');
     }
   }
 }

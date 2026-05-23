@@ -32,21 +32,29 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
 
   void _saveProfile() async {
+    final name = _nameController.text.trim();
+    if (name.isEmpty) {
+      ToastUtils.showError(context, 'Name cannot be empty');
+      return;
+    }
+
     setState(() => _isLoading = true);
-    // Simulate network delay for saving profile
-    await Future.delayed(const Duration(seconds: 1));
+    final success = await context.read<AuthProvider>().updateProfile(name);
     setState(() => _isLoading = false);
 
     if (mounted) {
-      ToastUtils.showSuccess(context, 'Profile updated successfully!');
-      Navigator.pop(context);
+      if (success) {
+        ToastUtils.showSuccess(context, 'Profile updated successfully!');
+        Navigator.pop(context);
+      } else {
+        ToastUtils.showError(context, 'Failed to update profile. Please try again.');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
         title:
             const Text('Edit Profile', style: TextStyle(color: Colors.white)),
@@ -75,11 +83,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             const SizedBox(height: 20),
             TextField(
               controller: _emailController,
+              readOnly: true,
+              enabled: false,
               decoration: InputDecoration(
                 labelText: 'Email Address',
                 prefixIcon: const Icon(Icons.email_outlined),
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                filled: true,
+                fillColor: Theme.of(context).disabledColor.withOpacity(0.05),
               ),
               keyboardType: TextInputType.emailAddress,
             ),

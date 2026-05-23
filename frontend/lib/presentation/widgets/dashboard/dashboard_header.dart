@@ -36,10 +36,34 @@ class DashboardHeader extends StatelessWidget {
                   ),
                   child: Stack(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
                         radius: 52,
-                        backgroundImage: NetworkImage(
-                          'https://lh3.googleusercontent.com/aida-public/AB6AXuB64TzTWj3RFjq3NICCN0lvO89Q_wzQOK71uT0Waturpi9HuhCzxmSWiZ1IXo-RBhXK6Q23mcv2cDSgYOAb1_y4AcUpyq29rDwolTbUnMOPUVUoJmeEDJq_9OQk1sb9z5xB-hoT6cqhC5j-hxKnqdNzdItZnsmN3booerMZF8H8cgts-bpDV2LXGtBHztAN6lcqHJYZFsU8qRSb35lFv2H8cw2swbYDrZ6pyTQV5sSCW9zc9vVfbFjtiPpzvIV4GGO0xp8vEBeLwhU',
+                        backgroundColor: const Color(0xFFE2E8F0),
+                        child: Container(
+                          width: 104,
+                          height: 104,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.primary,
+                                Color(0xFF60A5FA), // Light blue
+                              ],
+                            ),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            user?.name.isNotEmpty == true
+                                ? user!.name[0].toUpperCase()
+                                : 'D',
+                            style: const TextStyle(
+                              fontSize: 38,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       Positioned(
