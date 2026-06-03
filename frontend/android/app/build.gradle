@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.frontend"
+    namespace = "com.healthlicenseprep.app"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -25,7 +25,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.frontend"
+        applicationId = "com.healthlicenseprep.app"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

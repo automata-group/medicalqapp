@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '175761970134',
     projectId: 'medicalq',
     storageBucket: 'medicalq.firebasestorage.app',
-    iosBundleId: 'com.example.frontend',
+    iosBundleId: 'com.healthlicenseprep.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '175761970134',
     projectId: 'medicalq',
     storageBucket: 'medicalq.firebasestorage.app',
-    iosBundleId: 'com.example.frontend',
+    iosBundleId: 'com.healthlicenseprep.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
