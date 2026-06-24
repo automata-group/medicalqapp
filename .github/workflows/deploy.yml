@@ -73,6 +73,37 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Validate Production Secrets
+        env:
+          MOYASAR_API_KEY: ${{ secrets.MOYASAR_API_KEY }}
+          MOYASAR_PUBLISHABLE_KEY: ${{ secrets.MOYASAR_PUBLISHABLE_KEY }}
+          MOYASAR_WEBHOOK_SECRET: ${{ secrets.MOYASAR_WEBHOOK_SECRET }}
+        run: |
+          echo "Checking Moyasar production keys..."
+          if [ -z "$MOYASAR_API_KEY" ]; then
+            echo "❌ Error: MOYASAR_API_KEY is not set in GitHub Secrets!"
+            exit 1
+          fi
+          if [[ ! "$MOYASAR_API_KEY" =~ ^sk_live_ ]]; then
+            echo "❌ Error: MOYASAR_API_KEY does not start with 'sk_live_'!"
+            exit 1
+          fi
+          
+          if [ -z "$MOYASAR_PUBLISHABLE_KEY" ]; then
+            echo "❌ Error: MOYASAR_PUBLISHABLE_KEY is not set in GitHub Secrets!"
+            exit 1
+          fi
+          if [[ ! "$MOYASAR_PUBLISHABLE_KEY" =~ ^pk_live_ ]]; then
+            echo "❌ Error: MOYASAR_PUBLISHABLE_KEY does not start with 'pk_live_'!"
+            exit 1
+          fi
+          
+          if [ -z "$MOYASAR_WEBHOOK_SECRET" ]; then
+            echo "❌ Error: MOYASAR_WEBHOOK_SECRET is not set in GitHub Secrets!"
+            exit 1
+          fi
+          echo "✅ All Moyasar production secrets are valid and ready for injection!"
+
       - name: Pre-Deployment Cleanup (Free Space)
         uses: appleboy/ssh-action@v1.0.3
         with:
