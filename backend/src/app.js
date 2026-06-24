@@ -87,6 +87,11 @@ app.get('/', (req, res) => {
     });
 });
 
+// Privacy Policy Route
+app.get('/privacy', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'privacy.html'));
+});
+
 // Payment Callback Route (Success/Failure landing page for WebView)
 app.get('/payment-callback', (req, res) => {
     res.send(`

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سياسة الخصوصية | Privacy Policy - Health License Prep</title>
+    <!-- Google Fonts: Inter & Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --glow: rgba(37, 99, 235, 0.15);
+        }
+
+        /* Light Mode Default (fallback / toggle-ready) */
+        body {
+            font-family: 'Tajawal', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+            transition: all 0.3s ease;
+        }
+
+        /* Premium Sleek Dark Mode (Applied for WOW effect) */
+        body.dark {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        body.dark .header {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        body.dark .subtitle {
+            color: var(--text-muted);
+        }
+
+        .language-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .btn-lang {
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #334155;
+        }
+
+        body.dark .btn-lang {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-lang:hover, .btn-lang.active {
+            background: var(--primary);
+            color: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--glow);
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        body.dark .card {
+            background: var(--bg-card);
+            border-color: var(--border-color);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 20px;
+            color: #0f172a;
+            border-right: 4px solid var(--primary);
+            padding-right: 12px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+        }
+
+        body.dark h2 {
+            color: var(--text-main);
+        }
+
+        /* English specific layouts */
+        .en-content {
+            display: none;
+            direction: ltr;
+            text-align: left;
+        }
+        
+        .en-content h2 {
+            border-right: none;
+            border-left: 4px solid var(--primary);
+            padding-right: 0;
+            padding-left: 12px;
+        }
+
+        .ar-content {
+            display: block;
+        }
+
+        ul {
+            padding-right: 20px;
+            padding-left: 0;
+        }
+
+        .en-content ul {
+            padding-left: 20px;
+            padding-right: 0;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 14px;
+            color: #94a3b8;
+        }
+
+        .theme-toggle {
+            position: absolute;
+            top: 24px;
+            left: 24px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body class="dark">
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="theme-btn" title="تغيير المظهر / Toggle Theme">🌙</button>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo-text">healthlicenseprep</h1>
+            <p class="subtitle">سياسة الخصوصية | Privacy Policy</p>
+        </div>
+
+        <div class="language-switcher">
+            <button class="btn-lang active" onclick="switchLang('ar')">العربية</button>
+            <button class="btn-lang" onclick="switchLang('en')">English</button>
+        </div>
+
+        <div class="card">
+            <!-- ARABIC CONTENT -->
+            <div id="content-ar" class="ar-content">
+                <p>تلتزم منصة وتطبيق <strong>healthlicenseprep</strong> بحماية خصوصيتك وبياناتك الشخصية. توضح سياسة الخصوصية هذه كيفية جمع معلوماتك واستخدامها وحمايتها عند استخدامك للتطبيق.</p>
+                
+                <h2>1. البيانات التي نقوم بجمعها</h2>
+                <p>نقوم بجمع الأنواع التالية من المعلومات لتقديم خدماتنا وتحسينها:</p>
+                <ul>
+                    <li><strong>معلومات الحساب شخصية:</strong> مثل الاسم، والبريد الإلكتروني، وكلمة المرور المشفرة عند التسجيل.</li>
+                    <li><strong>بيانات الدفع والاشتراك:</strong> تتم معالجة جميع عمليات الدفع بأمان عبر بوابة الدفع <strong>ميسر (Moyasar)</strong> المتوافقة مع معايير PCI-DSS. التطبيق لا يقوم بحفظ أو تخزين معلومات بطاقتك الائتمانية بشكل مباشر.</li>
+                    <li><strong>بيانات الاستخدام والتقدم:</strong> إحصائيات حول الأسئلة التي تم حلها، الاختبارات التجريبية، سجل المذاكرة، والعلامات المرجعية لمساعدتك في تتبع مستوى تقدمك.</li>
+                    <li><strong>بيانات الجهاز والإشعارات:</strong> نستخدم معرفات الأجهزة ورموز التنبيهات (FCM Tokens) لإرسال تنبيهات يومية وتذكيرك بالمذاكرة.</li>
+                </ul>
+
+                <h2>2. كيف نستخدم بياناتك</h2>
+                <p>نستخدم البيانات التي نجمعها للأغراض التالية:</p>
+                <ul>
+                    <li>إنشاء حسابك وتأمين وصولك للتطبيق.</li>
+                    <li>إدارة اشتراكك وتأكيد عمليات الدفع والعمليات المالية.</li>
+                    <li>إرسال الإشعارات والتنبيهات اليومية لتحفيزك على المذاكرة.</li>
+                    <li>تحليل الأداء الأكاديمي وتقديم الملاحظات والتقييم الذكي عبر تقنيات الذكاء الاصطناعي (AI).</li>
+                    <li>تحسين وتطوير جودة الأسئلة والخدمات التقنية في التطبيق.</li>
+                </ul>
+
+                <h2>3. مشاركة البيانات وحمايتها</h2>
+                <p>نحن لا نبيع أو نؤجر معلوماتك الشخصية لأي طرف ثالث. تتم مشاركة البيانات مع جهات معالجة البيانات الموثوقة فقط لتقديم الخدمة:</p>
+                <ul>
+                    <li><strong>Firebase (Google):</strong> لإرسال الإشعارات وتخزين قواعد البيانات السحابية.</li>
+                    <li><strong>Moyasar:</strong> لمعالجة مدفوعات الاشتراكات بأمان تام.</li>
+                    <li><strong>OpenAI:</strong> لتحليل الإجابات وتقديم التفسيرات العلمية الذكية (دون مشاركة أي بيانات تكشف عن هويتك).</li>
+                </ul>
+                <p>نطبق أعلى المعايير الأمنية وبروتوكولات التشفير (HTTPS/SSL) لحماية بياناتك من الوصول غير المصرح به.</p>
+
+                <h2>4. حقوق المستخدم وحذف الحساب</h2>
+                <p>لديك كامل الحق في:</p>
+                <ul>
+                    <li>الوصول إلى بياناتك الشخصية وتعديلها في أي وقت من خلال قائمة الملف الشخصي في التطبيق.</li>
+                    <li>طلب حذف حسابك وجميع بياناتك المرتبطة به نهائياً من خوادمنا. للقيام بذلك، يمكنك التواصل معنا عبر البريد الإلكتروني الموضح أدناه.</li>
+                </ul>
+
+                <h2>5. التواصل معنا</h2>
+                <p>إذا كان لديك أي أسئلة أو استفسارات حول سياسة الخصوصية أو طلبات حذف البيانات، يرجى التواصل معنا عبر البريد الإلكتروني التالي:</p>
+                <p style="font-weight: bold; color: var(--primary); text-align: center;">support@healthlicenseprep.com</p>
+                
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 24px;">تاريخ آخر تحديث: 24 يونيو 2026</p>
+            </div>
+
+            <!-- ENGLISH CONTENT -->
+            <div id="content-en" class="en-content">
+                <p>The <strong>healthlicenseprep</strong> platform and application are committed to protecting your privacy and personal data. This Privacy Policy explains how your information is collected, used, and safeguarded when using our application.</p>
+                
+                <h2>1. Data We Collect</h2>
+                <p>We collect the following types of information to provide and improve our services:</p>
+                <ul>
+                    <li><strong>Account & Personal Info:</strong> Such as name, email address, and encrypted password during registration.</li>
+                    <li><strong>Payment & Subscription Data:</strong> All payments are processed securely through the PCI-DSS compliant <strong>Moyasar</strong> payment gateway. We do not store or collect your raw credit card details directly.</li>
+                    <li><strong>Usage & Progress Data:</strong> Statistics on answered questions, mock exams, study logs, and bookmarks to help you track your learning progress.</li>
+                    <li><strong>Device & Notification Data:</strong> Device identifiers and notification tokens (FCM Tokens) to send you daily study reminders and alerts.</li>
+                </ul>
+
+                <h2>2. How We Use Your Data</h2>
+                <p>We use the collected data for the following purposes:</p>
+                <ul>
+                    <li>To create your account and secure your access to the app.</li>
+                    <li>To manage your subscriptions and verify financial transactions.</li>
+                    <li>To send push notifications and daily study reminders.</li>
+                    <li>To analyze academic performance and provide smart explanations powered by AI.</li>
+                    <li>To enhance and improve the quality of questions and technical services.</li>
+                </ul>
+
+                <h2>3. Data Sharing and Protection</h2>
+                <p>We do not sell or lease your personal information to third parties. Data is shared only with trusted service providers required to deliver our services:</p>
+                <ul>
+                    <li><strong>Firebase (Google):</strong> For push notifications and cloud database storage.</li>
+                    <li><strong>Moyasar:</strong> For processing secure subscription payments.</li>
+                    <li><strong>OpenAI:</strong> For analyzing answers and generating intelligent explanations (without sharing any personally identifiable data).</li>
+                </ul>
+                <p>We implement the highest security standards and encryption protocols (HTTPS/SSL) to protect your data from unauthorized access.</p>
+
+                <h2>4. User Rights & Account Deletion</h2>
+                <p>You have full rights to:</p>
+                <ul>
+                    <li>Access and edit your personal details at any time from the app's Profile screen.</li>
+                    <li>Request the permanent deletion of your account and all associated personal data from our servers. To do so, please contact us via the email below.</li>
+                </ul>
+
+                <h2>5. Contact Us</h2>
+                <p>If you have any questions about this Privacy Policy or wish to request data deletion, please contact us at:</p>
+                <p style="font-weight: bold; color: var(--primary); text-align: center;">support@healthlicenseprep.com</p>
+                
+                <p style="font-size: 13px; color: var(--text-muted); margin-top: 24px;">Last Updated: June 24, 2026</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            &copy; 2026 healthlicenseprep. جميع الحقوق محفوظة.
+        </div>
+    </div>
+
+    <script>
+        function switchLang(lang) {
+            const arBtn = document.querySelectorAll('.btn-lang')[0];
+            const enBtn = document.querySelectorAll('.btn-lang')[1];
+            const arContent = document.getElementById('content-ar');
+            const enContent = document.getElementById('content-en');
+
+            if (lang === 'ar') {
+                arBtn.classList.add('active');
+                enBtn.classList.remove('active');
+                arContent.style.display = 'block';
+                enContent.style.display = 'none';
+                document.documentElement.dir = 'rtl';
+                document.documentElement.lang = 'ar';
+            } else {
+                enBtn.classList.add('active');
+                arBtn.classList.remove('active');
+                arContent.style.display = 'none';
+                enContent.style.display = 'block';
+                document.documentElement.dir = 'ltr';
+                document.documentElement.lang = 'en';
+            }
+        }
+
+        const themeBtn = document.getElementById('theme-btn');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            if (document.body.classList.contains('dark')) {
+                themeBtn.textContent = '🌙';
+            } else {
+                themeBtn.textContent = '☀️';
+            }
+        });
+    </script>
+</body>
+</html>

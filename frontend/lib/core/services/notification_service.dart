@@ -78,7 +78,7 @@ class NotificationService {
       body,
       _nextInstanceOfTime(hour, minute),
       details,
-      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
