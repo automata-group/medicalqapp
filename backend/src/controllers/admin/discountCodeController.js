@@ -107,23 +107,11 @@ exports.getDiscountUsage = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Discount code not found' });
         }
 
-        // Assuming we have a DiscountCodeUsage model or similar tracking
-        // If not, we might track it in Payment or just use the global 'usedCount' if we have it on the model
-        // Phase 1 list said: DiscountCodeUsage (Implied)
-        // Let's assume we check Payments with this code
-
-        // Mocking usage data for MVP if table doesn't exist
-        // Or check if Payment has 'discountCodeId' or 'discountCode'
-
-        const usageCount = await Payment.count({
-            where: { metadata: { [Op.like]: `%"discountCode":"${discount.code}"%` }, status: 'completed' }
-        });
-
         res.status(200).json({
             success: true,
             data: {
                 code: discount.code,
-                totalUses: usageCount, // or discount.usedCount if we increment it
+                totalUses: discount.usedCount,
                 maxUses: discount.maxUses
             }
         });

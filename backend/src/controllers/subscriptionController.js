@@ -3,11 +3,21 @@ const axios = require('axios');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const Redis = require('ioredis');
+
+const redisClient = new Redis({
+    host: process.env.REDIS_HOST || '127.0.0.1',
+    port: process.env.REDIS_PORT || 6379,
+});
 
 // ─── Helper: Verify Moyasar Webhook Signature ──────────────────────
 const verifyMoyasarWebhook = (req) => {
     const secret = process.env.MOYASAR_WEBHOOK_SECRET;
     if (!secret) {
+        if (process.env.NODE_ENV === 'production') {
+            console.error('⚠️ MOYASAR_WEBHOOK_SECRET not set in production! Webhook rejected.');
+            return false;
+        }
         console.warn('⚠️ MOYASAR_WEBHOOK_SECRET not set — webhook signature verification skipped.');
         return true; // Allow in development but warn loudly
     }
@@ -109,8 +119,8 @@ exports.createCheckoutSession = async (req, res, next) => {
                     type: discount.type,
                     value: parseFloat(discount.value)
                 };
-                // Atomically increment usage count to prevent race conditions
-                await discount.increment('usedCount');
+                // NOTE: We don't increment usage count here anymore.
+                // It is incremented in handleWebhook or verifyPayment upon successful transaction.
             } else {
                 return res.status(400).json({
                     success: false,
@@ -135,8 +145,8 @@ exports.createCheckoutSession = async (req, res, next) => {
         const protocol = req.protocol;
         const callbackUrl = `${protocol}://${host}/payment-callback`;
 
-        // Store session data temporarily (expires in 30 minutes)
-        checkoutSessions.set(sessionToken, {
+        // Store session data temporarily (expires in 30 minutes) in Redis
+        const sessionData = {
             publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
             amount,
             currency: plan.currency || 'SAR',
@@ -150,10 +160,9 @@ exports.createCheckoutSession = async (req, res, next) => {
                 final_price: finalPrice.toString()
             },
             createdAt: Date.now()
-        });
+        };
 
-        // Auto-cleanup after 30 minutes
-        setTimeout(() => checkoutSessions.delete(sessionToken), 30 * 60 * 1000);
+        await redisClient.setex(`checkoutSession:${sessionToken}`, 30 * 60, JSON.stringify(sessionData));
 
         // Return the checkout details for Native SDK
         res.status(200).json({
@@ -184,20 +193,18 @@ exports.createCheckoutSession = async (req, res, next) => {
     }
 };
 
-// ─── In-Memory Checkout Sessions Store ──────────────────────────
-const checkoutSessions = new Map();
-
 // @desc    Serve the Moyasar JS SDK checkout page
 // @route   GET /api/v1/subscriptions/checkout-page/:token
 // @access  Public (protected by unique token)
-exports.renderCheckoutPage = (req, res) => {
+exports.renderCheckoutPage = async (req, res) => {
     const { token } = req.params;
-    const session = checkoutSessions.get(token);
+    const sessionStr = await redisClient.get(`checkoutSession:${token}`);
 
-    if (!session) {
+    if (!sessionStr) {
         return res.status(404).send('<h1>Session expired or invalid</h1><p>Please go back and try again.</p>');
     }
 
+    const session = JSON.parse(sessionStr);
     const { publishableKey, amount, currency, description, callbackUrl, metadata } = session;
     const metadataJson = JSON.stringify(metadata);
     const displayAmount = (amount / 100).toFixed(2);
@@ -332,7 +339,7 @@ exports.renderCheckoutPage = (req, res) => {
     const html = htmlPart1 + moyasarJS + htmlPart2;
 
     // Delete session after serving (one-time use)
-    checkoutSessions.delete(token);
+    await redisClient.del(`checkoutSession:${token}`);
     res.setHeader('Content-Type', 'text/html');
     res.send(html);
 };
@@ -347,69 +354,72 @@ exports.handleWebhook = async (req, res, next) => {
     const event = req.body;
 
     try {
-        if (event.type === 'payment.paid') {
-            const paymentData = event.data;
-            const transactionId = paymentData.id;
-            const userId = paymentData.metadata && paymentData.metadata.user_id;
-            const planId = paymentData.metadata && paymentData.metadata.plan_id;
+        const paymentData = event.data;
+        const transactionId = paymentData.id;
+        const userId = paymentData.metadata && paymentData.metadata.user_id;
+        const planId = paymentData.metadata && paymentData.metadata.plan_id;
 
-            if (!userId) {
-                console.error('Webhook: user_id missing in metadata');
+        if (event.type === 'payment.paid') {
+            if (!userId || !planId) {
+                console.error('Webhook: user_id or plan_id missing in metadata');
                 return res.status(400).send('Metadata missing');
             }
 
             // ─── Step 2: Idempotency Check ──────────────────────────
             const existingPayment = await Payment.findOne({ where: { transactionId } });
-            if (existingPayment) {
+            if (existingPayment && existingPayment.status === 'completed') {
                 console.log(`Webhook: Duplicate payment ${transactionId} — already processed.`);
                 return res.status(200).send('Already processed');
-            }
-
+            } 
+            
             // Find plan
-            let plan;
-            if (planId) {
-                plan = await SubscriptionPlan.findByPk(planId);
-            } else {
-                let slug = 'monthly-pro';
-                if (paymentData.description && paymentData.description.toLowerCase().includes('yearly')) {
-                    slug = 'yearly-pro';
-                }
-                plan = await SubscriptionPlan.findOne({ where: { slug } });
-            }
-
+            const plan = await SubscriptionPlan.findByPk(planId);
             if (!plan) {
                 console.error(`Webhook: Plan not found (planId: ${planId})`);
                 return res.status(400).send('Plan not found');
             }
 
+            // ─── Step 3: Record/Update Payment ────────────
+            if (existingPayment) {
+                await existingPayment.update({ status: 'completed' });
+            } else {
+                await Payment.create({
+                    userId: parseInt(userId),
+                    amount: paymentData.amount ? paymentData.amount / 100 : parseFloat(plan.price), // Convert Halalas back to SAR
+                    currency: paymentData.currency || plan.currency || 'SAR',
+                    status: 'completed',
+                    provider: 'moyasar',
+                    transactionId: transactionId,
+                    paymentMethod: paymentData.source ? paymentData.source.type : 'unknown',
+                    description: `${plan.name} subscription`,
+                    metadata: {
+                        plan_id: plan.id,
+                        promo_code: paymentData.metadata?.promo_code || null,
+                        original_price: paymentData.metadata?.original_price || null,
+                        final_price: paymentData.metadata?.final_price || null,
+                        moyasar_invoice_id: paymentData.invoice_id || null
+                    }
+                });
+
+                // ─── Step 3.5: Increment Promo Code Usage (only on first creation) ──
+                if (paymentData.metadata && paymentData.metadata.promo_code) {
+                    const discount = await DiscountCode.findOne({ where: { code: paymentData.metadata.promo_code } });
+                    if (discount) {
+                        await discount.increment('usedCount');
+                    }
+                }
+            }
+
+            // ─── Step 4: Activate Subscription ──────────────────────
             const duration = plan.durationInDays || 30;
             const startDate = new Date();
             const endDate = new Date();
             endDate.setDate(startDate.getDate() + duration);
 
-            // ─── Step 3: Record Payment in Payment Table ────────────
-            await Payment.create({
-                userId: parseInt(userId),
-                amount: paymentData.amount ? paymentData.amount / 100 : parseFloat(plan.price), // Convert Halalas back to SAR
-                currency: paymentData.currency || plan.currency || 'SAR',
-                status: 'completed',
-                provider: 'moyasar',
-                transactionId: transactionId,
-                paymentMethod: paymentData.source ? paymentData.source.type : 'unknown',
-                description: `${plan.name} subscription`,
-                metadata: {
-                    plan_id: plan.id,
-                    promo_code: paymentData.metadata?.promo_code || null,
-                    original_price: paymentData.metadata?.original_price || null,
-                    final_price: paymentData.metadata?.final_price || null,
-                    moyasar_invoice_id: paymentData.invoice_id || null
-                }
-            });
-
-            // ─── Step 4: Activate Subscription ──────────────────────
             const existingSub = await Subscription.findOne({ where: { userId } });
 
             if (existingSub) {
+                // State Validation: Only activate if it's not already active or if it's renewing
                 await existingSub.update({
                     status: 'active',
                     planId: plan.id,
@@ -431,11 +441,61 @@ exports.handleWebhook = async (req, res, next) => {
             }
 
             console.log(`✅ Subscription activated for user ${userId} on plan ${plan.name} (txn: ${transactionId})`);
+
+        } else if (event.type === 'payment.refunded') {
+            // ─── Handle Refunds ────────────────────────────────────
+            const existingPayment = await Payment.findOne({ where: { transactionId } });
+            if (existingPayment) {
+                if (existingPayment.status === 'refunded') {
+                    console.log(`Webhook: Payment ${transactionId} already refunded. Ignoring.`);
+                    return res.status(200).send('Already refunded');
+                }
+                await existingPayment.update({ status: 'refunded' });
+                console.log(`🔄 Payment ${transactionId} marked as refunded.`);
+
+                // Find associated subscription
+                const subscription = await Subscription.findOne({ where: { paymentId: transactionId } });
+                if (subscription && subscription.status === 'active') {
+                    await subscription.update({
+                        status: 'canceled',
+                        endDate: new Date() // Expire immediately
+                    });
+                    console.log(`🚫 Subscription for user ${subscription.userId} canceled due to refund.`);
+                }
+            } else {
+                console.warn(`Webhook: Refund received for unknown payment ${transactionId}`);
+            }
+
+        } else if (['payment.failed', 'payment.canceled', 'payment.expired'].includes(event.type)) {
+            // ─── Handle Failures / Cancellations ───────────────────
+            const existingPayment = await Payment.findOne({ where: { transactionId } });
+            if (existingPayment) {
+                if (existingPayment.status === 'failed' || existingPayment.status === 'canceled') {
+                    return res.status(200).send('Already handled');
+                }
+                await existingPayment.update({ status: 'failed' });
+            } else if (userId) {
+                // Record the failed attempt for analytics without modifying subscription
+                await Payment.create({
+                    userId: parseInt(userId),
+                    amount: paymentData.amount ? paymentData.amount / 100 : 0,
+                    currency: paymentData.currency || 'SAR',
+                    status: 'failed',
+                    provider: 'moyasar',
+                    transactionId: transactionId,
+                    paymentMethod: paymentData.source ? paymentData.source.type : 'unknown',
+                    description: `Failed/Canceled payment attempt`,
+                    metadata: paymentData.metadata || {}
+                });
+                console.log(`❌ Failed payment recorded for user ${userId} (txn: ${transactionId})`);
+            }
         }
 
-        res.status(200).send('Webhook received');
+        // Return 200 OK immediately after processing
+        res.status(200).send('Webhook received and processed');
     } catch (err) {
         console.error('Webhook Error:', err);
+        // Important: Return 500 so Moyasar knows it failed and will retry
         res.status(500).send('Server Error');
     }
 };
@@ -554,6 +614,14 @@ exports.verifyPayment = async (req, res, next) => {
             description: `${plan.name} subscription`,
             metadata: paymentData.metadata || {}
         });
+
+        // Increment Promo Code Usage
+        if (paymentData.metadata && paymentData.metadata.promo_code) {
+            const discount = await DiscountCode.findOne({ where: { code: paymentData.metadata.promo_code } });
+            if (discount) {
+                await discount.increment('usedCount');
+            }
+        }
 
         const existingSub = await Subscription.findOne({ where: { userId } });
 

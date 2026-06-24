@@ -41,11 +41,11 @@ class _NativePaymentScreenState extends State<NativePaymentScreen> {
         manual: false,
         saveCard: false,
       ),
-      samsungPay: SamsungPayConfig(
-        serviceId: 'your_samsung_pay_service_id_here', // <-- يجب تغييره لاحقاً من سامسونج
-        merchantName: 'Medical Q',
-        manual: false,
-      ),
+      // samsungPay: SamsungPayConfig(
+      //   serviceId: 'your_samsung_pay_service_id_here', // <-- يجب تغييره لاحقاً من سامسونج
+      //   merchantName: 'Medical Q',
+      //   manual: false,
+      // ),
     );
   }
 
@@ -110,15 +110,15 @@ class _NativePaymentScreenState extends State<NativePaymentScreen> {
                     ),
                   ),
                 
-                // Samsung Pay widget (Only available on Android)
-                if (Platform.isAndroid)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: SamsungPay(
-                      config: paymentConfig,
-                      onPaymentResult: onPaymentResult,
-                    ),
-                  ),
+                // Samsung Pay widget (Temporarily disabled until Service ID is provided)
+                // if (Platform.isAndroid)
+                //   Padding(
+                //     padding: const EdgeInsets.only(bottom: 20),
+                //     child: SamsungPay(
+                //       config: paymentConfig,
+                //       onPaymentResult: onPaymentResult,
+                //     ),
+                //   ),
 
                 const Divider(height: 40),
                 
