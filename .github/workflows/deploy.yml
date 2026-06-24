@@ -128,6 +128,7 @@ jobs:
             export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
             export MOYASAR_API_KEY="${{ secrets.MOYASAR_API_KEY }}"
             export MOYASAR_PUBLISHABLE_KEY="${{ secrets.MOYASAR_PUBLISHABLE_KEY }}"
+            export MOYASAR_WEBHOOK_SECRET="${{ secrets.MOYASAR_WEBHOOK_SECRET }}"
             echo "$SUDO_PW" | sudo -E -S docker compose up -d --force-recreate
             
             echo "4. Checking for early crashes..."
