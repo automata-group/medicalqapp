@@ -47,5 +47,15 @@
 		<true/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<!-- Mandatory Privacy Keys Required by Apple -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need access to your photo library to allow you to upload required profile pictures or document screenshots for your licensure exam preparation.</string>
+		
+		<key>NSCameraUsageDescription</key>
+		<string>We need access to your camera to let you take photos of documents or update your profile picture directly within the app.</string>
+		
+		<key>NSLocationWhenInUseUsageDescription</key>
+		<string>We need your location to show nearby exam training centers and tailor available services based on your region.</string>
 	</dict>
 </plist>
