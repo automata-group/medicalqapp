@@ -222,7 +222,7 @@ class ExamExplanationSheet extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(top: BorderSide(color: Colors.grey[100]!)),
-            ),
+            ),  //make a button to restart the exam
             child: canRetry
                 ? Column(
                     mainAxisSize: MainAxisSize.min,
