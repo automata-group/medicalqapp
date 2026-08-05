@@ -1,4 +1,5 @@
 const { Specialty, Question } = require('../../models');
+const sequelize = require('../../config/database');
 
 // @desc    Get all specialties (Admin)
 // @route   GET /api/v1/admin/specialties
@@ -6,6 +7,18 @@ const { Specialty, Question } = require('../../models');
 exports.getSpecialties = async (req, res, next) => {
     try {
         const specialties = await Specialty.findAll({
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM Questions AS question
+                            WHERE question.specialtyId = Specialty.id
+                        )`),
+                        'questionCount'
+                    ]
+                ]
+            },
             order: [['sortOrder', 'ASC'], ['name', 'ASC']]
         });
 

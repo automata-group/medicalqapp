@@ -166,12 +166,13 @@ export default function Categories() {
                             <th>ID</th>
                             <th>Icon</th>
                             <th>Name</th>
+                            <th>Questions</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading ? <tr><td colSpan="5" style={{ textAlign: 'center' }}>Loading...</td></tr> : filtered.length === 0 ? <tr><td colSpan="5" style={{ textAlign: 'center' }}>No categories found</td></tr> : (
+                        {loading ? <tr><td colSpan="6" style={{ textAlign: 'center' }}>Loading...</td></tr> : filtered.length === 0 ? <tr><td colSpan="6" style={{ textAlign: 'center' }}>No categories found</td></tr> : (
                             filtered.map(c => (
                                 <tr key={c.id}>
                                     <td>{c.id}</td>
@@ -183,6 +184,11 @@ export default function Categories() {
                                         )}
                                     </td>
                                     <td>{c.name}</td>
+                                    <td>
+                                        <span className={pageStyles.badge} style={{ background: '#334155', color: '#e2e8f0' }}>
+                                            {c.questionCount || 0} Questions
+                                        </span>
+                                    </td>
                                     <td>
                                         {c.isPremium ? (
                                             <span className={pageStyles.badge} style={{ background: '#4c1d95', color: '#ddd6fe' }}>Premium</span>

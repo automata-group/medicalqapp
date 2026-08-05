@@ -95,16 +95,22 @@ export default function Topics() {
                         <tr>
                             <th>Category</th>
                             <th>Topic</th>
+                            <th>Questions</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {loading ? <tr><td colSpan="4" style={{ textAlign: 'center' }}>Loading...</td></tr> : filtered.length === 0 ? <tr><td colSpan="4" style={{ textAlign: 'center' }}>No topics found</td></tr> : (
+                        {loading ? <tr><td colSpan="5" style={{ textAlign: 'center' }}>Loading...</td></tr> : filtered.length === 0 ? <tr><td colSpan="5" style={{ textAlign: 'center' }}>No topics found</td></tr> : (
                             filtered.map(t => (
                                 <tr key={t.id}>
                                     <td><span className={pageStyles.badge} style={{ background: '#1e3a5f', color: '#60a5fa' }}>{t.specialty?.name || t.specialtyId}</span></td>
                                     <td>{t.name}</td>
+                                    <td>
+                                        <span className={pageStyles.badge} style={{ background: '#334155', color: '#e2e8f0' }}>
+                                            {t.questionCount || 0} Questions
+                                        </span>
+                                    </td>
                                     <td>
                                         {t.isPremium ? (
                                             <span className={pageStyles.badge} style={{ background: '#4c1d95', color: '#ddd6fe' }}>Premium</span>

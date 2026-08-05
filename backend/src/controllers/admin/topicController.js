@@ -1,4 +1,5 @@
 const { Topic, Specialty, Question } = require('../../models');
+const sequelize = require('../../config/database');
 
 // @desc    Get all topics (Admin)
 // @route   GET /api/v1/admin/topics
@@ -13,6 +14,18 @@ exports.getTopics = async (req, res, next) => {
 
         const topics = await Topic.findAll({
             where: whereClause,
+            attributes: {
+                include: [
+                    [
+                        sequelize.literal(`(
+                            SELECT COUNT(*)
+                            FROM Questions AS question
+                            WHERE question.topicId = Topic.id
+                        )`),
+                        'questionCount'
+                    ]
+                ]
+            },
             include: [{ model: Specialty, as: 'specialty', attributes: ['name'] }],
             order: [['createdAt', 'DESC']]
         });
