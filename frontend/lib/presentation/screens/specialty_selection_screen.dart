@@ -308,7 +308,7 @@ class _SpecialtyCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  if (specialty.icon != null && specialty.icon.contains('/uploads/'))
+                  if (specialty.icon.isNotEmpty && specialty.icon.contains('/uploads/'))
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: Image.network(

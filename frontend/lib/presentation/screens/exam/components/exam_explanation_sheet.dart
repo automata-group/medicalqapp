@@ -12,6 +12,7 @@ class ExamExplanationSheet extends StatelessWidget {
   final bool canRetry;
   final int attemptsLeft;
   final VoidCallback? onRetry;
+  final VoidCallback? onGiveUp;
 
   const ExamExplanationSheet({
     super.key,
@@ -25,6 +26,7 @@ class ExamExplanationSheet extends StatelessWidget {
     this.canRetry = false,
     this.attemptsLeft = 0,
     this.onRetry,
+    this.onGiveUp,
   });
 
   @override
@@ -246,24 +248,28 @@ class ExamExplanationSheet extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              onNext();
-                            },
-                            style: OutlinedButton.styleFrom(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12)),
-                                side: BorderSide(color: Colors.grey.shade300)),
-                            child: Text('Give Up & Show Answer',
-                                style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                    fontWeight: FontWeight.bold)),
-                          ))
+                          SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton(
+                                onPressed: () {
+                                  if (onGiveUp != null) {
+                                    onGiveUp!();
+                                  } else {
+                                    Navigator.pop(context);
+                                    onNext();
+                                  }
+                                },
+                                style: OutlinedButton.styleFrom(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(12)),
+                                    side: BorderSide(color: Colors.grey.shade300)),
+                                child: Text('Give Up & Show Answer',
+                                    style: TextStyle(
+                                        color: Colors.grey.shade700,
+                                        fontWeight: FontWeight.bold)),
+                              ))
                     ],
                   )
                 : ElevatedButton(

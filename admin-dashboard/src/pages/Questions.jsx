@@ -20,6 +20,11 @@ export default function Questions() {
     const [search, setSearch] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
+    // Pagination
+    const [page, setPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [totalCount, setTotalCount] = useState(0);
+
     // Filters
     const [specialties, setSpecialties] = useState([]);
     const [topics, setTopics] = useState([]);
@@ -63,18 +68,20 @@ export default function Questions() {
     const loadQuestions = useCallback(async () => {
         setLoading(true);
         try {
-            const params = {};
+            const params = { page, limit: 20 };
             if (selectedSpecialty) params.specialtyId = selectedSpecialty;
             if (selectedTopic) params.topicId = selectedTopic;
 
             const res = await getQuestions(params);
             setQuestions(res.data?.data || []);
+            setTotalPages(res.data?.totalPages || 1);
+            setTotalCount(res.data?.count || 0);
         } catch (error) {
             console.error('Failed to load questions', error);
         } finally {
             setLoading(false);
         }
-    }, [selectedSpecialty, selectedTopic]);
+    }, [selectedSpecialty, selectedTopic, page]);
 
     const loadInitialData = useCallback(async () => {
         try {
@@ -91,8 +98,12 @@ export default function Questions() {
     }, [loadInitialData]);
 
     useEffect(() => {
+        setPage(1);
+    }, [selectedSpecialty, selectedTopic]);
+
+    useEffect(() => {
         loadQuestions();
-    }, [loadQuestions, selectedSpecialty, selectedTopic]);
+    }, [loadQuestions]);
 
     // Load topics for filter
     useEffect(() => {
@@ -466,7 +477,7 @@ export default function Questions() {
                             🗑️ Delete Selected ({selectedIds.length})
                         </button>
                     )}
-                    <span className={pageStyles.count}>{filteredQuestions.length} questions found</span>
+                    <span className={pageStyles.count}>Page {page} of {totalPages} ({totalCount} total questions)</span>
                 </div>
             </div>
 
@@ -541,6 +552,26 @@ export default function Questions() {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '15px' }}>
+                <button
+                    className={pageStyles.btn}
+                    disabled={page === 1}
+                    onClick={() => setPage(p => Math.max(1, p - 1))}
+                    style={{ opacity: page === 1 ? 0.5 : 1, cursor: page === 1 ? 'not-allowed' : 'pointer' }}
+                >
+                    Previous
+                </button>
+                <span style={{ color: '#94a3b8', fontSize: '14px' }}>Page {page} of {totalPages}</span>
+                <button
+                    className={pageStyles.btn}
+                    disabled={page === totalPages || totalPages === 0}
+                    onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                    style={{ opacity: page === totalPages || totalPages === 0 ? 0.5 : 1, cursor: page === totalPages || totalPages === 0 ? 'not-allowed' : 'pointer' }}
+                >
+                    Next
+                </button>
             </div>
 
             {/* Modal */}

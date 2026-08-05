@@ -12,7 +12,6 @@ import '../specialty_selection_screen.dart';
 import '../../providers/sync_provider.dart';
 import '../../../core/utils/toast_utils.dart';
 import 'edit_profile_screen.dart';
-import '../onboarding_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -229,7 +228,7 @@ class ProfileScreen extends StatelessWidget {
                                 value: reminder.enabled,
                                 onChanged: (val) =>
                                     reminder.setEnabled(val, ctx),
-                                activeColor: AppColors.primary,
+                                activeThumbColor: AppColors.primary,
                               ),
                             ),
                             if (reminder.enabled)

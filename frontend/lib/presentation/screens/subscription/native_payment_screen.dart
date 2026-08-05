@@ -10,13 +10,13 @@ class NativePaymentScreen extends StatefulWidget {
   final Map<String, dynamic> metadata;
 
   const NativePaymentScreen({
-    Key? key,
+    super.key,
     required this.publishableKey,
     required this.amount,
     required this.currency,
     required this.description,
     required this.metadata,
-  }) : super(key: key);
+  });
 
   @override
   State<NativePaymentScreen> createState() => _NativePaymentScreenState();

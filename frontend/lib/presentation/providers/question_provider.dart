@@ -104,6 +104,18 @@ class QuestionProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void giveUpCurrentQuestion() {
+    if (_currentQuestionAttempts < 3) {
+      _totalAttempted++;
+    }
+    _currentQuestionAttempts = 3;
+    if (_currentQuestion != null && !_failedSessionQuestions.any((q) => q.id == _currentQuestion!.id)) {
+      _failedSessionQuestions.add(_currentQuestion!);
+    }
+    _answerStatus = AnswerStatus.submitted;
+    notifyListeners();
+  }
+
   void startRetryMode() {
     if (_failedSessionQuestions.isEmpty) return;
     _isRetryMode = true;
@@ -149,9 +161,13 @@ class QuestionProvider with ChangeNotifier {
     if (sessionType != null) _currentSessionType = sessionType;
     
     if (_currentSessionType == null) {
-      if (subTopic != null) _currentSessionType = 'topic';
-      else if (specialtyId != null) _currentSessionType = 'specialty';
-      else _currentSessionType = 'general';
+      if (subTopic != null) {
+        _currentSessionType = 'topic';
+      } else if (specialtyId != null) {
+        _currentSessionType = 'specialty';
+      } else {
+        _currentSessionType = 'general';
+      }
     }
 
     // Mark PREVIOUS question as attempted before moving to the next

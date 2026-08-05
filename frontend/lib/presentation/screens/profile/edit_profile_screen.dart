@@ -91,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                 filled: true,
-                fillColor: Theme.of(context).disabledColor.withOpacity(0.05),
+                fillColor: Theme.of(context).disabledColor.withValues(alpha: 0.05),
               ),
               keyboardType: TextInputType.emailAddress,
             ),

@@ -54,7 +54,7 @@ class _PaymentWebviewScreenState extends State<PaymentWebviewScreen> {
       )
       ..addJavaScriptChannel('HtmlViewer', onMessageReceived: (message) {
         debugPrint('--- WEBVIEW HTML CONTENT ---');
-        debugPrint(message.message.length > 500 ? message.message.substring(0, 500) + '...' : message.message);
+        debugPrint(message.message.length > 500 ? '${message.message.substring(0, 500)}...' : message.message);
       })
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         debugPrint('WebView Console: ${message.message}');

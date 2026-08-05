@@ -178,7 +178,7 @@ class _PromosReferralsScreenState extends State<PromosReferralsScreen> {
                     DataCell(Text(code['value'].toString())),
                     DataCell(Switch(
                       value: isActive,
-                      activeColor: Colors.green,
+                      activeThumbColor: Colors.green,
                       onChanged: (val) async {
                         await provider.toggleDiscountCodeStatus(id, val);
                       },

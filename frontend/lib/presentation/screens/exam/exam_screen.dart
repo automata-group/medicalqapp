@@ -156,7 +156,7 @@ class _ExamScreenState extends State<ExamScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: _selectedReportReason,
+                      initialValue: _selectedReportReason,
                       decoration: const InputDecoration(labelText: 'Reason'),
                       items: const [
                         DropdownMenuItem(
@@ -260,6 +260,13 @@ class _ExamScreenState extends State<ExamScreen> {
                     _isAnswerChecked = false;
                   });
                   provider.retryCurrentQuestion();
+                }
+              : null,
+          onGiveUp: canRetry
+              ? () {
+                  Navigator.pop(context); // Close sheet
+                  provider.giveUpCurrentQuestion();
+                  _showExplanationSheet(false); // Re-show sheet without retry
                 }
               : null,
           onNext: () {

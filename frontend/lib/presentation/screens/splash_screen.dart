@@ -74,7 +74,6 @@ class _SplashScreenState extends State<SplashScreen>
       return;
     }
 
-    final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
     if (isAuthenticated) {

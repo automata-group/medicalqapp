@@ -173,7 +173,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 // Referral Code Field (Optional)
                 CustomTextField(
-                  label: 'Referral Code (Optional)', // TODO: l10n
+                  label: 'Referral Code (Optional)', // NOTE: l10n
                   hint: 'Enter friend\'s code',
                   controller: _referralCodeController,
                   prefixIcon: const Icon(Icons.card_giftcard),

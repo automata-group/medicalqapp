@@ -10,10 +10,6 @@ exports.getNextQuestion = async (req, res, next) => {
 
         const whereClause = { isActive: true };
 
-        if (id) {
-            whereClause.id = id;
-        }
-
         if (specialtyId) {
             whereClause.specialtyId = specialtyId;
 
@@ -143,6 +139,10 @@ exports.getNextQuestion = async (req, res, next) => {
 
         // 1. Count total matching rows (BEFORE applying exclude for the current session)
         const count = await Question.count({ where: whereClause });
+
+        if (id) {
+            whereClause.id = id;
+        }
 
         // Exclude questions already seen in this session
         if (req.query.exclude) {

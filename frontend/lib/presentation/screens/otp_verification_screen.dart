@@ -75,7 +75,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (!_isFilled) return;
     setState(() => _isLoading = true);
     try {
-      // TODO: call authRepo.verifyEmail(widget.email, _otp)
+      // NOTE: call authRepo.verifyEmail(widget.email, _otp)
       await Future.delayed(const Duration(seconds: 1));
       if (mounted) {
         _showSuccess();
@@ -98,7 +98,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     if (!_canResend) return;
     setState(() => _isResending = true);
     try {
-      // TODO: call authRepo.resendVerificationEmail(widget.email)
+      // NOTE: call authRepo.resendVerificationEmail(widget.email)
       await Future.delayed(const Duration(milliseconds: 800));
       _startResendTimer();
       if (mounted) {

@@ -374,6 +374,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
         if (paymentResult is String) {
           // Send verification request to backend
+          if (!mounted) return;
           showDialog(
             context: context,
             barrierDismissible: false,

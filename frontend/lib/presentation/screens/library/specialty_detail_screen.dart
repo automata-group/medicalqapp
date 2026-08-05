@@ -71,7 +71,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                       color: AppColors.primary.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: widget.specialty.icon != null && widget.specialty.icon!.contains('/uploads/')
+                    child: widget.specialty.icon.isNotEmpty && widget.specialty.icon.contains('/uploads/')
                         ? ClipRRect(
                             borderRadius: BorderRadius.circular(40),
                             child: Image.network(

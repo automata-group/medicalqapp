@@ -21,6 +21,7 @@ class SpecialtyModel extends Specialty {
     );
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'id': id,

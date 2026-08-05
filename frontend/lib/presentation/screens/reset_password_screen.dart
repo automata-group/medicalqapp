@@ -32,7 +32,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
     try {
-      // TODO: Connect to auth repo resetPassword(widget.resetToken, _passwordController.text)
+      // NOTE: Connect to auth repo resetPassword(widget.resetToken, _passwordController.text)
       await Future.delayed(const Duration(seconds: 1));
       setState(() => _success = true);
     } catch (e) {

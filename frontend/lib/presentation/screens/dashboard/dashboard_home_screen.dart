@@ -5,7 +5,6 @@ import '../../widgets/dashboard/dashboard_header.dart';
 import '../../widgets/dashboard/weekly_progress_card.dart';
 import '../../widgets/dashboard/question_bank_card.dart';
 import '../../widgets/dashboard/specialties_carousel.dart';
-import '../exam/exam_screen.dart';
 
 import '../../providers/dashboard_provider.dart';
 
@@ -34,10 +33,11 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            await context.read<DashboardProvider>().loadDashboardData();
-            if (mounted) {
-              await context.read<NotificationProvider>().fetchUnreadCount();
-            }
+            final dashboardProvider = context.read<DashboardProvider>();
+            final notificationProvider = context.read<NotificationProvider>();
+            
+            await dashboardProvider.loadDashboardData();
+            await notificationProvider.fetchUnreadCount();
           },
           color: Theme.of(context).primaryColor,
           child: SingleChildScrollView(

@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../../domain/entities/specialty.dart';
 import '../../providers/specialty_provider.dart';
-import '../exam/exam_screen.dart';
 import 'bookmarks_screen.dart';
 import 'specialty_detail_screen.dart';
 import '../../../core/theme/app_colors.dart';

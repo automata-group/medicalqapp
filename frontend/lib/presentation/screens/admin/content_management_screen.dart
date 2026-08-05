@@ -130,12 +130,12 @@ class _ContentManagementScreenState extends State<ContentManagementScreen>
       if (result != null && result.files.single.path != null) {
         final filePath = result.files.single.path!;
 
-        if (!mounted) return;
+        if (!context.mounted) return;
         ToastUtils.showInfo(context, 'Uploading file... Please wait.');
 
         final success = await adminProvider.bulkUploadQuestions(filePath);
 
-        if (!mounted) return;
+        if (!context.mounted) return;
         if (success) {
           ToastUtils.showSuccess(context, 'Questions imported successfully!');
         } else {
@@ -143,7 +143,7 @@ class _ContentManagementScreenState extends State<ContentManagementScreen>
         }
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ToastUtils.showError(context, 'Error: $e');
       }
     }
