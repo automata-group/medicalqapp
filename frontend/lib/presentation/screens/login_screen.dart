@@ -51,46 +51,27 @@ class _LoginScreenState extends State<LoginScreen> {
 
           // Removed Debug SnackBar
 
-          // Check web vs mobile separation
-          if (kIsWeb) {
-            if (user?.role != 'admin') {
-              await Provider.of<AuthProvider>(context, listen: false).logout();
-              if (mounted) {
-                ToastUtils.showInfo(context, 'Web portal is for administrators only');
-              }
-              setState(() => _isLoading = false);
-              return;
-            }
+          if (user?.role == 'admin') {
             debugPrint('LOGIN DEBUG: Navigating to AdminScaffold');
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (_) => const AdminScaffold()),
             );
           } else {
-            if (user?.role == 'admin') {
-              await Provider.of<AuthProvider>(context, listen: false).logout();
-              if (mounted) {
-                ToastUtils.showInfo(context, 'Please use the Web Portal for Admin access');
-              }
-              setState(() => _isLoading = false);
-              return;
-            }
-
-            // Check if user has already completed setup
-            if (user != null && user.hasSpecialties && user.hasStudyPlan) {
-              debugPrint('LOGIN DEBUG: Navigating to MainContainerScreen');
+            debugPrint('LOGIN DEBUG: Role is not admin, checking setup');
+            if (!(user?.hasSpecialties ?? false)) {
+              debugPrint('LOGIN DEBUG: Navigating to SpecialtySelectionScreen');
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+                MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
               );
-            } else if (user != null && user.hasSpecialties) {
-              debugPrint('LOGIN DEBUG: Navigating to StudyGoalScreen');
+            } else if (!(user?.hasStudyPlan ?? false)) {
+              debugPrint('LOGIN DEBUG: Navigating to CreatePlanScreen');
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
               );
             } else {
-              debugPrint('LOGIN DEBUG: Navigating to SpecialtySelectionScreen');
+              debugPrint('LOGIN DEBUG: Navigating to MainContainerScreen');
               Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                    builder: (_) => const SpecialtySelectionScreen()),
+                MaterialPageRoute(builder: (_) => const MainContainerScreen()),
               );
             }
           }

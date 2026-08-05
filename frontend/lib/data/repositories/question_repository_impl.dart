@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import '../datasources/question_local_data_source.dart';
 import '../datasources/question_remote_data_source.dart';
@@ -21,6 +22,7 @@ class QuestionRepositoryImpl implements QuestionRepository {
   DateTime? _lastCheckTime;
 
   Future<bool> _isOnline() async {
+    if (kIsWeb) return true; // Browsers handle their own connectivity and socket checks fail on web
     final now = DateTime.now();
     if (_lastOnlineResult != null && _lastCheckTime != null) {
       if (now.difference(_lastCheckTime!) < const Duration(seconds: 30)) {

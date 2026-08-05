@@ -254,7 +254,6 @@ class _ExamScreenState extends State<ExamScreen> {
           attemptsLeft: attemptsLeft,
           onRetry: canRetry
               ? () {
-                  Navigator.pop(context); // Close sheet
                   setState(() {
                     _selectedAnswerIndex = null;
                     _isAnswerChecked = false;

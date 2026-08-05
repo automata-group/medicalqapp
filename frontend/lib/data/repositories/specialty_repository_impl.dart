@@ -1,4 +1,5 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import '../../domain/entities/specialty.dart';
 import '../../domain/repositories/specialty_repository.dart';
 import '../datasources/specialty_remote_data_source.dart';
@@ -20,16 +21,19 @@ class SpecialtyRepositoryImpl implements SpecialtyRepository {
 
   @override
   Future<List<Specialty>> getSpecialties() async {
-    if (await _isOnline()) {
+    if (kIsWeb || await _isOnline()) {
       try {
         final specialties = await remoteDataSource.getSpecialties();
-        await localDataSource.saveSpecialtieslocally(specialties);
+        if (!kIsWeb) {
+          await localDataSource.saveSpecialtieslocally(specialties);
+        }
         return specialties;
       } catch (e) {
-        // Fallback to local if remote fails even if online
+        if (kIsWeb) return [];
         return await localDataSource.getLocalSpecialties();
       }
     } else {
+      if (kIsWeb) return [];
       return await localDataSource.getLocalSpecialties();
     }
   }

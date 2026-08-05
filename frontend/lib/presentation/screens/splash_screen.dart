@@ -77,32 +77,14 @@ class _SplashScreenState extends State<SplashScreen>
     final navigator = Navigator.of(context);
 
     if (isAuthenticated) {
-      if (kIsWeb) {
-        if (authProvider.user?.role == 'admin') {
-          navigator.pushReplacement(
-            MaterialPageRoute(builder: (_) => const AdminScaffold()),
-          );
-        } else {
-          await authProvider.logout();
-          if (!mounted) return;
-          ToastUtils.showError(context, 'Web portal is for administrators only');
-          navigator.pushReplacement(
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
-          );
-        }
+      if (authProvider.user?.role == 'admin') {
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (_) => const AdminScaffold()),
+        );
       } else {
-        if (authProvider.user?.role == 'admin') {
-          await authProvider.logout();
-          if (!mounted) return;
-          ToastUtils.showError(context, 'Please use the Web Portal for Admin access');
-          navigator.pushReplacement(
-            MaterialPageRoute(builder: (_) => const LoginScreen()),
-          );
-        } else {
-          navigator.pushReplacement(
-            MaterialPageRoute(builder: (_) => const MainContainerScreen()),
-          );
-        }
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+        );
       }
     } else {
       navigator.pushReplacement(

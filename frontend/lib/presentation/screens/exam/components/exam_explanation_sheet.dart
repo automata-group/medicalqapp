@@ -225,6 +225,7 @@ class ExamExplanationSheet extends StatelessWidget {
             ),
             child: canRetry
                 ? Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       SizedBox(
                         width: double.infinity,

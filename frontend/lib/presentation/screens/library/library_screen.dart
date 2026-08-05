@@ -133,13 +133,8 @@ class _LibraryScreenState extends State<LibraryScreen> {
                   final filteredSpecialties = _searchController.text.isEmpty
                       ? baseSpecialties
                       : baseSpecialties
-                          .where((s) => s.name
-                                  .toLowerCase()
-                                  .contains(_searchController.text.toLowerCase()) ||
-                              s
-                                  .getLocalizedName(l10n)
-                                  .toLowerCase()
-                                  .contains(_searchController.text.toLowerCase()))
+                          .where((s) => s.name.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+                              SpecialtyLocalization(s).getLocalizedName(l10n).toLowerCase().contains(_searchController.text.toLowerCase()))
                           .toList();
 
                   if (filteredSpecialties.isEmpty) {
@@ -266,7 +261,7 @@ class _LibraryScreenState extends State<LibraryScreen> {
                     size: 32, color: AppColors.primary),
             const SizedBox(height: 12),
             Text(
-              category.getLocalizedName(l10n),
+              SpecialtyLocalization(category).getLocalizedName(l10n),
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

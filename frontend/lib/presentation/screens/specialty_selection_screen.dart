@@ -69,7 +69,7 @@ class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
     final filteredSpecialties = provider.specialties.where((specialty) {
       if (_searchQuery.isEmpty) return true;
       final name = specialty.name.toLowerCase();
-      final localizedName = specialty.getLocalizedName(l10n).toLowerCase();
+      final localizedName = SpecialtyLocalization(specialty).getLocalizedName(l10n).toLowerCase();
       final query = _searchQuery.toLowerCase();
       return name.contains(query) || localizedName.contains(query);
     }).toList();
@@ -350,7 +350,7 @@ class _SpecialtyCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  specialty.getLocalizedName(l10n),
+                  SpecialtyLocalization(specialty).getLocalizedName(l10n),
                   style: const TextStyle(
                     fontWeight: FontWeight.w700, // font-bold
                     fontSize: 14, // text-sm
