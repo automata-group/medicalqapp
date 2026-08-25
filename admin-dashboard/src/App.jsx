@@ -17,6 +17,8 @@ const Categories = lazy(() => import('./pages/Categories'));
 const Topics = lazy(() => import('./pages/Topics'));
 const MockExams = lazy(() => import('./pages/MockExams'));
 const Achievements = lazy(() => import('./pages/Achievements'));
+const Settings = lazy(() => import('./pages/Settings'));
+
 
 const PageLoader = () => (
   <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', background: '#0d1117' }}>Loading…</div>
@@ -43,6 +45,7 @@ export default function App() {
       import('./pages/Promo');
       import('./pages/Plans');
       import('./pages/Notify');
+      import('./pages/Settings');
     };
     // Delay prefetching slightly to prioritize initial UI render
     setTimeout(preloadPages, 1000);
@@ -74,6 +77,7 @@ export default function App() {
               <Route path="promo" element={<Promo />} />
               <Route path="plans" element={<Plans />} />
               <Route path="notify" element={<Notify />} />
+              <Route path="settings" element={<Settings />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -82,5 +86,6 @@ export default function App() {
     </AuthProvider>
   );
 }
+
 
 

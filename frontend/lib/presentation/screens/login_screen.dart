@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
+
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/toast_utils.dart';

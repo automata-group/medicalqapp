@@ -3,7 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../../domain/entities/specialty.dart';
 import '../../providers/specialty_provider.dart';
+import '../../providers/dashboard_provider.dart';
 import 'bookmarks_screen.dart';
+
 import 'specialty_detail_screen.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/utils/specialty_extension.dart';
@@ -272,7 +274,9 @@ class _LibraryScreenState extends State<LibraryScreen> {
             ),
             const SizedBox(height: 4),
             Text(
-              '${category.totalQuestions ?? 0} Qs',
+              context.watch<DashboardProvider>().showQuestionCount
+                  ? '${category.totalQuestions ?? 0} Qs'
+                  : 'Practice',
               style: TextStyle(
                 color: Colors.grey.shade500,
                 fontSize: 12,
@@ -283,4 +287,5 @@ class _LibraryScreenState extends State<LibraryScreen> {
       ),
     );
   }
+
 }

@@ -11,9 +11,7 @@ class ExamExplanationSheet extends StatelessWidget {
   final int averageTimeSeconds;
   final int userTimeSeconds;
   final VoidCallback onNext;
-  final bool canRetry;
-  final int attemptsLeft;
-  final VoidCallback? onRetry;
+  final VoidCallback? onPrevious;
 
   const ExamExplanationSheet({
     super.key,
@@ -24,15 +22,13 @@ class ExamExplanationSheet extends StatelessWidget {
     required this.averageTimeSeconds,
     required this.userTimeSeconds,
     required this.onNext,
-    this.canRetry = false,
-    this.attemptsLeft = 0,
-    this.onRetry,
+    this.onPrevious,
   });
 
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
-      initialChildSize: canRetry ? 0.35 : 0.6,
+      initialChildSize: 0.6,
       minChildSize: 0.3,
       maxChildSize: 0.85,
       builder: (context, scrollController) {
@@ -88,7 +84,7 @@ class ExamExplanationSheet extends StatelessWidget {
                                   color: isCorrect ? Colors.green : Colors.red,
                                 ),
                               ),
-                              if (!isCorrect && !canRetry)
+                              if (!isCorrect)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 4.0),
                                   child: Text(
@@ -97,20 +93,8 @@ class ExamExplanationSheet extends StatelessWidget {
                                     textDirection: TextDirection.ltr,
                                     style: TextStyle(
                                       fontSize: 14,
-                                      color: Colors.grey.shade700,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              if (!isCorrect && canRetry)
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 4.0),
-                                  child: Text(
-                                    '$attemptsLeft attempts remaining',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.orange.shade800,
                                       fontWeight: FontWeight.w600,
+                                      color: Colors.grey.shade700,
                                     ),
                                   ),
                                 ),
@@ -119,160 +103,145 @@ class ExamExplanationSheet extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const SizedBox(height: 24),
 
-                    if (canRetry) ...[
-                      const SizedBox(height: 32),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            if (onRetry != null) onRetry!();
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Try Again',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12)),
+                    // Peer Stats Section
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.grey.shade200),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          _buildStatColumn(
+                            'Pass Rate',
+                            '${(passRate * 100).toInt()}%',
+                            Icons.pie_chart_outline,
+                            AppColors.primary,
+                          ),
+                          Container(
+                            height: 32,
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          _buildStatColumn(
+                            'Avg. Time',
+                            '${averageTimeSeconds}s',
+                            Icons.timer_outlined,
+                            Colors.orange,
+                          ),
+                          Container(
+                            height: 32,
+                            width: 1,
+                            color: Colors.grey.shade300,
+                          ),
+                          _buildStatColumn(
+                            'Your Time',
+                            '${userTimeSeconds}s',
+                            Icons.speed,
+                            userTimeSeconds <= averageTimeSeconds
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Explanation Header
+                    const Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline,
+                            color: AppColors.primary, size: 20),
+                        SizedBox(width: 8),
+                        Text(
+                          'Explanation',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.textPrimaryLight,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Explanation Content
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.shade50.withValues(alpha: 0.5),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.blue.shade100),
+                      ),
+                      child: MarkdownBody(
+                        data: explanation,
+                        styleSheet: MarkdownStyleSheet(
+                          p: GoogleFonts.ibmPlexSansArabic(
+                            fontSize: 15,
+                            height: 1.6,
+                            color: AppColors.textPrimaryLight,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).popUntil((route) => route.isFirst);
-                          },
-                          style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              side: BorderSide(color: Colors.grey.shade300)),
-                          child: Text('Give Up & Exit to Home',
-                              style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w600)),
+                    ),
+
+                    const SizedBox(height: 32),
+                  ],
+                ),
+              ),
+
+              // Bottom Actions
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                child: Row(
+                  children: [
+                    if (onPrevious != null) ...[
+                      OutlinedButton.icon(
+                        onPressed: onPrevious,
+                        icon: const Icon(Icons.chevron_left),
+                        label: const Text('Previous'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                       ),
-                    ] else ...[
-                      const SizedBox(height: 24),
-
-                      // Stats Row
-                      Row(
-                        children: [
-                          _buildStatBadge(
-                              Icons.people, '${passRate.round()}% Pass Rate'),
-                          const SizedBox(width: 8),
-                          _buildStatBadge(
-                              Icons.timer, '${averageTimeSeconds}s Avg'),
-                          const SizedBox(width: 8),
-                          _buildStatBadge(
-                              Icons.person, '${userTimeSeconds}s You',
-                              color: userTimeSeconds <= averageTimeSeconds
-                                  ? Colors.green
-                                  : Colors.orange),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-
-                      // Explanation Box
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.05),
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                              color: AppColors.primary.withValues(alpha: 0.1)),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: onNext,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 0,
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Row(
-                              children: [
-                                Icon(Icons.lightbulb_outline,
-                                    color: AppColors.primary, size: 20),
-                                SizedBox(width: 8),
-                                Text(
-                                  'Explanation',
-                                  style: TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 12),
-                            MarkdownBody(
-                              data: explanation,
-                              selectable: true,
-                              styleSheet: MarkdownStyleSheet(
-                                p: TextStyle(fontSize: 15, height: 1.6, color: Colors.grey.shade800),
-                                h1: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
-                                h2: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
-                                h3: GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.primary),
-                                listBullet: const TextStyle(fontSize: 15, color: AppColors.primary),
-                                tableBorder: TableBorder.all(color: Colors.grey.shade300, width: 1),
-                                tableCellsPadding: const EdgeInsets.all(12),
-                                blockquoteDecoration: BoxDecoration(
-                                  color: Colors.grey.shade100,
-                                  borderRadius: BorderRadius.circular(8),
-                                  border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
-                                ),
+                            Text(
+                              'Next Question',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
+                            SizedBox(width: 8),
+                            Icon(Icons.arrow_forward),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 32),
-
-                      // Next Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: onNext,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text('Next Question',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.of(context).popUntil((route) => route.isFirst);
-                          },
-                          style: OutlinedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            side: BorderSide(color: Colors.grey.shade300),
-                          ),
-                          child: Text('Give Up & Exit to Home',
-                              style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                  fontWeight: FontWeight.w600)),
-                        ),
-                      ),
-                    ],
+                    ),
                   ],
                 ),
               ),
@@ -283,29 +252,33 @@ class ExamExplanationSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildStatBadge(IconData icon, String text,
-      {Color color = Colors.grey}) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon,
-              size: 14,
-              color: color == Colors.grey ? Colors.grey.shade700 : color),
-          const SizedBox(width: 4),
-          Text(text,
+  Widget _buildStatColumn(
+      String label, String value, IconData icon, Color color) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: 4),
+            Text(
+              label,
               style: TextStyle(
-                  fontSize: 12,
-                  color: color == Colors.grey ? Colors.grey.shade700 : color,
-                  fontWeight: FontWeight.w600)),
-        ],
-      ),
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: color,
+          ),
+        ),
+      ],
     );
   }
 }

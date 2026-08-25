@@ -8,6 +8,46 @@ enum QuestionStatus { initial, loading, loaded, error, noQuestions }
 
 enum AnswerStatus { initial, submitting, submitted, error }
 
+class ExamHistoryItem {
+  final QuestionModel question;
+  final int? selectedOptionId;
+  final int? selectedAnswerIndex;
+  final AnswerResponseModel? answerResult;
+  final int timeTaken;
+  final AnswerStatus answerStatus;
+  final bool isAnswerChecked;
+
+  ExamHistoryItem({
+    required this.question,
+    this.selectedOptionId,
+    this.selectedAnswerIndex,
+    this.answerResult,
+    this.timeTaken = 0,
+    this.answerStatus = AnswerStatus.initial,
+    this.isAnswerChecked = false,
+  });
+
+  ExamHistoryItem copyWith({
+    QuestionModel? question,
+    int? selectedOptionId,
+    int? selectedAnswerIndex,
+    AnswerResponseModel? answerResult,
+    int? timeTaken,
+    AnswerStatus? answerStatus,
+    bool? isAnswerChecked,
+  }) {
+    return ExamHistoryItem(
+      question: question ?? this.question,
+      selectedOptionId: selectedOptionId ?? this.selectedOptionId,
+      selectedAnswerIndex: selectedAnswerIndex ?? this.selectedAnswerIndex,
+      answerResult: answerResult ?? this.answerResult,
+      timeTaken: timeTaken ?? this.timeTaken,
+      answerStatus: answerStatus ?? this.answerStatus,
+      isAnswerChecked: isAnswerChecked ?? this.isAnswerChecked,
+    );
+  }
+}
+
 class QuestionProvider with ChangeNotifier {
   final QuestionRepository repository;
 
@@ -33,6 +73,9 @@ class QuestionProvider with ChangeNotifier {
   int? _selectedOptionId;
   int? get selectedOptionId => _selectedOptionId;
 
+  int? _selectedAnswerIndex;
+  int? get selectedAnswerIndex => _selectedAnswerIndex;
+
   AnswerResponseModel? _answerResult;
   AnswerResponseModel? get answerResult => _answerResult;
 
@@ -54,18 +97,26 @@ class QuestionProvider with ChangeNotifier {
   int _totalInCategory = 0;
   int get totalInCategory => _totalInCategory;
 
+  // Session History for Previous / Next Navigation
+  final List<ExamHistoryItem> _history = [];
+  int _historyIndex = -1;
+
+  int get currentHistoryIndex => _historyIndex;
+  int get historyLength => _history.length;
+  bool get hasPreviousQuestion => _historyIndex > 0;
+  bool get hasNextInHistory => _historyIndex < _history.length - 1;
+  bool get isCurrentAnswerChecked => _answerStatus == AnswerStatus.submitted;
+
   // Tracking for current session to avoid repeats
   final List<int> _sessionAttemptedIds = [];
   final List<QuestionModel> _failedSessionQuestions = []; // Track mistakes
   bool _isRetryMode = false;
   int _sessionCorrectCount = 0;
-  int _currentQuestionAttempts = 0; // NEW: Track tries per question (max 3)
 
   int get sessionCorrectCount => _sessionCorrectCount;
   int get sessionTotalCount => _sessionAttemptedIds.length;
   bool get hasMistakes => _failedSessionQuestions.isNotEmpty;
   bool get isRetryMode => _isRetryMode;
-  int get currentQuestionAttempts => _currentQuestionAttempts; // Expose
 
   SessionModel? _activeSessionToResume;
   SessionModel? get activeSessionToResume => _activeSessionToResume;
@@ -76,14 +127,16 @@ class QuestionProvider with ChangeNotifier {
   String? _currentSessionType;
 
   void resetSession() {
+    _history.clear();
+    _historyIndex = -1;
     _sessionAttemptedIds.clear();
     _failedSessionQuestions.clear();
     _isRetryMode = false;
     _sessionCorrectCount = 0;
-    _currentQuestionAttempts = 0;
     _totalAttempted = 0;
     _answerStatus = AnswerStatus.initial;
     _selectedOptionId = null;
+    _selectedAnswerIndex = null;
     _answerResult = null;
     _errorMessage = null;
     _currentQuestion = null;
@@ -101,18 +154,7 @@ class QuestionProvider with ChangeNotifier {
     _currentQuestion = null;
     _answerResult = null;
     _selectedOptionId = null;
-    notifyListeners();
-  }
-
-  void giveUpCurrentQuestion() {
-    if (_currentQuestionAttempts < 3) {
-      _totalAttempted++;
-    }
-    _currentQuestionAttempts = 3;
-    if (_currentQuestion != null && !_failedSessionQuestions.any((q) => q.id == _currentQuestion!.id)) {
-      _failedSessionQuestions.add(_currentQuestion!);
-    }
-    _answerStatus = AnswerStatus.submitted;
+    _selectedAnswerIndex = null;
     notifyListeners();
   }
 
@@ -120,7 +162,7 @@ class QuestionProvider with ChangeNotifier {
     if (_failedSessionQuestions.isEmpty) return;
     _isRetryMode = true;
     _status = QuestionStatus.initial;
-    loadNextQuestion(); // Will trigger retry logic
+    loadNextQuestion();
   }
 
   Future<void> loadSpecialtyTopics(int specialtyId) async {
@@ -145,6 +187,13 @@ class QuestionProvider with ChangeNotifier {
 
   bool _shuffle = true;
 
+  void loadPreviousQuestion() {
+    if (!hasPreviousQuestion) return;
+    _historyIndex--;
+    _restoreHistoryItem(_history[_historyIndex]);
+    notifyListeners();
+  }
+
   Future<void> loadNextQuestion({
     String? specialtyId,
     String? subTopic,
@@ -155,9 +204,9 @@ class QuestionProvider with ChangeNotifier {
     bool shuffle = true,
   }) async {
     _shuffle = shuffle;
-    _lastSpecialtyId = specialtyId;
-    _lastSubTopic = subTopic;
-    _lastFilter = filter;
+    _lastSpecialtyId = specialtyId ?? _lastSpecialtyId;
+    _lastSubTopic = subTopic ?? _lastSubTopic;
+    _lastFilter = filter ?? _lastFilter;
     if (sessionType != null) _currentSessionType = sessionType;
     
     if (_currentSessionType == null) {
@@ -170,34 +219,47 @@ class QuestionProvider with ChangeNotifier {
       }
     }
 
-    // Mark PREVIOUS question as attempted before moving to the next
+    // 1. If we are navigating within already visited history, move to the next item
+    if (_historyIndex < _history.length - 1 && !_isRetryMode && questionId == null) {
+      _historyIndex++;
+      _restoreHistoryItem(_history[_historyIndex]);
+      notifyListeners();
+      return;
+    }
+
+    // Mark current question as attempted
     if (_currentQuestion != null && !_isRetryMode) {
       if (!_sessionAttemptedIds.contains(_currentQuestion!.id)) {
         _sessionAttemptedIds.add(_currentQuestion!.id);
       }
     }
 
-    // 1. Check if we have a prefetched question ready
-    if (_prefetchedQuestion != null && !forceOffline && !_isRetryMode) {
+    // 2. Check if we have a prefetched question ready
+    if (_prefetchedQuestion != null && !forceOffline && !_isRetryMode && questionId == null) {
       _currentQuestion = _prefetchedQuestion;
       _prefetchedQuestion = null;
       _status = QuestionStatus.loaded;
       
-      // Reset answer state for the new question
       _answerStatus = AnswerStatus.initial;
       _selectedOptionId = null;
+      _selectedAnswerIndex = null;
       _answerResult = null;
-      _currentQuestionAttempts = 0;
       _stopwatch.reset();
       _stopwatch.start();
       
+      _history.add(ExamHistoryItem(
+        question: _currentQuestion!,
+        answerStatus: AnswerStatus.initial,
+        isAnswerChecked: false,
+      ));
+      _historyIndex = _history.length - 1;
+      
       notifyListeners();
       
-      // Start prefetching the next one in the background
       _startPrefetch(
-        specialtyId: specialtyId,
-        subTopic: subTopic,
-        filter: filter,
+        specialtyId: _lastSpecialtyId,
+        subTopic: _lastSubTopic,
+        filter: _lastFilter,
         shuffle: shuffle,
       );
       
@@ -206,17 +268,16 @@ class QuestionProvider with ChangeNotifier {
     }
 
     _status = QuestionStatus.loading;
-    _showOfflineButton = false; // Reset
+    _showOfflineButton = false;
     _answerStatus = AnswerStatus.initial;
     _selectedOptionId = null;
+    _selectedAnswerIndex = null;
     _answerResult = null;
     _errorMessage = null;
-    _currentQuestionAttempts = 0;
     _stopwatch.reset();
     _stopwatch.start();
     notifyListeners();
 
-    // Start a timer to show offline button after 10 seconds if not already loading offline
     if (!forceOffline) {
       Future.delayed(const Duration(seconds: 10), () {
         if (_status == QuestionStatus.loading && !_showOfflineButton) {
@@ -230,6 +291,12 @@ class QuestionProvider with ChangeNotifier {
       if (_isRetryMode && _failedSessionQuestions.isNotEmpty) {
         _currentQuestion = _failedSessionQuestions.removeAt(0);
         _status = QuestionStatus.loaded;
+        _history.add(ExamHistoryItem(
+          question: _currentQuestion!,
+          answerStatus: AnswerStatus.initial,
+          isAnswerChecked: false,
+        ));
+        _historyIndex = _history.length - 1;
       } else if (_isRetryMode && _failedSessionQuestions.isEmpty) {
         _currentQuestion = null;
         _isRetryMode = false;
@@ -237,7 +304,6 @@ class QuestionProvider with ChangeNotifier {
       } else {
         final currentExcludes = <int>{..._sessionAttemptedIds};
         if (_currentQuestion != null) currentExcludes.add(_currentQuestion!.id);
-        // If we are trying to load a specific question (resume), ensure it's NOT excluded
         if (questionId != null) currentExcludes.remove(questionId);
 
         final excludeString = currentExcludes.isNotEmpty
@@ -245,16 +311,15 @@ class QuestionProvider with ChangeNotifier {
             : null;
 
         final question = await repository.getNextQuestion(
-          specialtyId: specialtyId,
-          subTopic: subTopic,
-          filter: filter,
+          specialtyId: _lastSpecialtyId,
+          subTopic: _lastSubTopic,
+          filter: _lastFilter,
           exclude: excludeString,
           questionId: questionId,
           forceOffline: forceOffline,
           shuffle: shuffle,
         );
         if (question != null) {
-          // Shuffle options for better practice (only if shuffle is true)
           if (shuffle) {
             final shuffledOptions = List<OptionModel>.from(question.options)..shuffle();
             _currentQuestion = question.copyWith(options: shuffledOptions);
@@ -265,11 +330,17 @@ class QuestionProvider with ChangeNotifier {
           _totalInCategory = question.totalInCategory;
           _status = QuestionStatus.loaded;
 
-          // After successful load, prefetch the NEXT one
+          _history.add(ExamHistoryItem(
+            question: _currentQuestion!,
+            answerStatus: AnswerStatus.initial,
+            isAnswerChecked: false,
+          ));
+          _historyIndex = _history.length - 1;
+
           _startPrefetch(
-            specialtyId: specialtyId,
-            subTopic: subTopic,
-            filter: filter,
+            specialtyId: _lastSpecialtyId,
+            subTopic: _lastSubTopic,
+            filter: _lastFilter,
             shuffle: shuffle,
           );
         } else {
@@ -283,6 +354,15 @@ class QuestionProvider with ChangeNotifier {
     }
     notifyListeners();
     saveCurrentSession();
+  }
+
+  void _restoreHistoryItem(ExamHistoryItem item) {
+    _currentQuestion = item.question;
+    _selectedOptionId = item.selectedOptionId;
+    _selectedAnswerIndex = item.selectedAnswerIndex;
+    _answerResult = item.answerResult;
+    _answerStatus = item.answerStatus;
+    _status = QuestionStatus.loaded;
   }
 
   Future<void> _startPrefetch({
@@ -311,7 +391,6 @@ class QuestionProvider with ChangeNotifier {
       );
 
       if (question != null) {
-        // Shuffle options during prefetch so it's ready (only if shuffle is true)
         if (shuffle) {
           final shuffledOptions = List<OptionModel>.from(question.options)..shuffle();
           _prefetchedQuestion = question.copyWith(options: shuffledOptions);
@@ -321,24 +400,34 @@ class QuestionProvider with ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Prefetch failed: $e');
-      // Silently fail prefetch, we'll try again on next manual load
     } finally {
       _isPrefetching = false;
     }
   }
 
-  void selectOption(int optionId) {
+  void selectOption(int optionId, {int? answerIndex}) {
     if (_answerStatus == AnswerStatus.submitted) return;
     _selectedOptionId = optionId;
+    if (answerIndex != null) _selectedAnswerIndex = answerIndex;
+    if (_historyIndex >= 0 && _historyIndex < _history.length) {
+      _history[_historyIndex] = _history[_historyIndex].copyWith(
+        selectedOptionId: optionId,
+        selectedAnswerIndex: answerIndex,
+      );
+    }
     notifyListeners();
   }
 
-  Future<void> submitAnswer({String? confidenceLevel}) async {
+  Future<void> submitAnswer({String? confidenceLevel, int? answerIndex}) async {
     if (_currentQuestion == null ||
         _selectedOptionId == null ||
         _answerStatus == AnswerStatus.submitting ||
         _answerStatus == AnswerStatus.submitted) {
       return;
+    }
+
+    if (answerIndex != null) {
+      _selectedAnswerIndex = answerIndex;
     }
 
     _answerStatus = AnswerStatus.submitting;
@@ -357,21 +446,24 @@ class QuestionProvider with ChangeNotifier {
       _answerStatus = AnswerStatus.submitted;
 
       if (result.isCorrect) {
-        _totalAttempted++; // Only count as fully attempted if solved or failed 3 times
+        _totalAttempted++;
         if (!_isRetryMode) _sessionCorrectCount++;
       } else {
-        _currentQuestionAttempts++;
-        if (_currentQuestionAttempts >= 3) {
-          _totalAttempted++; // Final fail
-          // If wrong 3 times, add to failed list for potential retry later
-          if (!_failedSessionQuestions
-              .any((q) => q.id == _currentQuestion!.id)) {
-            _failedSessionQuestions.add(_currentQuestion!);
-          }
+        _totalAttempted++;
+        if (!_failedSessionQuestions.any((q) => q.id == _currentQuestion!.id)) {
+          _failedSessionQuestions.add(_currentQuestion!);
         }
-        // If < 3 attempts, we leave it in 'submitted' state.
-        // The UI will show the bottom sheet with a "Try Again" button,
-        // which will call `retryCurrentQuestion()` to do the reset.
+      }
+
+      if (_historyIndex >= 0 && _historyIndex < _history.length) {
+        _history[_historyIndex] = _history[_historyIndex].copyWith(
+          selectedOptionId: _selectedOptionId,
+          selectedAnswerIndex: _selectedAnswerIndex,
+          answerResult: result,
+          timeTaken: timeTaken,
+          answerStatus: AnswerStatus.submitted,
+          isAnswerChecked: true,
+        );
       }
     } catch (e) {
       _answerStatus = AnswerStatus.error;
@@ -381,20 +473,10 @@ class QuestionProvider with ChangeNotifier {
     saveCurrentSession();
   }
 
-  void retryCurrentQuestion() {
-    if (_currentQuestionAttempts >= 3) return;
-    _answerStatus = AnswerStatus.initial;
-    _selectedOptionId = null;
-    _answerResult = null;
-    _stopwatch.start();
-    notifyListeners();
-  }
-
   Future<void> toggleBookmark() async {
     if (_currentQuestion == null) return;
     try {
       final newStatus = await repository.toggleBookmark(_currentQuestion!.id);
-      // Update local state without full reload
       _currentQuestion = QuestionModel(
         id: _currentQuestion!.id,
         text: _currentQuestion!.text,
@@ -404,6 +486,11 @@ class QuestionProvider with ChangeNotifier {
         isBookmarked: newStatus,
         isPremium: _currentQuestion!.isPremium,
       );
+      if (_historyIndex >= 0 && _historyIndex < _history.length) {
+        _history[_historyIndex] = _history[_historyIndex].copyWith(
+          question: _currentQuestion,
+        );
+      }
       notifyListeners();
     } catch (e) {
       _errorMessage = 'Failed to update bookmark: ${e.toString()}';
@@ -488,10 +575,9 @@ class QuestionProvider with ChangeNotifier {
     _sessionAttemptedIds.addAll(session.attemptedIds);
     _activeSessionToResume = null;
     
-    // Reset other session state
     _failedSessionQuestions.clear();
     _isRetryMode = false;
-    _sessionCorrectCount = 0; // Ideally we'd store this too, but for now we reset
+    _sessionCorrectCount = 0;
 
     await loadNextQuestion(
       specialtyId: _lastSpecialtyId,

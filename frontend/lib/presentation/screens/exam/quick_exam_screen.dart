@@ -361,39 +361,35 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
         (o) => o.id == result.correctOptionId,
         orElse: () => question.options.first);
 
-    final canRetry = !result.isCorrect && provider.currentQuestionAttempts < 3;
-    final attemptsLeft = 3 - provider.currentQuestionAttempts;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      isDismissible: false,
-      enableDrag: false,
+      isDismissible: true,
+      enableDrag: true,
       builder: (sheetContext) {
         return ExamExplanationSheet(
-          // Need to import this at top!
           isCorrect: result.isCorrect,
           correctAnswerText: correctOption.text,
           explanation: result.explanation ?? 'No explanation provided.',
           passRate: result.stats?.passRate ?? 0,
           averageTimeSeconds: result.stats?.averageTimeSeconds ?? 0,
           userTimeSeconds: provider.lastTimeTaken,
-          canRetry: canRetry,
-          attemptsLeft: attemptsLeft,
-          onRetry: canRetry
+          onPrevious: provider.hasPreviousQuestion
               ? () {
-                  provider.retryCurrentQuestion();
+                  Navigator.pop(sheetContext);
+                  provider.loadPreviousQuestion();
                 }
               : null,
           onNext: () {
-            Navigator.pop(sheetContext); // Close sheet
+            Navigator.pop(sheetContext);
             provider.loadNextQuestion();
           },
         );
       },
     );
   }
+
 
   Widget _buildQuickStatCard(String label, String value, Color color) {
     return Container(

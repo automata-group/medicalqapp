@@ -33,6 +33,8 @@ class DashboardProvider extends ChangeNotifier {
   bool get isStatsLoading => _isStatsLoading;
   bool get isAchievementsLoading => _isAchievementsLoading;
   String? get error => _error;
+  bool get showQuestionCount => _overview?.showQuestionCount ?? false;
+
 
   void _loadFromCache() {
     try {

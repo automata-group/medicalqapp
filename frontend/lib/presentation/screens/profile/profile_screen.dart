@@ -267,17 +267,12 @@ class ProfileScreen extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   // === LOGOUT ===
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.04),
-                            blurRadius: 4,
-                            offset: const Offset(0, 2))
-                      ],
-                    ),
+                  Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    elevation: 1,
+                    shadowColor: Colors.black.withValues(alpha: 0.08),
+                    clipBehavior: Clip.antiAlias,
                     child: ListTile(
                       leading: Container(
                         padding: const EdgeInsets.all(8),
@@ -296,6 +291,7 @@ class ProfileScreen extends StatelessWidget {
                       onTap: () => _handleLogout(context),
                     ),
                   ),
+
                   const SizedBox(height: 40),
                 ],
               ),
@@ -602,22 +598,18 @@ class ProfileScreen extends StatelessWidget {
                 letterSpacing: 0.5),
           ),
         ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.04),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2))
-            ],
-          ),
+        Material(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          elevation: 1,
+          shadowColor: Colors.black.withValues(alpha: 0.08),
+          clipBehavior: Clip.antiAlias,
           child: Column(children: children),
         ),
       ],
     );
   }
+
 
   Widget _buildListTile({
     required IconData icon,

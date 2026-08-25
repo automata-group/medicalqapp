@@ -60,12 +60,15 @@ class QuestionBankCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          l10n.questionsAvailable(totalQuestions),
+                          provider.showQuestionCount
+                              ? l10n.questionsAvailable(totalQuestions)
+                              : 'Practice All Specialties & Mock Exams',
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 14,
                           ),
                         ),
+
                         const SizedBox(height: 16),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

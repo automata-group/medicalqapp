@@ -33,6 +33,8 @@ const ContentUpdate = require('./ContentUpdate');
 const UserMockExamAnswer = require('./UserMockExamAnswer');
 const SectionQuestion = require('./SectionQuestion');
 const UserProgress = require('./UserProgress');
+const AppSetting = require('./AppSetting');
+
 
 // --- User Associations ---
 User.hasMany(RefreshToken, { foreignKey: 'userId', as: 'refreshTokens' });
@@ -202,5 +204,6 @@ module.exports = {
     UserProgress,
     AIFeedback,
     StudySession,
+    AppSetting,
     sequelize
 };

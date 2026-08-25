@@ -11,6 +11,7 @@ import 'components/exam_answer_option.dart';
 import 'components/exam_explanation_sheet.dart';
 import '../subscription/pricing_screen.dart';
 import '../../../core/utils/toast_utils.dart';
+import '../../../core/theme/app_colors.dart';
 import '../../../data/models/session_model.dart';
 
 class ExamScreen extends StatefulWidget {
@@ -34,7 +35,6 @@ class ExamScreen extends StatefulWidget {
 }
 
 class _ExamScreenState extends State<ExamScreen> {
-  // Local state to manage UI animation/interaction
   int? _selectedAnswerIndex;
   bool _isAnswerChecked = false;
   Timer? _timer;
@@ -47,10 +47,8 @@ class _ExamScreenState extends State<ExamScreen> {
   @override
   void initState() {
     super.initState();
-    // Clear old question immediately to avoid "ghosting" from previous sessions
     context.read<QuestionProvider>().clearCurrentQuestion();
     _startTimer();
-    // Ensure fresh state on entry
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final provider = context.read<QuestionProvider>();
       
@@ -72,7 +70,7 @@ class _ExamScreenState extends State<ExamScreen> {
         
         if (resume == true) {
           await provider.restoreSession(session);
-          return; // Skip normal initialization
+          return;
         } else if (resume == false) {
           provider.discardActiveSession();
         }
@@ -111,23 +109,20 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void _handleAnswerSelection(int index, int optionId) {
-    if (_isAnswerChecked) return; // Prevent changing after check
+    final provider = context.read<QuestionProvider>();
+    if (_isAnswerChecked || provider.isCurrentAnswerChecked) return;
     setState(() {
       _selectedAnswerIndex = index;
     });
 
-    // Select in provider
-    context.read<QuestionProvider>().selectOption(optionId);
-
-    // AUTO-SUBMIT immediately as per user request
-    _confirmAnswer('medium');
+    provider.selectOption(optionId, answerIndex: index);
+    _confirmAnswer('medium', index);
   }
 
-  void _confirmAnswer(String confidence) async {
+  void _confirmAnswer(String confidence, int index) async {
     final provider = context.read<QuestionProvider>();
-    await provider.submitAnswer(confidenceLevel: confidence);
+    await provider.submitAnswer(confidenceLevel: confidence, answerIndex: index);
 
-    // Check result
     if (provider.answerResult != null) {
       if (!mounted) return;
       setState(() {
@@ -221,28 +216,23 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void _showExplanationSheet(bool isCorrect) {
-    // Capture snapshot BEFORE state changes to avoid null crash
     final provider = context.read<QuestionProvider>();
     final question = provider.currentQuestion;
     final result = provider.answerResult;
 
     if (question == null || result == null) return;
 
-    // Find correct answer text
     final correctOption = question.options.firstWhere(
         (o) => o.id == result.correctOptionId,
         orElse: () => question.options.first);
-
-    final canRetry = !result.isCorrect && provider.currentQuestionAttempts < 3;
-    final attemptsLeft = 3 - provider.currentQuestionAttempts;
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      isDismissible: false,
-      enableDrag: false,
-      builder: (context) {
+      isDismissible: true,
+      enableDrag: true,
+      builder: (sheetContext) {
         return ExamExplanationSheet(
           isCorrect: result.isCorrect,
           correctAnswerText: correctOption.text,
@@ -250,26 +240,14 @@ class _ExamScreenState extends State<ExamScreen> {
           passRate: result.stats?.passRate ?? 0,
           averageTimeSeconds: result.stats?.averageTimeSeconds ?? 0,
           userTimeSeconds: provider.lastTimeTaken,
-          canRetry: canRetry,
-          attemptsLeft: attemptsLeft,
-          onRetry: canRetry
+          onPrevious: provider.hasPreviousQuestion
               ? () {
-                  setState(() {
-                    _selectedAnswerIndex = null;
-                    _isAnswerChecked = false;
-                  });
-                  provider.retryCurrentQuestion();
-                }
-              : null,
-          onGiveUp: canRetry
-              ? () {
-                  Navigator.pop(context); // Close sheet
-                  provider.giveUpCurrentQuestion();
-                  _showExplanationSheet(false); // Re-show sheet without retry
+                  Navigator.pop(sheetContext);
+                  _loadPreviousQuestion();
                 }
               : null,
           onNext: () {
-            Navigator.pop(context); // Close sheet
+            Navigator.pop(sheetContext);
             _loadNextQuestion();
           },
         );
@@ -277,20 +255,43 @@ class _ExamScreenState extends State<ExamScreen> {
     );
   }
 
+  void _loadPreviousQuestion() {
+    final provider = context.read<QuestionProvider>();
+    provider.loadPreviousQuestion();
+    setState(() {
+      _selectedAnswerIndex = provider.selectedAnswerIndex;
+      _isAnswerChecked = provider.isCurrentAnswerChecked;
+    });
+  }
+
   void _loadNextQuestion() {
+    final provider = context.read<QuestionProvider>();
+    if (provider.hasNextInHistory) {
+      provider.loadNextQuestion(
+        specialtyId: widget.specialtyId,
+        subTopic: widget.subTopic,
+        filter: widget.filter,
+        shuffle: widget.shuffle,
+      );
+      setState(() {
+        _selectedAnswerIndex = provider.selectedAnswerIndex;
+        _isAnswerChecked = provider.isCurrentAnswerChecked;
+      });
+      return;
+    }
+
     setState(() {
       _selectedAnswerIndex = null;
       _isAnswerChecked = false;
     });
     _startTimer();
-    context.read<QuestionProvider>().loadNextQuestion(
-          specialtyId: widget.specialtyId,
-          subTopic: widget.subTopic,
-          filter: widget.filter,
-          shuffle: widget.shuffle,
-        );
+    provider.loadNextQuestion(
+      specialtyId: widget.specialtyId,
+      subTopic: widget.subTopic,
+      filter: widget.filter,
+      shuffle: widget.shuffle,
+    );
   }
-
 
   void _exitExam() {
     context.read<DashboardProvider>().refreshStatsSilently();
@@ -325,7 +326,10 @@ class _ExamScreenState extends State<ExamScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<QuestionProvider>();
+    final dashboardProvider = context.watch<DashboardProvider>();
     final question = provider.currentQuestion;
+    final isAnswerSubmitted = _isAnswerChecked || provider.isCurrentAnswerChecked;
+    final activeAnswerIndex = _selectedAnswerIndex ?? provider.selectedAnswerIndex;
 
     if (provider.status == QuestionStatus.loading || provider.status == QuestionStatus.initial) {
       final l10n = AppLocalizations.of(context)!;
@@ -639,17 +643,22 @@ class _ExamScreenState extends State<ExamScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC), // background-light
+      backgroundColor: const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
-            // Header
+            // Header with Previous Question support
             ExamHeader(
-              currentQuestionIndex: provider.sessionTotalCount,
+              currentQuestionIndex: provider.currentHistoryIndex >= 0
+                  ? provider.currentHistoryIndex
+                  : provider.sessionTotalCount,
               totalQuestions: _getTotalQuestions(provider),
               timeElapsed: _formatTime(_secondsElapsed),
               progress: _calculateProgress(provider),
               isBookmarked: provider.isBookmarked,
+              hasPrevious: provider.hasPreviousQuestion,
+              onPrevious: _loadPreviousQuestion,
+              showTotalQuestions: dashboardProvider.showQuestionCount,
               onBookmark: () async {
                 await provider.toggleBookmark();
                 if (context.mounted) {
@@ -671,12 +680,12 @@ class _ExamScreenState extends State<ExamScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   children: [
-                    // Question (Animated Mastery Growth)
+                    // Question Card
                     TweenAnimationBuilder<Color?>(
-                      duration: const Duration(milliseconds: 800),
+                      duration: const Duration(milliseconds: 600),
                       tween: ColorTween(
                         begin: Colors.transparent,
-                        end: (_isAnswerChecked &&
+                        end: (isAnswerSubmitted &&
                                 provider.answerResult?.isCorrect == true)
                             ? Colors.green.withValues(alpha: 0.1)
                             : Colors.transparent,
@@ -693,7 +702,7 @@ class _ExamScreenState extends State<ExamScreen> {
                               width: 2,
                             ),
                             boxShadow: [
-                              if (_isAnswerChecked)
+                              if (isAnswerSubmitted)
                                 BoxShadow(
                                   color: (provider.answerResult?.isCorrect == true ? Colors.green : Colors.red).withValues(alpha: 0.1),
                                   blurRadius: 10,
@@ -714,31 +723,64 @@ class _ExamScreenState extends State<ExamScreen> {
                     // Options
                     ...List.generate(question.options.length, (index) {
                       final option = question.options[index];
-                      // Determine state
                       AnswerState state = AnswerState.idle;
 
-                      if (_isAnswerChecked) {
-                        if (provider.answerResult?.correctOptionId ==
-                            option.id) {
+                      if (isAnswerSubmitted) {
+                        if (provider.answerResult?.correctOptionId == option.id) {
                           state = AnswerState.correct;
-                        } else if (index == _selectedAnswerIndex) {
+                        } else if (index == activeAnswerIndex) {
                           state = AnswerState.wrong;
                         }
-                      } else if (_selectedAnswerIndex == index) {
+                      } else if (activeAnswerIndex == index) {
                         state = AnswerState.selected;
                       }
 
                       return ExamAnswerOption(
-                        label: String.fromCharCode(65 + index), // A, B, C, D
+                        label: String.fromCharCode(65 + index),
                         text: option.text,
                         state: state,
                         onTap: () => _handleAnswerSelection(index, option.id),
                       );
                     }),
 
+                    // Inline Review Actions when question is answered
+                    if (isAnswerSubmitted && provider.answerResult != null) ...[
+                      const SizedBox(height: 24),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                _showExplanationSheet(provider.answerResult!.isCorrect);
+                              },
+                              icon: const Icon(Icons.lightbulb_outline, color: AppColors.primary),
+                              label: const Text('View Explanation', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                side: const BorderSide(color: AppColors.primary),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: _loadNextQuestion,
+                              icon: const Icon(Icons.arrow_forward),
+                              label: const Text('Next Question', style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppColors.primary,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
 
-
-                    const SizedBox(height: 100), // Bottom padding
+                    const SizedBox(height: 80),
                   ],
                 ),
               ),
@@ -789,16 +831,16 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   int _getTotalQuestions(QuestionProvider provider) {
-    // Only return the total if we have it from the server
     if (provider.totalInCategory > 0) {
       return provider.totalInCategory;
     }
-    return 0; // Header will handle 0 as "Unknown Total"
+    return 0;
   }
 
   double _calculateProgress(QuestionProvider provider) {
     final total = _getTotalQuestions(provider);
     if (total == 0) return 0;
-    return provider.sessionTotalCount / total;
+    final currentIdx = provider.currentHistoryIndex >= 0 ? provider.currentHistoryIndex : provider.sessionTotalCount;
+    return (currentIdx + 1) / total;
   }
-} // End of _ExamScreenState
+}

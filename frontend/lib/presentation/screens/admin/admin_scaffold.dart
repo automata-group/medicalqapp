@@ -107,7 +107,7 @@ class _AdminScaffoldState extends State<AdminScaffold> {
 
     return Scaffold(
       appBar: isDesktop
-          ? null // Hide AppBar on desktop to use full screen layout nicely, or keep it. Let's keep a simple app bar for desktop too for consistency if needed, wait, no let's use a dynamic approach.
+          ? null
           : AppBar(
               title: const Text('Admin Dashboard'),
               backgroundColor: Colors.white,
@@ -128,7 +128,7 @@ class _AdminScaffoldState extends State<AdminScaffold> {
 
   Widget _buildDrawerItem(int index, IconData icon, String title) {
     final isSelected = _selectedIndex == index;
-    return Container(
+    return Material(
       color: isSelected
           ? AppColors.primary.withValues(alpha: 0.1)
           : Colors.transparent,

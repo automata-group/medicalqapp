@@ -6,6 +6,7 @@ import '../../core/utils/toast_utils.dart';
 import '../providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
+import 'specialty_selection_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -37,15 +38,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
-        await Provider.of<AuthProvider>(context, listen: false).register(
+        final auth = Provider.of<AuthProvider>(context, listen: false);
+        await auth.register(
           _nameController.text.trim(),
           _emailController.text.trim(),
           _passwordController.text,
           referralCode: _referralCodeController.text.trim(),
         );
+        // Automatically login after successful registration
+        await auth.login(_emailController.text.trim(), _passwordController.text);
         if (mounted) {
           ToastUtils.showSuccess(context, 'Account created successfully!');
-          Navigator.of(context).pop(); // Go back to login or home
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
+            (route) => false,
+          );
         }
       } catch (e) {
         if (mounted) {
@@ -58,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

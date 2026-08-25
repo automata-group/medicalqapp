@@ -25,3 +25,4 @@ frontend/.packages
 frontend/build/
 frontend/.flutter-plugins
 frontend/.flutter-plugins-dependencies
+actions-runner/

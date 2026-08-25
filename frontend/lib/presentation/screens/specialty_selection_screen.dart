@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../providers/specialty_provider.dart';
+import '../providers/dashboard_provider.dart';
 import '../../domain/entities/specialty.dart';
+
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/utils/toast_utils.dart';
 import 'study_goal_screen.dart';
@@ -361,7 +363,9 @@ class _SpecialtyCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 2), // mt-0.5
                 Text(
-                  l10n.questionsAvailable(specialty.totalQuestions),
+                  context.watch<DashboardProvider>().showQuestionCount
+                      ? l10n.questionsAvailable(specialty.totalQuestions)
+                      : 'Medical Specialty',
                   style: const TextStyle(
                     fontSize: 10, // text-[10px]
                     color: Color(0xFF64748B), // text-slate-500
@@ -374,6 +378,7 @@ class _SpecialtyCard extends StatelessWidget {
       ),
     );
   }
+
 }
 
 class _SpecialtyCardStyle {

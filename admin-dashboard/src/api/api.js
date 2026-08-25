@@ -118,4 +118,10 @@ export const createAchievement = (data) => api.post('/admin/achievements', data)
 export const updateAchievement = (id, data) => api.put(`/admin/achievements/${id}`, data);
 export const deleteAchievement = (id) => api.delete(`/admin/achievements/${id}`);
 
+// ─── System Settings ───────────────────────────────────────
+export const getSystemSettings = () => api.get('/admin/config/settings');
+export const updateSystemSettings = (data) => api.put('/admin/config/settings', data);
+
 export default api;
+
+

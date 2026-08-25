@@ -1,4 +1,4 @@
-const { User, QuestionAttempt, DailyStreak, Specialty, Question, Achievement, UserAchievement, UserMockExam, sequelize } = require('../models');
+const { User, QuestionAttempt, DailyStreak, Specialty, Question, Achievement, UserAchievement, UserMockExam, AppSetting, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 // @desc    Get dashboard overview
@@ -231,11 +231,23 @@ exports.getOverview = async (req, res, next) => {
             }));
         }
 
+        // Fetch showQuestionCount setting
+        let showQuestionCount = false;
+        try {
+            const setting = await AppSetting.findOne({ where: { key: 'system_settings' } });
+            if (setting && setting.value) {
+                showQuestionCount = setting.value.showQuestionCount === true || setting.value.showQuestionCount === 'true';
+            }
+        } catch (err) {
+            console.error('Error reading showQuestionCount setting:', err);
+        }
+
         res.status(200).json({
             success: true,
             data: {
                 totalSolved,
                 totalAvailableQuestions,
+                showQuestionCount,
                 accuracy,
                 currentStreak: streak ? streak.currentStreak : 0,
                 daysToExam,
@@ -248,6 +260,7 @@ exports.getOverview = async (req, res, next) => {
                 motivationalQuote: "Keep pushing forward! 🚀"
             }
         });
+
 
     } catch (error) {
         next(error);

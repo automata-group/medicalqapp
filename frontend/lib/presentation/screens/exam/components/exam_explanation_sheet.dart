@@ -9,10 +9,7 @@ class ExamExplanationSheet extends StatelessWidget {
   final int averageTimeSeconds;
   final int userTimeSeconds;
   final VoidCallback onNext;
-  final bool canRetry;
-  final int attemptsLeft;
-  final VoidCallback? onRetry;
-  final VoidCallback? onGiveUp;
+  final VoidCallback? onPrevious;
 
   const ExamExplanationSheet({
     super.key,
@@ -23,10 +20,7 @@ class ExamExplanationSheet extends StatelessWidget {
     required this.averageTimeSeconds,
     required this.userTimeSeconds,
     required this.onNext,
-    this.canRetry = false,
-    this.attemptsLeft = 0,
-    this.onRetry,
-    this.onGiveUp,
+    this.onPrevious,
   });
 
   @override
@@ -96,21 +90,13 @@ class ExamExplanationSheet extends StatelessWidget {
                               fontFamily: 'IBM Plex Sans Arabic',
                             ),
                           ),
-                          if (!isCorrect && !canRetry)
+                          if (!isCorrect)
                             Text(
                               'Correct Answer: $correctAnswerText',
                               style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
-                              ),
-                            ),
-                          if (!isCorrect && canRetry)
-                            Text(
-                              '$attemptsLeft attempts remaining',
-                              style: TextStyle(
                                 fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange.shade800,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey[700],
                               ),
                             ),
                         ],
@@ -120,97 +106,78 @@ class ExamExplanationSheet extends StatelessWidget {
                 ),
                 const SizedBox(height: 24),
 
-                if (!canRetry) ...[
-                  // Statistics Box (New)
-                  if (passRate > 0)
-                    Container(
-                      margin: const EdgeInsets.only(bottom: 24),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                            color: Colors.blue.withValues(alpha: 0.1)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildStatItem(
-                              'Pass Rate', '$passRate%', Icons.trending_up),
-                          Container(
-                              width: 1,
-                              height: 40,
-                              color: Colors.blue.withValues(alpha: 0.1)),
-                          _buildStatItem('Average Time',
-                              '${averageTimeSeconds}s', Icons.timer),
-                          Container(
-                              width: 1,
-                              height: 40,
-                              color: Colors.blue.withValues(alpha: 0.1)),
-                          _buildStatItem(
-                              'Your Time', '${userTimeSeconds}s', Icons.person),
-                        ],
-                      ),
-                    ),
-
-                  // Explanation Box
+                // Statistics Box
+                if (passRate > 0)
                   Container(
-                    padding: const EdgeInsets.all(16),
+                    margin: const EdgeInsets.only(bottom: 24),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: AppColors.primary.withValues(alpha: 0.05),
+                      color: Colors.blue.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: AppColors.primary.withValues(alpha: 0.1),
-                      ),
+                          color: Colors.blue.withValues(alpha: 0.1)),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        const Row(
-                          children: [
-                            Icon(Icons.lightbulb_outline,
-                                size: 16, color: AppColors.primary),
-                            SizedBox(width: 8),
-                            Text(
-                              'Why is this the answer?',
-                              style: TextStyle(
-                                color: AppColors.primary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          explanation,
-                          style: const TextStyle(
-                            height: 1.6,
-                            fontSize: 14,
-                            color: Color(0xFF475569), // slate-600
-                          ),
-                        ),
+                        _buildStatItem(
+                            'Pass Rate', '$passRate%', Icons.trending_up),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: Colors.blue.withValues(alpha: 0.1)),
+                        _buildStatItem('Average Time',
+                            '${averageTimeSeconds}s', Icons.timer),
+                        Container(
+                            width: 1,
+                            height: 40,
+                            color: Colors.blue.withValues(alpha: 0.1)),
+                        _buildStatItem(
+                            'Your Time', '${userTimeSeconds}s', Icons.person),
                       ],
                     ),
                   ),
-                ] else ...[
-                  // Retry Prompt Content
-                  const SizedBox(height: 16),
-                  Center(
-                    child: Icon(Icons.refresh,
-                        size: 48, color: Colors.orange.withValues(alpha: 0.5)),
-                  ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Don\'t give up just yet! Take another look at the question and try again.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.blueGrey,
-                      height: 1.5,
+
+                // Explanation Box
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: AppColors.primary.withValues(alpha: 0.1),
                     ),
                   ),
-                ],
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Row(
+                        children: [
+                          Icon(Icons.lightbulb_outline,
+                              size: 16, color: AppColors.primary),
+                          SizedBox(width: 8),
+                          Text(
+                            'Why is this the answer?',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        explanation,
+                        style: const TextStyle(
+                          height: 1.6,
+                          fontSize: 14,
+                          color: Color(0xFF475569), // slate-600
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 100), // Spacing for bottom button
               ],
             ),
@@ -218,62 +185,31 @@ class ExamExplanationSheet extends StatelessWidget {
 
           // Bottom Action Bar
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: Colors.white,
               border: Border(top: BorderSide(color: Colors.grey[100]!)),
-            ),  
-            child: canRetry
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            if (onRetry != null) onRetry!();
-                          },
-                          icon: const Icon(Icons.refresh),
-                          label: const Text('Try Again',
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold)),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.orange,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        ),
+            ),
+            child: Row(
+              children: [
+                if (onPrevious != null) ...[
+                  OutlinedButton.icon(
+                    onPressed: onPrevious,
+                    icon: const Icon(Icons.chevron_left),
+                    label: const Text('Previous'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      const SizedBox(height: 12),
-                          SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton(
-                                onPressed: () {
-                                  if (onGiveUp != null) {
-                                    onGiveUp!();
-                                  } else {
-                                    Navigator.pop(context);
-                                    onNext();
-                                  }
-                                },
-                                style: OutlinedButton.styleFrom(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(12)),
-                                    side: BorderSide(color: Colors.grey.shade300)),
-                                child: Text('Give Up & Show Answer',
-                                    style: TextStyle(
-                                        color: Colors.grey.shade700,
-                                        fontWeight: FontWeight.bold)),
-                              ))
-                    ],
-                  )
-                : ElevatedButton(
+                      side: BorderSide(color: Colors.grey.shade300),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                ],
+                Expanded(
+                  child: ElevatedButton(
                     onPressed: onNext,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.primary,
@@ -300,6 +236,9 @@ class ExamExplanationSheet extends StatelessWidget {
                       ],
                     ),
                   ),
+                ),
+              ],
+            ),
           ),
         ],
       ),

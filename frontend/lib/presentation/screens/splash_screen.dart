@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/theme/app_colors.dart';
@@ -10,7 +9,9 @@ import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import 'main_container_screen.dart';
 import 'admin/admin_scaffold.dart';
-import '../../core/utils/toast_utils.dart';
+import 'specialty_selection_screen.dart';
+import 'study_goal_screen.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,26 +29,30 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+
     _animController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 1500),
     );
+
     _scaleAnim = Tween<double>(begin: 0.6, end: 1.0).animate(
-      CurvedAnimation(parent: _animController, curve: Curves.elasticOut),
+      CurvedAnimation(parent: _animController, curve: Curves.easeOutBack),
     );
+
     _fadeAnim = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _animController, curve: Curves.easeIn),
     );
+
     _animController.forward();
-    _navigate();
+    _checkAuth();
   }
 
-  Future<void> _navigate() async {
-    final authProvider = context.read<AuthProvider>();
+  Future<void> _checkAuth() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    // Start all initialization tasks in parallel with the splash animation
+    // Wait at least 2.5 seconds to show the branded splash screen
     final results = await Future.wait([
-      Future.delayed(const Duration(milliseconds: 1200)),
+      Future.delayed(const Duration(milliseconds: 2500)),
       SharedPreferences.getInstance(),
       authProvider.tryAutoLogin(),
     ]);
@@ -77,9 +82,18 @@ class _SplashScreenState extends State<SplashScreen>
     final navigator = Navigator.of(context);
 
     if (isAuthenticated) {
-      if (authProvider.user?.role == 'admin') {
+      final user = authProvider.user;
+      if (user?.role == 'admin') {
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const AdminScaffold()),
+        );
+      } else if (!(user?.hasSpecialties ?? false)) {
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
+        );
+      } else if (!(user?.hasStudyPlan ?? false)) {
+        navigator.pushReplacement(
+          MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
         );
       } else {
         navigator.pushReplacement(

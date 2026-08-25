@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 class DashboardOverviewModel extends Equatable {
   final int totalSolved;
   final int totalAvailableQuestions;
+  final bool showQuestionCount;
   final int accuracy;
   final int currentStreak;
   final int? daysToExam;
@@ -17,6 +18,7 @@ class DashboardOverviewModel extends Equatable {
   const DashboardOverviewModel({
     required this.totalSolved,
     required this.totalAvailableQuestions,
+    this.showQuestionCount = false,
     required this.accuracy,
     required this.currentStreak,
     this.daysToExam,
@@ -33,7 +35,9 @@ class DashboardOverviewModel extends Equatable {
     return DashboardOverviewModel(
       totalSolved: json['totalSolved'] ?? 0,
       totalAvailableQuestions: json['totalAvailableQuestions'] ?? 0,
+      showQuestionCount: json['showQuestionCount'] == true,
       accuracy: json['accuracy'] ?? 0,
+
       currentStreak: json['currentStreak'] ?? 0,
       daysToExam: json['daysToExam'],
       weakAreas: (json['weakAreas'] as List<dynamic>?)
@@ -70,6 +74,7 @@ class DashboardOverviewModel extends Equatable {
   Map<String, dynamic> toJson() => {
         'totalSolved': totalSolved,
         'totalAvailableQuestions': totalAvailableQuestions,
+        'showQuestionCount': showQuestionCount,
         'accuracy': accuracy,
         'currentStreak': currentStreak,
         'daysToExam': daysToExam,
@@ -86,6 +91,7 @@ class DashboardOverviewModel extends Equatable {
   List<Object?> get props => [
         totalSolved,
         totalAvailableQuestions,
+        showQuestionCount,
         accuracy,
         currentStreak,
         daysToExam,
@@ -97,6 +103,7 @@ class DashboardOverviewModel extends Equatable {
         continueRevision,
         motivationalQuote,
       ];
+
 }
 
 class SpecialtyStatModel extends Equatable {

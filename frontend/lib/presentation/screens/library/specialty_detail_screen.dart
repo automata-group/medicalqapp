@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/question_provider.dart';
+import '../../providers/dashboard_provider.dart';
 import '../../../domain/entities/specialty.dart';
+
 import '../exam/exam_screen.dart';
 import '../exam/exam_start_screen.dart';
 import '../../../core/theme/app_colors.dart';
@@ -98,11 +100,13 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Text(
-                    '${widget.specialty.totalQuestions} Questions Available',
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                  if (context.watch<DashboardProvider>().showQuestionCount)
+                    Text(
+                      '${widget.specialty.totalQuestions} Questions Available',
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
                   const SizedBox(height: 24),
+
                   // Primary Action: Random Practice
                   SizedBox(
                     width: double.infinity,

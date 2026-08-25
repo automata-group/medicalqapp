@@ -15,7 +15,9 @@ const navItems = [
     { to: '/plans', label: 'Plans', icon: '💳' },
     { to: '/notify', label: 'Notifications', icon: '🔔' },
     { to: '/ai-insights', label: 'AI Insights', icon: '🤖' },
+    { to: '/settings', label: 'Settings', icon: '⚙️' },
 ];
+
 
 export default function Sidebar({ collapsed, setCollapsed }) {
     const { admin, logout } = useAuth();

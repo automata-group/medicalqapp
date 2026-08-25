@@ -21,84 +21,101 @@ class ExamHeader extends StatelessWidget {
     final double progress =
         totalQuestions > 0 ? (currentQuestionIndex + 1) / totalQuestions : 0.0;
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.9),
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.15),
       ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // Timer
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.9),
+        ),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                // Timer
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.timer_outlined,
+                          color: AppColors.primary, size: 18),
+                      const SizedBox(width: 5),
+                      Text(
+                        timeRemaining,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Lexend',
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.timer_outlined,
-                        color: AppColors.primary, size: 20),
-                    const SizedBox(width: 6),
-                    Text(
-                      timeRemaining,
+
+                // Progress Text (Expanded with single line & ellipsis)
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Text(
+                      'السؤال ${currentQuestionIndex + 1} من $totalQuestions',
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         color: AppColors.primary,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Lexend', // or system default
+                        fontSize: 13,
                       ),
                     ),
-                  ],
-                ),
-              ),
-
-              // Progress Text
-              Text(
-                'السؤال ${currentQuestionIndex + 1} من $totalQuestions', // Localize
-                style: TextStyle(
-                  color: AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 14,
-                ),
-              ),
-
-              // Close Button
-              InkWell(
-                onTap: onClose,
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  width: 32,
-                  height: 32,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100, // dark:bg-slate-800
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.grey.shade600, // dark:text-slate-300
-                    size: 20,
                   ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Progress Bar
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: progress,
-              minHeight: 6,
-              backgroundColor: Colors.grey.shade200,
-              valueColor:
-                  const AlwaysStoppedAnimation<Color>(AppColors.primary),
+
+                // Close Button
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onClose,
+                    borderRadius: BorderRadius.circular(20),
+                    child: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.close,
+                        color: Colors.grey.shade700,
+                        size: 20,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            // Progress Bar
+            ClipRRect(
+              borderRadius: BorderRadius.circular(4),
+              child: LinearProgressIndicator(
+                value: progress,
+                minHeight: 6,
+                backgroundColor: Colors.grey.shade200,
+                valueColor:
+                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

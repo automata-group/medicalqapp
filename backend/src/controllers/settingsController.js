@@ -68,19 +68,22 @@ exports.deleteAccount = async (req, res, next) => {
     }
 };
 
-// @desc    Get App Version
-// @route   GET /api/v1/user/version
-// @access  Public (or Private) -> user app usually public or protected. Todo said /app/version.
-exports.getAppVersion = async (req, res, next) => {
+// @desc    Get Public App Settings (e.g. showQuestionCount)
+// @route   GET /api/v1/user/config
+// @access  Public
+exports.getPublicSettings = async (req, res, next) => {
     try {
+        const { AppSetting } = require('../models');
+        const setting = await AppSetting.findOne({ where: { key: 'system_settings' } });
+        const values = setting ? setting.value : { showQuestionCount: false };
         res.status(200).json({
             success: true,
             data: {
-                version: process.env.npm_package_version || '1.0.0',
-                minSupportedVersion: '1.0.0'
+                showQuestionCount: values.showQuestionCount === true || values.showQuestionCount === 'true'
             }
         });
     } catch (error) {
         next(error);
     }
 };
+

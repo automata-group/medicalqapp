@@ -39,7 +39,7 @@ class SpecialtiesCarousel extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 140,
+              height: 156,
               child: ListView.builder(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
@@ -70,9 +70,9 @@ class SpecialtiesCarousel extends StatelessWidget {
         );
       },
       child: Container(
-        width: 120,
-        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        padding: const EdgeInsets.all(16),
+        width: 124,
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -88,15 +88,15 @@ class SpecialtiesCarousel extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 48,
-              height: 48,
+              width: 46,
+              height: 46,
               decoration: BoxDecoration(
                 color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: specialty.icon != null && specialty.icon.contains('/uploads/')
                 ? ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(23),
                     child: Image.network(
                       'https://healthlicenseprep.com${specialty.icon}',
                       fit: BoxFit.cover,
@@ -107,16 +107,21 @@ class SpecialtiesCarousel extends StatelessWidget {
                 : const Icon(Icons.medical_services_rounded, 
                     color: AppColors.primary, size: 24),
             ),
-            const SizedBox(height: 12),
-            Text(
-              specialty.name,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Center(
+                child: Text(
+                  specialty.name,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF1E293B),
+                    height: 1.2,
+                  ),
+                ),
               ),
             ),
           ],
