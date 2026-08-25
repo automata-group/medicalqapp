@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import { getSystemSettings, updateSystemSettings } from '../api/api';
-import styles from './Page.module.css';
 
 export default function Settings() {
     const [settings, setSettings] = useState({
