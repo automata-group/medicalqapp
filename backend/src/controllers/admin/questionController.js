@@ -323,9 +323,30 @@ exports.bulkImportDocx = async (req, res, next) => {
             topicName = topic.name;
         }
 
-        // Extract raw text from DOCX
-        const { value: rawText } = await mammoth.extractRawText({ path: req.file.path });
-        if (!rawText || rawText.trim().length === 0) {
+        // Extract text from DOCX preserving line breaks (<br />) and formatting
+        let rawText = '';
+        try {
+            const { value: htmlContent } = await mammoth.convertToHtml({ path: req.file.path });
+            rawText = (htmlContent || '')
+                .replace(/<br\s*\/?>/gi, '\n')
+                .replace(/<\/p>/gi, '\n\n')
+                .replace(/<p>/gi, '')
+                .replace(/<\/?strong>/gi, '')
+                .replace(/&nbsp;/g, ' ')
+                .replace(/&amp;/g, '&')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .trim();
+        } catch (htmlErr) {
+            console.warn('[DocxImport] convertToHtml failed, falling back to extractRawText:', htmlErr.message);
+        }
+
+        if (!rawText || rawText.length === 0) {
+            const { value: fallbackText } = await mammoth.extractRawText({ path: req.file.path });
+            rawText = (fallbackText || '').trim();
+        }
+
+        if (!rawText || rawText.length === 0) {
             if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
             return res.status(400).json({ success: false, message: 'The uploaded file is empty or unreadable.' });
         }

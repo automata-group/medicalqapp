@@ -392,6 +392,11 @@ MONETIZATION
         // ========== 4. USER PROMPT ==========
         const userPrompt = `Extract all questions from this text. Apply all taxonomy and explanation rules.
 
+IMPORTANT RULES FOR CORRECT ANSWERS:
+- The correct answer is usually marked in the RAW TEXT with a green checkmark (✅) or an asterisk (*) at the end of the option text, e.g., "A. Spreader ✅" or "A. Spreader *".
+- Sometimes it may be marked with words like "(صح)" or "(Correct)" or "[X]".
+- You MUST ensure exactly one option is marked as isCorrect: true based on these markers.
+
 Existing Questions (mark isDuplicate: true if semantically identical):
 ${existingQuestionsSection}
 
