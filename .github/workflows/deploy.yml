@@ -129,17 +129,6 @@ jobs:
           source: "docker-compose.yml,Caddyfile"
           target: "/opt/medical-qbank"
 
-      - name: Copy Question SQL Migrations to Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: ${{ secrets.SERVER_PORT }}
-          source: "backend/insert_1137_questions_production.sql,backend/insert_second_file_production.sql"
-          target: "/opt/medical-qbank"
-          strip_components: 1
-
       - name: Execute Remote Deployment
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -214,60 +203,6 @@ jobs:
                 exit 1
             fi
             echo "✅ Log verification passed! Database connected and models synced."
-
-            echo "========== DATABASE INGESTION FOR NEW QUESTIONS =========="
-            
-            SQL_1="/opt/medical-qbank/insert_1137_questions_production.sql"
-            [ ! -f "$SQL_1" ] && SQL_1=$(find /opt/medical-qbank -name "insert_1137_questions_production.sql" 2>/dev/null | head -n 1)
-
-            SQL_2="/opt/medical-qbank/insert_second_file_production.sql"
-            [ ! -f "$SQL_2" ] && SQL_2=$(find /opt/medical-qbank -name "insert_second_file_production.sql" 2>/dev/null | head -n 1)
-
-            echo "Target SQL 1: $SQL_1"
-            echo "Target SQL 2: $SQL_2"
-
-            echo "1. Checking Batch 1 status in database..."
-            COUNT_1=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions WHERE source = '\''اساله جديده 22.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
-            echo "Batch 1 current count in DB: '${COUNT_1}'"
-
-            if [ "$COUNT_1" != "1137" ]; then
-                if [ -n "$SQL_1" ] && [ -f "$SQL_1" ]; then
-                    echo "Importing Batch 1 (1,137 questions) into MySQL container..."
-                    echo "$SUDO_PW" | sudo -S docker cp "$SQL_1" medical_qbank_db:/tmp/batch1.sql
-                    echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/batch1.sql"'
-                    echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/batch1.sql
-                    echo "✅ Batch 1 imported successfully!"
-                else
-                    echo "❌ Error: SQL_1 file not found at $SQL_1"
-                fi
-            else
-                echo "ℹ️ Batch 1 already present (1,137 questions). Skipping."
-            fi
-
-            echo "2. Checking Batch 2 status in database..."
-            COUNT_2=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions WHERE source = '\''اساله جديده.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
-            echo "Batch 2 current count in DB: '${COUNT_2}'"
-
-            if [ "$COUNT_2" != "1136" ]; then
-                if [ -n "$SQL_2" ] && [ -f "$SQL_2" ]; then
-                    echo "Importing Batch 2 (1,136 questions) into MySQL container..."
-                    echo "$SUDO_PW" | sudo -S docker cp "$SQL_2" medical_qbank_db:/tmp/batch2.sql
-                    echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/batch2.sql"'
-                    echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/batch2.sql
-                    echo "✅ Batch 2 imported successfully!"
-                else
-                    echo "❌ Error: SQL_2 file not found at $SQL_2"
-                fi
-            else
-                echo "ℹ️ Batch 2 already present (1,136 questions). Skipping."
-            fi
-
-            echo "--- VERIFYING FINAL PRODUCTION DATABASE COUNTS ---"
-            TOTAL_Q=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null' | tr -d '\r\n ')
-            echo "=========================================================="
-            echo ">>> TOTAL QUESTIONS IN PRODUCTION DATABASE: $TOTAL_Q <<<"
-            echo "=========================================================="
-
 
             echo "--- Admin Health Check ---"
             echo "Waiting for Caddy to issue SSL certificates (30s)..."
