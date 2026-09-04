@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build-and-push:
@@ -128,6 +129,16 @@ jobs:
           source: "docker-compose.yml,Caddyfile"
           target: "/opt/medical-qbank"
 
+      - name: Copy Question SQL Migrations to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "backend/insert_1137_questions_production.sql,backend/insert_second_file_production.sql"
+          target: "/opt/medical-qbank"
+
       - name: Execute Remote Deployment
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -202,6 +213,52 @@ jobs:
                 exit 1
             fi
             echo "✅ Log verification passed! Database connected and models synced."
+
+            echo "--- Checking and Applying Question Database Migrations ---"
+            DB_PASSWORD=$(grep -E '^DB_PASS=' /opt/medical-qbank/.env 2>/dev/null | cut -d '=' -f2- | tr -d '\r"' || echo "")
+            if [ -z "$DB_PASSWORD" ]; then
+                DB_PASSWORD="${DB_PASS:-Saadshabib.12}"
+            fi
+
+            SQL_1="/opt/medical-qbank/backend/insert_1137_questions_production.sql"
+            [ ! -f "$SQL_1" ] && SQL_1="/opt/medical-qbank/insert_1137_questions_production.sql"
+
+            SQL_2="/opt/medical-qbank/backend/insert_second_file_production.sql"
+            [ ! -f "$SQL_2" ] && SQL_2="/opt/medical-qbank/insert_second_file_production.sql"
+
+            if [ -f "$SQL_1" ]; then
+                COUNT_1=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM questions WHERE question_source = 'اساله جديده 22.docx';" medical_qbank 2>/dev/null || echo "0")
+                if [ "$COUNT_1" = "0" ]; then
+                    echo "Batch 1 (1,137 questions) not yet in production DB. Importing..."
+                    echo "$SUDO_PW" | sudo -S docker cp "$SQL_1" medical_qbank_db:/tmp/batch1.sql
+                    echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/batch1.sql"
+                    echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/batch1.sql
+                    echo "✅ Batch 1 imported successfully!"
+                else
+                    echo "ℹ️ Batch 1 already exists in production DB ($COUNT_1 questions found). Skipping import."
+                fi
+            else
+                echo "⚠️ Batch 1 SQL file not found at $SQL_1"
+            fi
+
+            if [ -f "$SQL_2" ]; then
+                COUNT_2=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM questions WHERE question_source = 'اساله جديده.docx';" medical_qbank 2>/dev/null || echo "0")
+                if [ "$COUNT_2" = "0" ]; then
+                    echo "Batch 2 (1,136 questions) not yet in production DB. Importing..."
+                    echo "$SUDO_PW" | sudo -S docker cp "$SQL_2" medical_qbank_db:/tmp/batch2.sql
+                    echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/batch2.sql"
+                    echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/batch2.sql
+                    echo "✅ Batch 2 imported successfully!"
+                else
+                    echo "ℹ️ Batch 2 already exists in production DB ($COUNT_2 questions found). Skipping import."
+                fi
+            else
+                echo "⚠️ Batch 2 SQL file not found at $SQL_2"
+            fi
+
+            echo "--- Production Database Question Counts ---"
+            TOTAL_Q=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM questions;" medical_qbank 2>/dev/null || echo "N/A")
+            echo "Total Questions in Production Database: $TOTAL_Q"
 
             echo "--- Admin Health Check ---"
             echo "Waiting for Caddy to issue SSL certificates (30s)..."
