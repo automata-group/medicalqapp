@@ -227,7 +227,7 @@ jobs:
             echo "Target SQL 2: $SQL_2"
 
             echo "1. Checking Batch 1 status in database..."
-            COUNT_1=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM questions WHERE question_source = '\''اساله جديده 22.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
+            COUNT_1=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions WHERE source = '\''اساله جديده 22.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
             echo "Batch 1 current count in DB: '${COUNT_1}'"
 
             if [ "$COUNT_1" != "1137" ]; then
@@ -245,7 +245,7 @@ jobs:
             fi
 
             echo "2. Checking Batch 2 status in database..."
-            COUNT_2=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM questions WHERE question_source = '\''اساله جديده.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
+            COUNT_2=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions WHERE source = '\''اساله جديده.docx'\'';" medical_qbank 2>/dev/null' | tr -d '\r\n ' || echo "0")
             echo "Batch 2 current count in DB: '${COUNT_2}'"
 
             if [ "$COUNT_2" != "1136" ]; then
@@ -262,11 +262,8 @@ jobs:
                 echo "ℹ️ Batch 2 already present (1,136 questions). Skipping."
             fi
 
-            echo "3. Updating specialty total_questions cache..."
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "UPDATE specialties s SET total_questions = (SELECT COUNT(*) FROM questions q WHERE q.specialty_id = s.specialty_id);"'
-
             echo "--- VERIFYING FINAL PRODUCTION DATABASE COUNTS ---"
-            TOTAL_Q=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM questions;" medical_qbank 2>/dev/null' | tr -d '\r\n ')
+            TOTAL_Q=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null' | tr -d '\r\n ')
             echo "=========================================================="
             echo ">>> TOTAL QUESTIONS IN PRODUCTION DATABASE: $TOTAL_Q <<<"
             echo "=========================================================="
