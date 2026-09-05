@@ -101,3 +101,27 @@ exports.deletePlan = async (req, res, next) => {
         next(error);
     }
 };
+
+// @desc    Seed / restore official subscription plans
+// @route   POST /api/v1/admin/subscription-plans/seed-defaults
+// @access  Private (Admin)
+exports.seedDefaultPlans = async (req, res, next) => {
+    try {
+        const { seedOfficialPlans } = require('../../utils/seedPlans');
+        await seedOfficialPlans();
+        const plans = await SubscriptionPlan.findAll({
+            order: [['price', 'ASC']]
+        });
+
+        await AdminActivityLog.create({
+            adminId: req.user.id,
+            action: 'SEED_OFFICIAL_PLANS',
+            targetResource: 'SubscriptionPlans',
+            ipAddress: req.ip
+        });
+
+        res.status(200).json({ success: true, message: 'Official plans seeded successfully', data: plans });
+    } catch (error) {
+        next(error);
+    }
+};

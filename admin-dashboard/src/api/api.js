@@ -108,6 +108,7 @@ export const getPlans = () => api.get('/admin/subscription-plans');
 export const updatePlan = (id, data) => api.put(`/admin/subscription-plans/${id}`, data);
 export const createPlan = (data) => api.post('/admin/subscription-plans', data);
 export const deletePlan = (id) => api.delete(`/admin/subscription-plans/${id}`);
+export const seedDefaultPlans = () => api.post('/admin/subscription-plans/seed-defaults');
 
 // ─── Mock Exams ──────────────────────────────────────────
 export const getAdminMockExams = () => api.get('/admin/mock-exams');

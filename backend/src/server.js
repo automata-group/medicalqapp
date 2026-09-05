@@ -41,6 +41,14 @@ const startServer = async () => {
         await sequelize.sync({ alter: false });
         console.log('✅ All models synchronized successfully.');
 
+        // Ensure official subscription plans exist
+        try {
+            const { seedOfficialPlans } = require('./utils/seedPlans');
+            await seedOfficialPlans();
+        } catch (seedErr) {
+            console.error('Seed plans error:', seedErr.message);
+        }
+
         app.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
             console.log(`👉 http://localhost:${PORT}`);

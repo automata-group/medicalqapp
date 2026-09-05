@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { getPlans, updatePlan, createPlan, deletePlan } from '../api/api';
+import { getPlans, updatePlan, createPlan, deletePlan, seedDefaultPlans } from '../api/api';
 import styles from './Dashboard.module.css';
 import pageStyles from './Page.module.css';
 
 export default function Plans() {
     const [plans, setPlans] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
     const [editing, setEditing] = useState(null);
     const [creating, setCreating] = useState(false);
     const [newPlan, setNewPlan] = useState({
@@ -17,6 +18,23 @@ export default function Plans() {
         isPopular: false,
         isActive: true
     });
+
+    async function handleSyncOfficialPlans() {
+        setSyncing(true);
+        try {
+            const res = await seedDefaultPlans();
+            if (res.data?.success && res.data?.data) {
+                const list = res.data.data;
+                list.sort((a, b) => Number(a.price) - Number(b.price));
+                setPlans(list);
+                alert('✅ تم تفعيل واستعادة الباقات الأربعة الرسمية بنجاح!');
+            }
+        } catch (err) {
+            alert('فشل تفعيل الباقات: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setSyncing(false);
+        }
+    }
 
 
 
@@ -92,14 +110,74 @@ export default function Plans() {
                         إدارة باقات وأسعار الاشتراك في التطبيق والتحكم في مدة وتفاصيل كل خطة.
                     </p>
                 </div>
-                <button
-                    className={`${pageStyles.btn} ${pageStyles.btnPrimary}`}
-                    onClick={() => setCreating(true)}
-                    style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '10px' }}
-                >
-                    + إضافة خطة جديدة
-                </button>
+                <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+                    <button
+                        onClick={handleSyncOfficialPlans}
+                        disabled={syncing}
+                        style={{
+                            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '10px 18px',
+                            fontSize: '14px',
+                            borderRadius: '10px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+                        }}
+                    >
+                        {syncing ? 'جاري المزامنة...' : '⚡ استعادة الباقات الرسمية الأربعة'}
+                    </button>
+                    <button
+                        className={`${pageStyles.btn} ${pageStyles.btnPrimary}`}
+                        onClick={() => setCreating(true)}
+                        style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '10px' }}
+                    >
+                        + إضافة خطة جديدة
+                    </button>
+                </div>
             </div>
+
+            {/* Banner when official plans are missing or only test plan exists */}
+            {(!loading && (!plans || plans.length < 4)) && (
+                <div style={{
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(5, 150, 105, 0.05) 100%)',
+                    border: '1px solid #10b981',
+                    borderRadius: 12,
+                    padding: '16px 20px',
+                    marginBottom: 24,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: 12
+                }}>
+                    <div>
+                        <strong style={{ color: '#34d399', fontSize: 15, display: 'block', marginBottom: 4 }}>
+                            💡 هل ترغب في تفعيل باقات SDLE الرسمية الأربعة فوراً؟
+                        </strong>
+                        <span style={{ color: '#94a3b8', fontSize: 13 }}>
+                            الباقات المعتمدة (شهر بـ 149 ريال، 3 أشهر بـ 399 ريال، 6 أشهر بـ 749 ريال، وسنة كاملة بـ 1299 ريال).
+                        </span>
+                    </div>
+                    <button
+                        onClick={handleSyncOfficialPlans}
+                        disabled={syncing}
+                        style={{
+                            background: '#10b981',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '10px 20px',
+                            borderRadius: 8,
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+                        }}
+                    >
+                        {syncing ? 'جاري التفعيل...' : '⚡ تفعيل الباقات الأربعة الآن'}
+                    </button>
+                </div>
+            )}
 
             <div style={{
                 background: 'linear-gradient(90deg, #1e3a5f 0%, #0f172a 100%)',
