@@ -18,21 +18,17 @@ export default function Plans() {
         isActive: true
     });
 
-    const fetchPlans = () => {
-        setLoading(true);
+
+
+    useEffect(() => {
         getPlans()
             .then((r) => {
                 const list = r.data?.data || r.data || [];
-                // Sort by price ascending
                 list.sort((a, b) => Number(a.price) - Number(b.price));
                 setPlans(list);
             })
             .catch((err) => console.error('Error fetching plans:', err))
             .finally(() => setLoading(false));
-    };
-
-    useEffect(() => {
-        fetchPlans();
     }, []);
 
     async function saveEdit() {

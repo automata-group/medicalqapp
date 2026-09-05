@@ -1,4 +1,4 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
     getContributions,
     getContribution,
@@ -20,6 +20,7 @@ export default function Contributions() {
     const [specialtyFilter, setSpecialtyFilter] = useState('all');
     const [sortBy, setSortBy] = useState('newest');
     const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [clusterOnly, setClusterOnly] = useState(false);
@@ -59,8 +60,17 @@ export default function Contributions() {
             .catch((err) => console.error('Error fetching specialties:', err));
     }, []);
 
+    // Handle Search debounce
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [search]);
+
     // Fetch Contributions
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         setLoading(true);
         try {
             const params = {
@@ -71,7 +81,7 @@ export default function Contributions() {
             };
             if (statusFilter !== 'all') params.status = statusFilter;
             if (specialtyFilter !== 'all') params.specialtyId = specialtyFilter;
-            if (search.trim()) params.search = search.trim();
+            if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
 
             const res = await getContributions(params);
             if (res.data?.success) {
@@ -86,20 +96,11 @@ export default function Contributions() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, statusFilter, specialtyFilter, sortBy, clusterOnly, debouncedSearch]);
 
     useEffect(() => {
         fetchData();
-    }, [page, statusFilter, specialtyFilter, sortBy, clusterOnly]);
-
-    // Handle Search debounce
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setPage(1);
-            fetchData();
-        }, 400);
-        return () => clearTimeout(timer);
-    }, [search]);
+    }, [fetchData]);
 
     // Open Inspect Modal with full cluster siblings
     const handleInspect = async (item) => {
@@ -110,7 +111,7 @@ export default function Contributions() {
             } else {
                 setActiveContribution(item);
             }
-        } catch (e) {
+        } catch {
             setActiveContribution(item);
         }
         setInspectModalOpen(true);
