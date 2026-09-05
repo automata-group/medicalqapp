@@ -101,6 +101,22 @@ export default function Plans() {
         return `${days} يوم`;
     };
 
+    // Helper to format plan name with number on the right in Arabic RTL layout
+    const renderPlanName = (name) => {
+        if (!name) return '';
+        const match = name.match(/^(\d+)\s*(.+)$/);
+        if (match) {
+            const [, number, rest] = match;
+            return (
+                <span style={{ display: 'inline-flex', flexDirection: 'row', alignItems: 'center', gap: '6px', direction: 'rtl' }}>
+                    <span style={{ fontWeight: 800 }}>{number}</span>
+                    <span style={{ fontWeight: 800 }}>{rest}</span>
+                </span>
+            );
+        }
+        return <span style={{ direction: 'rtl', display: 'inline-block' }}>{name}</span>;
+    };
+
     return (
         <div style={{ paddingBottom: 40 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -287,7 +303,7 @@ export default function Plans() {
 
                     {/* Plan Cards */}
                     {plans.map((plan) => {
-                        const isThisPopular = plan.isPopular || plan.slug === '3-months';
+                        const isThisPopular = Boolean(plan.isPopular);
                         const isEditingThis = editing && (editing._id || editing.id) === (plan._id || plan.id);
 
                         return (
@@ -387,8 +403,8 @@ export default function Plans() {
                                 ) : (
                                     <div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 12 }}>
-                                            <div style={{ color: '#f8fafc', fontSize: 20, fontWeight: 800 }}>
-                                                {plan.name}
+                                            <div style={{ color: '#f8fafc', fontSize: 20, fontWeight: 800, display: 'flex', alignItems: 'center' }}>
+                                                {renderPlanName(plan.name)}
                                             </div>
                                             <span style={{
                                                 fontSize: '11px',
@@ -423,7 +439,7 @@ export default function Plans() {
                                             gap: 8
                                         }}>
                                             <span>⏳</span>
-                                            <span>{getDurationLabel(plan.durationInDays)}</span>
+                                            <span dir="rtl" style={{ direction: 'rtl' }}>{getDurationLabel(plan.durationInDays)}</span>
                                             {plan.discountPercentage > 0 && (
                                                 <span style={{
                                                     marginLeft: 'auto',
