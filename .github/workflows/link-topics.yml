@@ -1,0 +1,78 @@
+name: Link All Questions to Topics
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/link_all_topics.sql'
+      - '.github/workflows/link-topics.yml'
+
+jobs:
+  link-topics:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy Link Topics Script to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          source: "backend/link_all_topics.sql"
+          target: "/opt/medical-qbank"
+
+      - name: Execute Topic Linking in MySQL
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: ${{ secrets.SERVER_PORT }}
+          script: |
+            set -e
+            echo "======================================================"
+            echo "🚀 LINKING ALL 4,721 QUESTIONS TO TOPICS"
+            echo "======================================================"
+            cd /opt/medical-qbank
+            SUDO_PW="${{ secrets.SERVER_PASSWORD }}"
+
+            LINK_FILE="/opt/medical-qbank/backend/link_all_topics.sql"
+            [ ! -f "$LINK_FILE" ] && LINK_FILE="/opt/medical-qbank/link_all_topics.sql"
+
+            echo "Transferring link_all_topics.sql into MySQL container..."
+            echo "$SUDO_PW" | sudo -S docker cp "$LINK_FILE" medical_qbank_db:/tmp/link_all_topics.sql
+            echo "Executing topic linking updates..."
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/link_all_topics.sql"'
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/link_all_topics.sql
+            echo "✅ All Questions successfully linked to topics!"
+
+            echo ""
+            echo "======================================================"
+            echo "📊 TOPIC LINKING VERIFICATION SUMMARY:"
+            echo "======================================================"
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "
+              SELECT '\''Total Questions in DB'\'' AS Metric, COUNT(*) AS Total FROM Questions
+              UNION ALL
+              SELECT '\''Questions Linked to Topics'\'', COUNT(*) FROM Questions WHERE topicId IS NOT NULL
+              UNION ALL
+              SELECT '\''Questions Without Topic'\'', COUNT(*) FROM Questions WHERE topicId IS NULL;
+            "'
+
+            echo ""
+            echo "======================================================"
+            echo "📊 QUESTIONS COUNT BY SPECIALTY (WITH TOPICS):"
+            echo "======================================================"
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "
+              SELECT s.name AS Specialty, COUNT(q.id) AS QuestionsCount, COUNT(DISTINCT q.topicId) AS DistinctTopicsUsed
+              FROM Questions q
+              JOIN Specialties s ON q.specialtyId = s.id
+              WHERE q.topicId IS NOT NULL
+              GROUP BY s.name
+              ORDER BY QuestionsCount DESC;
+            "'
+            echo "======================================================"
