@@ -83,64 +83,70 @@ class ExamOptionCard extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
-          children: [
-            // Label Box (A, B, C...)
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: labelBgColor,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              alignment: Alignment.center,
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: labelTextColor,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            const SizedBox(width: 16),
-            // Text
-            Expanded(
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 14, // medium font
-                  fontWeight: FontWeight.w500,
-                  color: isSelected && !isSubmitted
-                      ? AppColors.primary
-                      : Colors.black87,
-                ),
-              ),
-            ),
-            // Checkmark/Radio
-            if (isSubmitted && isCorrect)
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Row(
+            children: [
+              // Label Box (A, B, C...)
               Container(
-                width: 20,
-                height: 20,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.check, color: Colors.white, size: 14),
-              )
-            else
-              Container(
-                width: 20,
-                height: 20,
+                width: 32,
+                height: 32,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: Colors.grey.shade300,
-                    width: 2,
+                  color: labelBgColor,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: labelTextColor,
+                    fontSize: 16,
                   ),
                 ),
               ),
-          ],
+              const SizedBox(width: 16),
+              // Text
+              Expanded(
+                child: Text(
+                  text,
+                  textAlign: TextAlign.left,
+                  textDirection: TextDirection.ltr,
+                  style: TextStyle(
+                    fontSize: 14, // medium font
+                    fontWeight: FontWeight.w500,
+                    color: isSelected && !isSubmitted
+                        ? AppColors.primary
+                        : Colors.black87,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              // Checkmark/Radio
+              if (isSubmitted && isCorrect)
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: const BoxDecoration(
+                    color: AppColors.primary,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.check, color: Colors.white, size: 14),
+                )
+              else
+                Container(
+                  width: 20,
+                  height: 20,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.grey.shade300,
+                      width: 2,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

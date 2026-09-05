@@ -199,6 +199,8 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
                 // Question Text
                 Text(
                   question.text,
+                  textAlign: TextAlign.left,
+                  textDirection: TextDirection.ltr,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -256,42 +258,47 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
                           ),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Row(
-                          children: [
-                            Container(
-                              width: 24,
-                              height: 24,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: isSelected
-                                      ? borderColor
-                                      : Colors.grey.shade400,
-                                  width: 2,
+                        child: Directionality(
+                          textDirection: TextDirection.ltr,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 24,
+                                height: 24,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? borderColor
+                                        : Colors.grey.shade400,
+                                    width: 2,
+                                  ),
+                                  color: isSelected ? borderColor : null,
                                 ),
-                                color: isSelected ? borderColor : null,
+                                child: isSelected
+                                    ? const Icon(Icons.check,
+                                        size: 16, color: Colors.white)
+                                    : null,
                               ),
-                              child: isSelected
-                                  ? const Icon(Icons.check,
-                                      size: 16, color: Colors.white)
-                                  : null,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                option.text,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: isSelected
-                                      ? const Color(0xFF1E293B)
-                                      : const Color(0xFF475569),
-                                  fontWeight: isSelected
-                                      ? FontWeight.w600
-                                      : FontWeight.normal,
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  option.text,
+                                  textAlign: TextAlign.left,
+                                  textDirection: TextDirection.ltr,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: isSelected
+                                        ? const Color(0xFF1E293B)
+                                        : const Color(0xFF475569),
+                                    fontWeight: isSelected
+                                        ? FontWeight.w600
+                                        : FontWeight.normal,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),

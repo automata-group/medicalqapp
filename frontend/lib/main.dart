@@ -18,6 +18,7 @@ import 'presentation/providers/admin_provider.dart';
 import 'presentation/providers/reminder_provider.dart';
 import 'presentation/providers/ai_feedback_provider.dart';
 import 'presentation/providers/contribution_provider.dart';
+import 'presentation/providers/locale_provider.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/screens/splash_screen.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
@@ -60,6 +61,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<LocaleProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<AuthProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<StudyGoalProvider>()),
@@ -74,16 +76,20 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => AdminProvider()), // Inject AdminProvider
       ],
-      child: MaterialApp(
-        title: 'SDLE',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.system,
-        locale: const Locale('ar'), // Default to Arabic
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        home: const SplashScreen(),
+      child: Consumer<LocaleProvider>(
+        builder: (context, localeProvider, child) {
+          return MaterialApp(
+            title: 'SDLE',
+            debugShowCheckedModeBanner: false,
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: ThemeMode.system,
+            locale: localeProvider.locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

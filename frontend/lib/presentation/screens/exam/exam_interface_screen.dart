@@ -10,6 +10,7 @@ import '../../widgets/exam/exam_explanation_sheet.dart';
 import 'exam_result_screen.dart';
 import 'exam_break_screen.dart';
 import '../../../core/utils/toast_utils.dart';
+import '../../../core/utils/specialty_extension.dart';
 
 class ExamInterfaceScreen extends StatefulWidget {
   final String
@@ -150,40 +151,44 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
                       Expanded(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: 20),
-                              // Specialty Badge
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color:
-                                      AppColors.primary.withValues(alpha: 0.1),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(
-                                  '${question.specialty ?? "General"} ${question.topic != null ? "• ${question.topic}" : ""}',
-                                  style: const TextStyle(
-                                    color: AppColors.primary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12,
+                          child: Directionality(
+                            textDirection: TextDirection.ltr,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 20),
+                                // Specialty Badge
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color:
+                                        AppColors.primary.withValues(alpha: 0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '${getSpecialtyLocalizedName(question.specialty ?? "General", AppLocalizations.of(context)!)} ${question.topic != null ? "• ${question.topic}" : ""}',
+                                    style: const TextStyle(
+                                      color: AppColors.primary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              const SizedBox(height: 16),
-                              // Question Text
-                              Text(
-                                question.text,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  height: 1.5,
-                                  fontFamily: 'IBM Plex Sans Arabic',
+                                const SizedBox(height: 16),
+                                // Question Text
+                                Text(
+                                  question.text,
+                                  textAlign: TextAlign.left,
+                                  textDirection: TextDirection.ltr,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.5,
+                                    fontFamily: 'IBM Plex Sans Arabic',
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 32),
+                                const SizedBox(height: 32),
 
                               // Options
                               ...question.options.asMap().entries.map((entry) {
@@ -214,6 +219,7 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
                           ),
                         ),
                       ),
+                    ),
                     ],
                   ),
 

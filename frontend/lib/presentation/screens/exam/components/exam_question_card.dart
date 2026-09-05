@@ -14,54 +14,57 @@ class ExamQuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
 
-        // Question Text
-        Text(
-          questionText,
-          style: const TextStyle(
-            fontSize: 20, // text-xl
-            height: 1.6, // leading-relaxed
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF1E293B), // text-slate-800
-            fontFamily: 'IBM Plex Sans Arabic', // Specific font from design
+          // Question Text
+          Text(
+            questionText,
+            style: const TextStyle(
+              fontSize: 20, // text-xl
+              height: 1.6, // leading-relaxed
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B), // text-slate-800
+              fontFamily: 'IBM Plex Sans Arabic', // Specific font from design
+            ),
+            textAlign: TextAlign.left,
+            textDirection: TextDirection.ltr,
           ),
-          textAlign: TextAlign.left,
-          textDirection: TextDirection.ltr,
-        ),
 
-        // Clinical Image (If available)
-        if (imageUrl != null && imageUrl!.isNotEmpty) ...[
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: () => _showFullScreenImage(context, imageUrl!),
-            child: Hero(
-              tag: 'question_image_$imageUrl',
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.network(
-                  imageUrl!,
-                  width: double.infinity,
-                  height: 200,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => const SizedBox
-                      .shrink(), // Silently hide on network failure
+          // Clinical Image (If available)
+          if (imageUrl != null && imageUrl!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            GestureDetector(
+              onTap: () => _showFullScreenImage(context, imageUrl!),
+              child: Hero(
+                tag: 'question_image_$imageUrl',
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.network(
+                    imageUrl!,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => const SizedBox
+                        .shrink(), // Silently hide on network failure
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 8),
-          const Center(
-            child: Text(
-              'Tap image to zoom',
-              style: TextStyle(color: Colors.grey, fontSize: 12),
+            const SizedBox(height: 8),
+            const Center(
+              child: Text(
+                'Tap image to zoom',
+                style: TextStyle(color: Colors.grey, fontSize: 12),
+              ),
             ),
-          ),
+          ],
         ],
-      ],
+      ),
     );
   }
 

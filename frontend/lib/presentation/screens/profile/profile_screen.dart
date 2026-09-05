@@ -13,6 +13,7 @@ import '../../providers/sync_provider.dart';
 import '../../../core/utils/toast_utils.dart';
 import 'edit_profile_screen.dart';
 import '../subscription/pricing_screen.dart';
+import '../../providers/locale_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -297,6 +298,30 @@ class ProfileScreen extends StatelessWidget {
                                 },
                               ),
                           ],
+                        ),
+                      ),
+                      Consumer<LocaleProvider>(
+                        builder: (ctx, localeProv, _) => _buildListTile(
+                          icon: Icons.language_rounded,
+                          iconColor: const Color(0xFF0EA5E9),
+                          title: l10n.language,
+                          trailing: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF0EA5E9).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              localeProv.currentLanguageName,
+                              style: const TextStyle(
+                                color: Color(0xFF0284C7),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          onTap: () => _showLanguageDialog(context, localeProv),
                         ),
                       ),
                     ],
@@ -819,6 +844,124 @@ class ProfileScreen extends StatelessWidget {
           : null,
       trailing: trailing ?? const Icon(Icons.chevron_right, color: Colors.grey),
       onTap: onTap,
+    );
+  }
+
+  void _showLanguageDialog(BuildContext context, LocaleProvider localeProv) {
+    final l10n = AppLocalizations.of(context)!;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.language,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildLanguageOption(
+                  title: 'العربية (Arabic)',
+                  subtitle: 'الواجهة باللغة العربية',
+                  isSelected: localeProv.isArabic,
+                  onTap: () {
+                    localeProv.setLanguageCode('ar');
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildLanguageOption(
+                  title: 'English',
+                  subtitle: 'English interface',
+                  isSelected: !localeProv.isArabic,
+                  onTap: () {
+                    localeProv.setLanguageCode('en');
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageOption({
+    required String title,
+    required String subtitle,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.08)
+              : Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected ? AppColors.primary : const Color(0xFF1E293B),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              const Icon(Icons.check_circle_rounded, color: AppColors.primary, size: 24)
+            else
+              Icon(Icons.radio_button_unchecked, color: Colors.grey.shade400, size: 24),
+          ],
+        ),
+      ),
     );
   }
 }
