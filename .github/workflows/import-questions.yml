@@ -6,9 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'backend/insert_file1_questions.sql'
-      - 'backend/clear_all_questions.sql'
-      - 'backend/merge_surgery_and_add_infection_control.sql'
+      - 'backend/insert_file2_questions.sql'
       - '.github/workflows/import-questions.yml'
 
 jobs:
@@ -18,17 +16,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy SQL Scripts to Server
+      - name: Copy File 2 Script to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "backend/clear_all_questions.sql,backend/merge_surgery_and_add_infection_control.sql,backend/insert_file1_questions.sql"
+          source: "backend/insert_file2_questions.sql"
           target: "/opt/medical-qbank"
 
-      - name: Execute Clear, Merge Specialties, and Import Questions
+      - name: Execute Incremental Deduplicated Import for File 2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -38,46 +36,24 @@ jobs:
           script: |
             set -e
             echo "======================================================"
-            echo "🚀 1. WIPING OLD QUESTIONS (PRESERVING USERS & SPECIALTIES)"
+            echo "🚀 IMPORTING 633 NEW QUESTIONS FROM 'اساله 2.docx'"
             echo "======================================================"
             cd /opt/medical-qbank
             SUDO_PW="${{ secrets.SERVER_PASSWORD }}"
 
-            CLEAR_SQL="/opt/medical-qbank/backend/clear_all_questions.sql"
-            [ ! -f "$CLEAR_SQL" ] && CLEAR_SQL="/opt/medical-qbank/clear_all_questions.sql"
+            echo "Checking questions count in DB before import..."
+            BEFORE_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank' 2>/dev/null || echo "0")
+            echo "Total questions in DB before import: $BEFORE_COUNT"
 
-            echo "Transferring clear script into MySQL container..."
-            echo "$SUDO_PW" | sudo -S docker cp "$CLEAR_SQL" medical_qbank_db:/tmp/clear.sql
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/clear.sql"'
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/clear.sql
-            echo "✅ Old questions wiped successfully!"
+            FILE2="/opt/medical-qbank/backend/insert_file2_questions.sql"
+            [ ! -f "$FILE2" ] && FILE2="/opt/medical-qbank/insert_file2_questions.sql"
 
-            echo ""
-            echo "======================================================"
-            echo "🚀 2. UPDATING SPECIALTIES (MERGE SURGERY & ADD INFECTION CONTROL)"
-            echo "======================================================"
-            MERGE_SQL="/opt/medical-qbank/backend/merge_surgery_and_add_infection_control.sql"
-            [ ! -f "$MERGE_SQL" ] && MERGE_SQL="/opt/medical-qbank/merge_surgery_and_add_infection_control.sql"
-
-            echo "Transferring specialty script into MySQL container..."
-            echo "$SUDO_PW" | sudo -S docker cp "$MERGE_SQL" medical_qbank_db:/tmp/merge.sql
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/merge.sql"'
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/merge.sql
-            echo "✅ Specialties merged and Infection Control added!"
-
-            echo ""
-            echo "======================================================"
-            echo "🚀 3. IMPORTING 1,851 QUESTIONS FROM 'اساله 1.docx'"
-            echo "======================================================"
-            FILE1="/opt/medical-qbank/backend/insert_file1_questions.sql"
-            [ ! -f "$FILE1" ] && FILE1="/opt/medical-qbank/insert_file1_questions.sql"
-
-            echo "Transferring File 1 into MySQL container..."
-            echo "$SUDO_PW" | sudo -S docker cp "$FILE1" medical_qbank_db:/tmp/file1.sql
-            echo "Executing import for File 1..."
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/file1.sql"'
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/file1.sql
-            echo "✅ File 1 (1,851 questions) imported successfully!"
+            echo "Transferring File 2 into MySQL container..."
+            echo "$SUDO_PW" | sudo -S docker cp "$FILE2" medical_qbank_db:/tmp/file2.sql
+            echo "Executing import for File 2..."
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/file2.sql"'
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/file2.sql
+            echo "✅ File 2 (633 questions) imported successfully!"
 
             echo ""
             echo "======================================================"
@@ -90,8 +66,13 @@ jobs:
               ORDER BY s.sortOrder, s.id;
             "'
 
+            AFTER_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank' 2>/dev/null || echo "0")
+            NEW_ADDED=$((AFTER_COUNT - BEFORE_COUNT))
+
             echo ""
             echo "======================================================"
             echo "📊 TOTAL QUESTIONS IN DATABASE:"
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "SELECT COUNT(*) AS total_questions FROM Questions;"'
+            echo "   Previous Total:   $BEFORE_COUNT questions"
+            echo "   New Added:        +$NEW_ADDED questions"
+            echo "   New Total in DB:  $AFTER_COUNT questions"
             echo "======================================================"

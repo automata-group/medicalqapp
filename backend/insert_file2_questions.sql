@@ -7,9 +7,9 @@
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
--- Question #1 (Dental Surgery - medium)
+-- Question #1 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A 10-year-old healthy boy came to restore his anterior teeth. The dentist decided to use local anesthesia. Which type is contraindicated?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A 10-year-old healthy boy came to restore his anterior teeth. The dentist decided to use local anesthesia. Which type is contraindicated?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A 10-year-old healthy boy came to restore his anterior teeth. The dentist decided to use local anesthesia. Which type is contraindicated?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A 10-year-old healthy boy came to restore his anterior teeth. The dentist decided to use local anesthesia. Which type is contraindicated?' LIMIT 1);
@@ -406,9 +406,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Take antibiotics', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #22 (Restorative - easy)
+-- Question #22 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'Where should an extracted tooth containing amalgam be disposed?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Where should an extracted tooth containing amalgam be disposed?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Where should an extracted tooth containing amalgam be disposed?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Where should an extracted tooth containing amalgam be disposed?' LIMIT 1);
@@ -425,9 +425,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Sharps container', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #23 (Dental Ethics - easy)
+-- Question #23 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'A sterilization indicator on the instrument pack has turned blue. What does it mean?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'A sterilization indicator on the instrument pack has turned blue. What does it mean?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A sterilization indicator on the instrument pack has turned blue. What does it mean?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A sterilization indicator on the instrument pack has turned blue. What does it mean?' LIMIT 1);
@@ -444,9 +444,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Sterilized and ready to use', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #24 (Dental Surgery - medium)
+-- Question #24 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'After extraction, instruments cannot be sterilized immediately. How should they be stored temporarily?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After extraction, instruments cannot be sterilized immediately. How should they be stored temporarily?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After extraction, instruments cannot be sterilized immediately. How should they be stored temporarily?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After extraction, instruments cannot be sterilized immediately. How should they be stored temporarily?' LIMIT 1);
@@ -539,9 +539,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Herpangina', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #29 (Dental Surgery - medium)
+-- Question #29 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Dentist explained all treatment options including implant and RCT. The final treatment decision mainly depends on:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Dentist explained all treatment options including implant and RCT. The final treatment decision mainly depends on:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Dentist explained all treatment options including implant and RCT. The final treatment decision mainly depends on:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Dentist explained all treatment options including implant and RCT. The final treatment decision mainly depends on:' LIMIT 1);
@@ -786,9 +786,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Ask assistant to recap it', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #42 (Dental Surgery - easy)
+-- Question #42 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'How many parts does the surgical blade have?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'How many parts does the surgical blade have?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'How many parts does the surgical blade have?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'How many parts does the surgical blade have?' LIMIT 1);
@@ -824,9 +824,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Age', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #44 (Dental Surgery - medium)
+-- Question #44 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient had trauma to the face, and tooth #11 appeared shorter clinically. What happened to the tooth?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient had trauma to the face, and tooth #11 appeared shorter clinically. What happened to the tooth?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient had trauma to the face, and tooth #11 appeared shorter clinically. What happened to the tooth?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient had trauma to the face, and tooth #11 appeared shorter clinically. What happened to the tooth?' LIMIT 1);
@@ -862,9 +862,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Stop orthodontic treatment', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #46 (Dental Surgery - medium)
+-- Question #46 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient came for extraction of 38, and after examination it was close to the inferior alveolar nerve. What is the next step?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient came for extraction of 38, and after examination it was close to the inferior alveolar nerve. What is the next step?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient came for extraction of 38, and after examination it was close to the inferior alveolar nerve. What is the next step?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient came for extraction of 38, and after examination it was close to the inferior alveolar nerve. What is the next step?' LIMIT 1);
@@ -957,9 +957,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Extract the tooth', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #51 (Orthodontics - easy)
+-- Question #51 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Orthodontics' LIMIT 1), 'A sign of mandibular fracture is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A sign of mandibular fracture is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A sign of mandibular fracture is:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A sign of mandibular fracture is:' LIMIT 1);
@@ -976,9 +976,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Tooth discoloration', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #52 (Restorative - easy)
+-- Question #52 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'A picture of dental light was shown. What is the best way to keep the area disinfected?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'A picture of dental light was shown. What is the best way to keep the area disinfected?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A picture of dental light was shown. What is the best way to keep the area disinfected?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A picture of dental light was shown. What is the best way to keep the area disinfected?' LIMIT 1);
@@ -1147,9 +1147,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'No treatment', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #61 (Dental Surgery - medium)
+-- Question #61 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient has mouth opening of 20 mm and needs a mandibular block. Which technique is preferred?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient has mouth opening of 20 mm and needs a mandibular block. Which technique is preferred?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient has mouth opening of 20 mm and needs a mandibular block. Which technique is preferred?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient has mouth opening of 20 mm and needs a mandibular block. Which technique is preferred?' LIMIT 1);
@@ -1166,9 +1166,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Incisive nerve block', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #62 (Dental Surgery - medium)
+-- Question #62 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient with hyperthyroidism needed extraction of non-restorable #46. Lidocaine with epinephrine was given, then the patient became nervous and dizzy. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient with hyperthyroidism needed extraction of non-restorable #46. Lidocaine with epinephrine was given, then the patient became nervous and dizzy. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient with hyperthyroidism needed extraction of non-restorable #46. Lidocaine with epinephrine was given, then the patient became nervous and dizzy. What is the cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient with hyperthyroidism needed extraction of non-restorable #46. Lidocaine with epinephrine was given, then the patient became nervous and dizzy. What is the cause?' LIMIT 1);
@@ -1280,9 +1280,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Class III subdivision right', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #68 (Dental Ethics - easy)
+-- Question #68 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Killing all microorganisms is called:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Killing all microorganisms is called:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Killing all microorganisms is called:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Killing all microorganisms is called:' LIMIT 1);
@@ -1299,9 +1299,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Antisepsis', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #69 (Dental Surgery - medium)
+-- Question #69 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A cleaner got needle-stick injury from a blood-contaminated suture needle of an HBV patient. What type of incidence is this?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A cleaner got needle-stick injury from a blood-contaminated suture needle of an HBV patient. What type of incidence is this?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A cleaner got needle-stick injury from a blood-contaminated suture needle of an HBV patient. What type of incidence is this?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A cleaner got needle-stick injury from a blood-contaminated suture needle of an HBV patient. What type of incidence is this?' LIMIT 1);
@@ -1356,9 +1356,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Scaling → surgery → fixed appliances → OHI', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #72 (Pediatric Dentistry - medium)
+-- Question #72 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Pediatric Dentistry' LIMIT 1), 'A patient has unilateral infraorbital ecchymosis, edema, subconjunctival hemorrhage, and ecchymosis in the maxillary mucosa. Diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient has unilateral infraorbital ecchymosis, edema, subconjunctival hemorrhage, and ecchymosis in the maxillary mucosa. Diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient has unilateral infraorbital ecchymosis, edema, subconjunctival hemorrhage, and ecchymosis in the maxillary mucosa. Diagnosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient has unilateral infraorbital ecchymosis, edema, subconjunctival hemorrhage, and ecchymosis in the maxillary mucosa. Diagnosis?' LIMIT 1);
@@ -1375,9 +1375,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Zygomaticomaxillary fracture', 1, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #73 (Prosthodontics - medium)
+-- Question #73 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Prosthodontics' LIMIT 1), 'After a vehicle accident, the patient had mobility in the nasal bridge. What type of trauma is this?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After a vehicle accident, the patient had mobility in the nasal bridge. What type of trauma is this?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After a vehicle accident, the patient had mobility in the nasal bridge. What type of trauma is this?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After a vehicle accident, the patient had mobility in the nasal bridge. What type of trauma is this?' LIMIT 1);
@@ -1565,9 +1565,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Canine space', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #83 (Dental Surgery - medium)
+-- Question #83 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'After IANB and lingual nerve block, you extracted 44 painlessly. During extraction of 45, the patient felt pain. What should be done?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After IANB and lingual nerve block, you extracted 44 painlessly. During extraction of 45, the patient felt pain. What should be done?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After IANB and lingual nerve block, you extracted 44 painlessly. During extraction of 45, the patient felt pain. What should be done?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After IANB and lingual nerve block, you extracted 44 painlessly. During extraction of 45, the patient felt pain. What should be done?' LIMIT 1);
@@ -1641,9 +1641,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Monitor radiographically', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #87 (Dental Surgery - easy)
+-- Question #87 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A badly destructed third molar near IAC was planned for coronectomy. Best management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A badly destructed third molar near IAC was planned for coronectomy. Best management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A badly destructed third molar near IAC was planned for coronectomy. Best management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A badly destructed third molar near IAC was planned for coronectomy. Best management?' LIMIT 1);
@@ -2002,9 +2002,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Bitewing', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #106 (Dental Surgery - easy)
+-- Question #106 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient with hepatitis C needs extraction. What test should be requested?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient with hepatitis C needs extraction. What test should be requested?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient with hepatitis C needs extraction. What test should be requested?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient with hepatitis C needs extraction. What test should be requested?' LIMIT 1);
@@ -2211,9 +2211,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Mental foramen', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #117 (Dental Surgery - easy)
+-- Question #117 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Dry socket management:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Dry socket management:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Dry socket management:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Dry socket management:' LIMIT 1);
@@ -2287,9 +2287,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Crohn disease', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #121 (Dental Surgery - medium)
+-- Question #121 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'An anxious asthmatic patient with allergy to benzodiazepines needs anxiety control. Best option?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'An anxious asthmatic patient with allergy to benzodiazepines needs anxiety control. Best option?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'An anxious asthmatic patient with allergy to benzodiazepines needs anxiety control. Best option?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'An anxious asthmatic patient with allergy to benzodiazepines needs anxiety control. Best option?' LIMIT 1);
@@ -2325,9 +2325,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Candidiasis only', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #123 (Dental Surgery - easy)
+-- Question #123 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'If crest to sinus distance is 12 mm, maximum implant length is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'If crest to sinus distance is 12 mm, maximum implant length is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'If crest to sinus distance is 12 mm, maximum implant length is:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'If crest to sinus distance is 12 mm, maximum implant length is:' LIMIT 1);
@@ -2477,9 +2477,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Sublingual space', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #131 (Dental Ethics - easy)
+-- Question #131 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'A nurse wants to take a lunch break. She should:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'A nurse wants to take a lunch break. She should:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A nurse wants to take a lunch break. She should:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A nurse wants to take a lunch break. She should:' LIMIT 1);
@@ -2553,9 +2553,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Pseudomonas', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #135 (Dental Surgery - easy)
+-- Question #135 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Thyrotoxic crisis may be precipitated by:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Thyrotoxic crisis may be precipitated by:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Thyrotoxic crisis may be precipitated by:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Thyrotoxic crisis may be precipitated by:' LIMIT 1);
@@ -2610,9 +2610,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Prescribe ibuprofen', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #138 (Dental Surgery - easy)
+-- Question #138 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Panoramic radiograph showed ameloblastoma. What further investigation should be done?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Panoramic radiograph showed ameloblastoma. What further investigation should be done?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Panoramic radiograph showed ameloblastoma. What further investigation should be done?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Panoramic radiograph showed ameloblastoma. What further investigation should be done?' LIMIT 1);
@@ -2648,9 +2648,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Mandibular premolar', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #140 (Dental Surgery - medium)
+-- Question #140 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient missing #23 will be restored with tooth-supported implant/prosthesis. Which occlusal scheme should be used?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient missing #23 will be restored with tooth-supported implant/prosthesis. Which occlusal scheme should be used?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient missing #23 will be restored with tooth-supported implant/prosthesis. Which occlusal scheme should be used?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient missing #23 will be restored with tooth-supported implant/prosthesis. Which occlusal scheme should be used?' LIMIT 1);
@@ -2724,9 +2724,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Patient choice', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #144 (Dental Surgery - medium)
+-- Question #144 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A young male with hereditary liver disease needs extraction of a non-restorable tooth. Most likely complication during extraction?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A young male with hereditary liver disease needs extraction of a non-restorable tooth. Most likely complication during extraction?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A young male with hereditary liver disease needs extraction of a non-restorable tooth. Most likely complication during extraction?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A young male with hereditary liver disease needs extraction of a non-restorable tooth. Most likely complication during extraction?' LIMIT 1);
@@ -2762,9 +2762,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', '70%', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #146 (Dental Ethics - easy)
+-- Question #146 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Which tooth has a high prevalence of a second canal?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Which tooth has a high prevalence of a second canal?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Which tooth has a high prevalence of a second canal?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Which tooth has a high prevalence of a second canal?' LIMIT 1);
@@ -3199,9 +3199,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hepatitis C', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #169 (Dental Surgery - medium)
+-- Question #169 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient needs extraction of #48 with limited mouth opening. Which anesthetic technique is best?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient needs extraction of #48 with limited mouth opening. Which anesthetic technique is best?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient needs extraction of #48 with limited mouth opening. Which anesthetic technique is best?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient needs extraction of #48 with limited mouth opening. Which anesthetic technique is best?' LIMIT 1);
@@ -3294,9 +3294,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Cement temporary crown', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #174 (Dental Surgery - easy)
+-- Question #174 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Which tooth requires more lingual force during extraction?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Which tooth requires more lingual force during extraction?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Which tooth requires more lingual force during extraction?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Which tooth requires more lingual force during extraction?' LIMIT 1);
@@ -3522,9 +3522,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Indifferent', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #186 (Prosthodontics - easy)
+-- Question #186 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Prosthodontics' LIMIT 1), 'What has the poorest prognosis?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'What has the poorest prognosis?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What has the poorest prognosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What has the poorest prognosis?' LIMIT 1);
@@ -3750,9 +3750,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', '4', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #198 (Dental Surgery - medium)
+-- Question #198 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient planned for implant with Type II DM (HbA1c 9%) and IV bisphosphonate. Contraindication for implant?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient planned for implant with Type II DM (HbA1c 9%) and IV bisphosphonate. Contraindication for implant?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient planned for implant with Type II DM (HbA1c 9%) and IV bisphosphonate. Contraindication for implant?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient planned for implant with Type II DM (HbA1c 9%) and IV bisphosphonate. Contraindication for implant?' LIMIT 1);
@@ -3769,9 +3769,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Diabetes mellitus', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #199 (Dental Surgery - easy)
+-- Question #199 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Submandibular space infection treatment:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Submandibular space infection treatment:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Submandibular space infection treatment:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Submandibular space infection treatment:' LIMIT 1);
@@ -3807,9 +3807,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Gracey 13/14', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #201 (Dental Surgery - medium)
+-- Question #201 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient taking warfarin and had stroke 9 months ago, tooth restorable but insists extraction. Management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient taking warfarin and had stroke 9 months ago, tooth restorable but insists extraction. Management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient taking warfarin and had stroke 9 months ago, tooth restorable but insists extraction. Management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient taking warfarin and had stroke 9 months ago, tooth restorable but insists extraction. Management?' LIMIT 1);
@@ -3883,9 +3883,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Cement failure', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #205 (Dental Ethics - easy)
+-- Question #205 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Test used to ensure sterilization effectiveness:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Test used to ensure sterilization effectiveness:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Test used to ensure sterilization effectiveness:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Test used to ensure sterilization effectiveness:' LIMIT 1);
@@ -3921,9 +3921,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Blood test', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #207 (Restorative - easy)
+-- Question #207 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'Bilateral parasymphysis fracture complication needing immediate management:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Bilateral parasymphysis fracture complication needing immediate management:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Bilateral parasymphysis fracture complication needing immediate management:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Bilateral parasymphysis fracture complication needing immediate management:' LIMIT 1);
@@ -3978,9 +3978,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Gingival groove 29', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #210 (Dental Surgery - easy)
+-- Question #210 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'When should surgical hand scrubbing be done?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'When should surgical hand scrubbing be done?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'When should surgical hand scrubbing be done?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'When should surgical hand scrubbing be done?' LIMIT 1);
@@ -3997,9 +3997,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Only before surgery', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #211 (Dental Surgery - easy)
+-- Question #211 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Fluctuant swelling buccal to #36, normal vitality test. Management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Fluctuant swelling buccal to #36, normal vitality test. Management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Fluctuant swelling buccal to #36, normal vitality test. Management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Fluctuant swelling buccal to #36, normal vitality test. Management?' LIMIT 1);
@@ -4016,9 +4016,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Extraction', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #212 (Dental Ethics - easy)
+-- Question #212 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Minimum time for steam sterilization at 132°C:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Minimum time for steam sterilization at 132°C:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Minimum time for steam sterilization at 132°C:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Minimum time for steam sterilization at 132°C:' LIMIT 1);
@@ -4168,9 +4168,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hypercalcemia', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #220 (Dental Surgery - easy)
+-- Question #220 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'After injecting lidocaine 2%, patient feels palpitation. What is the cause?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After injecting lidocaine 2%, patient feels palpitation. What is the cause?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After injecting lidocaine 2%, patient feels palpitation. What is the cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After injecting lidocaine 2%, patient feels palpitation. What is the cause?' LIMIT 1);
@@ -4187,9 +4187,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Vasovagal attack', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #221 (Pediatric Dentistry - easy)
+-- Question #221 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Pediatric Dentistry' LIMIT 1), 'Infraorbital fracture with ecchymosis. What radiograph is indicated?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Infraorbital fracture with ecchymosis. What radiograph is indicated?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Infraorbital fracture with ecchymosis. What radiograph is indicated?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Infraorbital fracture with ecchymosis. What radiograph is indicated?' LIMIT 1);
@@ -4339,9 +4339,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Open contact', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #229 (Dental Surgery - easy)
+-- Question #229 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'What is anesthetized during extraction of lower molars?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'What is anesthetized during extraction of lower molars?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What is anesthetized during extraction of lower molars?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What is anesthetized during extraction of lower molars?' LIMIT 1);
@@ -4396,9 +4396,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Median palatal cyst', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #232 (Dental Surgery - medium)
+-- Question #232 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient with stable angina taking aspirin needs extraction of non-restorable #38. What is the management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient with stable angina taking aspirin needs extraction of non-restorable #38. What is the management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient with stable angina taking aspirin needs extraction of non-restorable #38. What is the management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient with stable angina taking aspirin needs extraction of non-restorable #38. What is the management?' LIMIT 1);
@@ -4434,9 +4434,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Immediate loading', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #234 (Prosthodontics - medium)
+-- Question #234 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Prosthodontics' LIMIT 1), 'Patient wears RPD replacing 32–42, and #33 fractured and is non-restorable. What is the management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient wears RPD replacing 32–42, and #33 fractured and is non-restorable. What is the management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient wears RPD replacing 32–42, and #33 fractured and is non-restorable. What is the management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient wears RPD replacing 32–42, and #33 fractured and is non-restorable. What is the management?' LIMIT 1);
@@ -4491,9 +4491,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Topical anesthetic only', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #237 (Dental Surgery - easy)
+-- Question #237 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Avulsed 11 and 21; doctor wants to reimplant. How do you know which tooth is which?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Avulsed 11 and 21; doctor wants to reimplant. How do you know which tooth is which?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Avulsed 11 and 21; doctor wants to reimplant. How do you know which tooth is which?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Avulsed 11 and 21; doctor wants to reimplant. How do you know which tooth is which?' LIMIT 1);
@@ -4643,9 +4643,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hypercementosis', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #245 (Dental Surgery - easy)
+-- Question #245 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Primary molar indicated for extraction. Which is a definitive diagnosis for extraction?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Primary molar indicated for extraction. Which is a definitive diagnosis for extraction?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Primary molar indicated for extraction. Which is a definitive diagnosis for extraction?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Primary molar indicated for extraction. Which is a definitive diagnosis for extraction?' LIMIT 1);
@@ -4795,9 +4795,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Veracity', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #253 (Dental Surgery - medium)
+-- Question #253 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient went to pedodontist for consultation; doctor advised surgical graft for all teeth due to severe recession, patient got scared. One of his rights is:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient went to pedodontist for consultation; doctor advised surgical graft for all teeth due to severe recession, patient got scared. One of his rights is:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient went to pedodontist for consultation; doctor advised surgical graft for all teeth due to severe recession, patient got scared. One of his rights is:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient went to pedodontist for consultation; doctor advised surgical graft for all teeth due to severe recession, patient got scared. One of his rights is:' LIMIT 1);
@@ -4985,9 +4985,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hue, value, translucency', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #263 (Dental Surgery - easy)
+-- Question #263 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'What structure is found in natural tooth but not in implant?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'What structure is found in natural tooth but not in implant?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What structure is found in natural tooth but not in implant?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What structure is found in natural tooth but not in implant?' LIMIT 1);
@@ -5099,9 +5099,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', '4 mm', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #269 (Dental Surgery - medium)
+-- Question #269 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient with flat ridge received a new denture but it is not retentive (denture fitting is good). What is management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient with flat ridge received a new denture but it is not retentive (denture fitting is good). What is management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient with flat ridge received a new denture but it is not retentive (denture fitting is good). What is management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient with flat ridge received a new denture but it is not retentive (denture fitting is good). What is management?' LIMIT 1);
@@ -5232,9 +5232,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Fibrous dysplasia', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #276 (Dental Surgery - medium)
+-- Question #276 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Pedo patient with primary molar indicated for extraction. Which finding confirms the indication for extraction?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Pedo patient with primary molar indicated for extraction. Which finding confirms the indication for extraction?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Pedo patient with primary molar indicated for extraction. Which finding confirms the indication for extraction?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Pedo patient with primary molar indicated for extraction. Which finding confirms the indication for extraction?' LIMIT 1);
@@ -5403,9 +5403,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Close the space', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #285 (Dental Surgery - medium)
+-- Question #285 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Patient with non-restorable upper tooth, after extraction infection spread to sinus. What is management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Patient with non-restorable upper tooth, after extraction infection spread to sinus. What is management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Patient with non-restorable upper tooth, after extraction infection spread to sinus. What is management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Patient with non-restorable upper tooth, after extraction infection spread to sinus. What is management?' LIMIT 1);
@@ -5479,9 +5479,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Topical corticosteroids', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #289 (Dental Surgery - medium)
+-- Question #289 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'year-old female planning implant. Radiograph shows multiple punched-out radiolucencies of different sizes. Diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'year-old female planning implant. Radiograph shows multiple punched-out radiolucencies of different sizes. Diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'year-old female planning implant. Radiograph shows multiple punched-out radiolucencies of different sizes. Diagnosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'year-old female planning implant. Radiograph shows multiple punched-out radiolucencies of different sizes. Diagnosis?' LIMIT 1);
@@ -5593,9 +5593,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Remove latex materials + antihistamine + document', 1, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #295 (Dental Ethics - medium)
+-- Question #295 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'year-old female with palatal erosion of upper teeth and knuckle callus on hand. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'year-old female with palatal erosion of upper teeth and knuckle callus on hand. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'year-old female with palatal erosion of upper teeth and knuckle callus on hand. What is the cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'year-old female with palatal erosion of upper teeth and knuckle callus on hand. What is the cause?' LIMIT 1);
@@ -5840,9 +5840,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Saliva ejector only', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #308 (Dental Surgery - easy)
+-- Question #308 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'mm space to replace two missing teeth with implants. What diameter implants to choose?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'mm space to replace two missing teeth with implants. What diameter implants to choose?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'mm space to replace two missing teeth with implants. What diameter implants to choose?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'mm space to replace two missing teeth with implants. What diameter implants to choose?' LIMIT 1);
@@ -6144,9 +6144,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Dental crowding', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #324 (Dental Surgery - easy)
+-- Question #324 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'After surgical exposure of impacted canine what happens to soft tissue', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After surgical exposure of impacted canine what happens to soft tissue', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After surgical exposure of impacted canine what happens to soft tissue');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After surgical exposure of impacted canine what happens to soft tissue' LIMIT 1);
@@ -6201,9 +6201,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', '28 days', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #327 (Dental Ethics - easy)
+-- Question #327 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Retentive arm above survey line. What will happen to tooth', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Retentive arm above survey line. What will happen to tooth', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Retentive arm above survey line. What will happen to tooth');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Retentive arm above survey line. What will happen to tooth' LIMIT 1);
@@ -6220,9 +6220,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Extrusion', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #328 (Dental Surgery - easy)
+-- Question #328 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Missing tooth #11. Which Type of implant u will use ?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Missing tooth #11. Which Type of implant u will use ?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Missing tooth #11. Which Type of implant u will use ?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Missing tooth #11. Which Type of implant u will use ?' LIMIT 1);
@@ -6258,9 +6258,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Excellent', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #330 (Dental Surgery - easy)
+-- Question #330 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Numbness after extraction of lower third molar after 3 days. Cause', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Numbness after extraction of lower third molar after 3 days. Cause', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Numbness after extraction of lower third molar after 3 days. Cause');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Numbness after extraction of lower third molar after 3 days. Cause' LIMIT 1);
@@ -6524,9 +6524,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Occlusal reduction', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #344 (Dental Surgery - medium)
+-- Question #344 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'An ankylosed primary tooth is present with no permanent successor. What is the most appropriate management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'An ankylosed primary tooth is present with no permanent successor. What is the most appropriate management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'An ankylosed primary tooth is present with no permanent successor. What is the most appropriate management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'An ankylosed primary tooth is present with no permanent successor. What is the most appropriate management?' LIMIT 1);
@@ -6828,9 +6828,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Preventive resin restoration', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #360 (Dental Surgery - medium)
+-- Question #360 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient with chronic bronchitis has oxygen saturation of 90% and begins coughing during dental treatment. The patient requires extraction. What should be done?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient with chronic bronchitis has oxygen saturation of 90% and begins coughing during dental treatment. The patient requires extraction. What should be done?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient with chronic bronchitis has oxygen saturation of 90% and begins coughing during dental treatment. The patient requires extraction. What should be done?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient with chronic bronchitis has oxygen saturation of 90% and begins coughing during dental treatment. The patient requires extraction. What should be done?' LIMIT 1);
@@ -7189,9 +7189,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Diclofenac', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #379 (Dental Ethics - easy)
+-- Question #379 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'What is the minimum time required for heat sterilization at 132°C in an autoclave?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'What is the minimum time required for heat sterilization at 132°C in an autoclave?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What is the minimum time required for heat sterilization at 132°C in an autoclave?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What is the minimum time required for heat sterilization at 132°C in an autoclave?' LIMIT 1);
@@ -7246,9 +7246,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Pulp necrosis', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #382 (Dental Surgery - medium)
+-- Question #382 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Radiograph shows a bridge from #13 to #15 with a large radiolucent lesion apical to #13 (previously treated). What is the best management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Radiograph shows a bridge from #13 to #15 with a large radiolucent lesion apical to #13 (previously treated). What is the best management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Radiograph shows a bridge from #13 to #15 with a large radiolucent lesion apical to #13 (previously treated). What is the best management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Radiograph shows a bridge from #13 to #15 with a large radiolucent lesion apical to #13 (previously treated). What is the best management?' LIMIT 1);
@@ -7265,9 +7265,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Observation', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #383 (Restorative - easy)
+-- Question #383 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'A middle root fracture is diagnosed. For how many weeks should the tooth be splinted?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A middle root fracture is diagnosed. For how many weeks should the tooth be splinted?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A middle root fracture is diagnosed. For how many weeks should the tooth be splinted?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A middle root fracture is diagnosed. For how many weeks should the tooth be splinted?' LIMIT 1);
@@ -7398,9 +7398,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Dental crowding', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #390 (Dental Surgery - medium)
+-- Question #390 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A tooth planned for extraction is close to the inferior alveolar nerve. What should the dentist do?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A tooth planned for extraction is close to the inferior alveolar nerve. What should the dentist do?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A tooth planned for extraction is close to the inferior alveolar nerve. What should the dentist do?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A tooth planned for extraction is close to the inferior alveolar nerve. What should the dentist do?' LIMIT 1);
@@ -7474,9 +7474,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Asthma', 1, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #394 (Dental Surgery - medium)
+-- Question #394 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient requires simple extraction but the glucometer reading is 65 mg/dL. What is the next step?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient requires simple extraction but the glucometer reading is 65 mg/dL. What is the next step?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient requires simple extraction but the glucometer reading is 65 mg/dL. What is the next step?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient requires simple extraction but the glucometer reading is 65 mg/dL. What is the next step?' LIMIT 1);
@@ -7512,9 +7512,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Infection', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #396 (Dental Surgery - medium)
+-- Question #396 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A pedo patient undergoing chemotherapy requires extraction. What is the minimum healing time before starting chemotherapy?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A pedo patient undergoing chemotherapy requires extraction. What is the minimum healing time before starting chemotherapy?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A pedo patient undergoing chemotherapy requires extraction. What is the minimum healing time before starting chemotherapy?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A pedo patient undergoing chemotherapy requires extraction. What is the minimum healing time before starting chemotherapy?' LIMIT 1);
@@ -7588,9 +7588,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'No risk', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #400 (Dental Surgery - medium)
+-- Question #400 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient is missing tooth #36 and tooth #37 is tilted mesially. What is the best treatment plan?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient is missing tooth #36 and tooth #37 is tilted mesially. What is the best treatment plan?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient is missing tooth #36 and tooth #37 is tilted mesially. What is the best treatment plan?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient is missing tooth #36 and tooth #37 is tilted mesially. What is the best treatment plan?' LIMIT 1);
@@ -7664,9 +7664,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hollenback carver', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #404 (Dental Surgery - medium)
+-- Question #404 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient with hyperthyroidism receives lidocaine with epinephrine and becomes irritable and tachycardic. What complication occurred?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient with hyperthyroidism receives lidocaine with epinephrine and becomes irritable and tachycardic. What complication occurred?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient with hyperthyroidism receives lidocaine with epinephrine and becomes irritable and tachycardic. What complication occurred?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient with hyperthyroidism receives lidocaine with epinephrine and becomes irritable and tachycardic. What complication occurred?' LIMIT 1);
@@ -7683,9 +7683,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Syncope', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #405 (Dental Ethics - medium)
+-- Question #405 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'The “onion-skin” radiographic appearance is most commonly associated with which condition?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'The “onion-skin” radiographic appearance is most commonly associated with which condition?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'The “onion-skin” radiographic appearance is most commonly associated with which condition?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'The “onion-skin” radiographic appearance is most commonly associated with which condition?' LIMIT 1);
@@ -7930,9 +7930,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Bruxism', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #418 (Dental Surgery - medium)
+-- Question #418 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient presents with extruded calcium hydroxide beyond the apex after endodontic treatment. What is the best management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient presents with extruded calcium hydroxide beyond the apex after endodontic treatment. What is the best management?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient presents with extruded calcium hydroxide beyond the apex after endodontic treatment. What is the best management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient presents with extruded calcium hydroxide beyond the apex after endodontic treatment. What is the best management?' LIMIT 1);
@@ -8158,9 +8158,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Attachment loss of 2 mm 198', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #430 (Dental Ethics - medium)
+-- Question #430 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'During dental treatment, the dentist’s glove tears. What is the correct infection control procedure?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'During dental treatment, the dentist’s glove tears. What is the correct infection control procedure?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'During dental treatment, the dentist’s glove tears. What is the correct infection control procedure?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'During dental treatment, the dentist’s glove tears. What is the correct infection control procedure?' LIMIT 1);
@@ -8405,9 +8405,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Cytomegalovirus (CMV) 4', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #443 (Dental Surgery - medium)
+-- Question #443 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient with hyperthyroidism requires extraction of tooth #46. Lidocaine with epinephrine was administered, after which the patient became nervous and dizzy. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient with hyperthyroidism requires extraction of tooth #46. Lidocaine with epinephrine was administered, after which the patient became nervous and dizzy. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient with hyperthyroidism requires extraction of tooth #46. Lidocaine with epinephrine was administered, after which the patient became nervous and dizzy. What is the most likely cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient with hyperthyroidism requires extraction of tooth #46. Lidocaine with epinephrine was administered, after which the patient became nervous and dizzy. What is the most likely cause?' LIMIT 1);
@@ -8500,9 +8500,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Aspirin', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #448 (Dental Surgery - medium)
+-- Question #448 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'An anxious patient with asthma and allergy to benzodiazepines requires sedation. What is the best option?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'An anxious patient with asthma and allergy to benzodiazepines requires sedation. What is the best option?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'An anxious patient with asthma and allergy to benzodiazepines requires sedation. What is the best option?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'An anxious patient with asthma and allergy to benzodiazepines requires sedation. What is the best option?' LIMIT 1);
@@ -8842,9 +8842,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Conduct disorder', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #466 (Dental Surgery - medium)
+-- Question #466 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'After injecting lidocaine 2%, patient experiences palpitations. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'After injecting lidocaine 2%, patient experiences palpitations. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'After injecting lidocaine 2%, patient experiences palpitations. What is the most likely cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'After injecting lidocaine 2%, patient experiences palpitations. What is the most likely cause?' LIMIT 1);
@@ -9070,9 +9070,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Leukemia', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #478 (Dental Surgery - medium)
+-- Question #478 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A 60-year-old patient presents for implant consultation. Radiographic examination reveals multiple punched-out radiolucent lesions of varying sizes in the jaws. What is the most likely diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A 60-year-old patient presents for implant consultation. Radiographic examination reveals multiple punched-out radiolucent lesions of varying sizes in the jaws. What is the most likely diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A 60-year-old patient presents for implant consultation. Radiographic examination reveals multiple punched-out radiolucent lesions of varying sizes in the jaws. What is the most likely diagnosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A 60-year-old patient presents for implant consultation. Radiographic examination reveals multiple punched-out radiolucent lesions of varying sizes in the jaws. What is the most likely diagnosis?' LIMIT 1);
@@ -9165,9 +9165,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Excess mercury', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #483 (Dental Surgery - medium)
+-- Question #483 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient is sedated with midazolam. Which drug should be administered in case of overdose?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient is sedated with midazolam. Which drug should be administered in case of overdose?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient is sedated with midazolam. Which drug should be administered in case of overdose?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient is sedated with midazolam. Which drug should be administered in case of overdose?' LIMIT 1);
@@ -9317,9 +9317,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Ulcer', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #491 (Dental Surgery - medium)
+-- Question #491 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A 17-year-old female had an implant placed at age 14. The implant is now displaced. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A 17-year-old female had an implant placed at age 14. The implant is now displaced. What is the cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A 17-year-old female had an implant placed at age 14. The implant is now displaced. What is the cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A 17-year-old female had an implant placed at age 14. The implant is now displaced. What is the cause?' LIMIT 1);
@@ -9374,9 +9374,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Occlusal interference in protrusion', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #494 (Dental Surgery - medium)
+-- Question #494 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient with hyperthyroidism was given lidocaine with epinephrine and developed irritability and palpitations. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient with hyperthyroidism was given lidocaine with epinephrine and developed irritability and palpitations. What is the most likely cause?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient with hyperthyroidism was given lidocaine with epinephrine and developed irritability and palpitations. What is the most likely cause?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient with hyperthyroidism was given lidocaine with epinephrine and developed irritability and palpitations. What is the most likely cause?' LIMIT 1);
@@ -9450,9 +9450,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Rotary bur', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #498 (Dental Surgery - easy)
+-- Question #498 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'An intraoral surgical flap procedure is classified under which category of wound?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'An intraoral surgical flap procedure is classified under which category of wound?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'An intraoral surgical flap procedure is classified under which category of wound?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'An intraoral surgical flap procedure is classified under which category of wound?' LIMIT 1);
@@ -10115,9 +10115,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Refuse without referral', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #533 (Restorative - easy)
+-- Question #533 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'What should be done with a prophy cup after use?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'What should be done with a prophy cup after use?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What should be done with a prophy cup after use?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What should be done with a prophy cup after use?' LIMIT 1);
@@ -10457,9 +10457,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'TMJ function', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #551 (Restorative - medium)
+-- Question #551 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'What is the most important factor in preventing biofilm formation in dental unit waterlines?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'What is the most important factor in preventing biofilm formation in dental unit waterlines?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What is the most important factor in preventing biofilm formation in dental unit waterlines?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What is the most important factor in preventing biofilm formation in dental unit waterlines?' LIMIT 1);
@@ -10476,9 +10476,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Using hot water', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #552 (Dental Ethics - medium)
+-- Question #552 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'Transmission of infection between patients and healthcare providers in a clinical setting is referred to as:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'Transmission of infection between patients and healthcare providers in a clinical setting is referred to as:', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Transmission of infection between patients and healthcare providers in a clinical setting is referred to as:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Transmission of infection between patients and healthcare providers in a clinical setting is referred to as:' LIMIT 1);
@@ -10514,9 +10514,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'UCLA abutment', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #554 (Prosthodontics - easy)
+-- Question #554 (Sterilization and Infection Control - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Prosthodontics' LIMIT 1), 'How should a metal impression tray be disinfected properly?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'How should a metal impression tray be disinfected properly?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'How should a metal impression tray be disinfected properly?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'How should a metal impression tray be disinfected properly?' LIMIT 1);
@@ -10666,9 +10666,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Digastric muscle', 1, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #562 (Dental Surgery - medium)
+-- Question #562 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A patient had extraction of tooth #43 and requires a temporary removable partial denture during healing. How many rests should be placed in this interim prosthesis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient had extraction of tooth #43 and requires a temporary removable partial denture during healing. How many rests should be placed in this interim prosthesis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient had extraction of tooth #43 and requires a temporary removable partial denture during healing. How many rests should be placed in this interim prosthesis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient had extraction of tooth #43 and requires a temporary removable partial denture during healing. How many rests should be placed in this interim prosthesis?' LIMIT 1);
@@ -10704,9 +10704,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hypothyroidism', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #564 (Endodontics - medium)
+-- Question #564 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Endodontics' LIMIT 1), 'A patient presents with signs suggestive of vertical root fracture (VRF). What is the most definitive method to confirm the diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A patient presents with signs suggestive of vertical root fracture (VRF). What is the most definitive method to confirm the diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient presents with signs suggestive of vertical root fracture (VRF). What is the most definitive method to confirm the diagnosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient presents with signs suggestive of vertical root fracture (VRF). What is the most definitive method to confirm the diagnosis?' LIMIT 1);
@@ -10970,9 +10970,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hypertension', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #578 (Dental Surgery - easy)
+-- Question #578 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A severely autistic adult patient requires extraction. Who should provide consent?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A severely autistic adult patient requires extraction. Who should provide consent?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A severely autistic adult patient requires extraction. Who should provide consent?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A severely autistic adult patient requires extraction. Who should provide consent?' LIMIT 1);
@@ -11084,9 +11084,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Hypertension', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #584 (Dental Surgery - easy)
+-- Question #584 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A father refuses extraction for his child and requests records. What should you provide?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A father refuses extraction for his child and requests records. What should you provide?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A father refuses extraction for his child and requests records. What should you provide?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A father refuses extraction for his child and requests records. What should you provide?' LIMIT 1);
@@ -11217,9 +11217,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Aspirin', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #591 (Dental Surgery - easy)
+-- Question #591 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Pilocarpine is indicated for which condition?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Pilocarpine is indicated for which condition?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Pilocarpine is indicated for which condition?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Pilocarpine is indicated for which condition?' LIMIT 1);
@@ -11255,9 +11255,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Normal pulp', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #593 (Dental Surgery - easy)
+-- Question #593 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A 14-year-old presents with avulsed tooth after 45 minutes. What is the management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A 14-year-old presents with avulsed tooth after 45 minutes. What is the management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A 14-year-old presents with avulsed tooth after 45 minutes. What is the management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A 14-year-old presents with avulsed tooth after 45 minutes. What is the management?' LIMIT 1);
@@ -11293,9 +11293,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Florid dysplasia', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #595 (Dental Ethics - medium)
+-- Question #595 (Sterilization and Infection Control - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Ethics' LIMIT 1), 'A patient repeatedly undergoes esthetic procedures but is never satisfied with appearance. What is the diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Sterilization and Infection Control' LIMIT 1), 'A patient repeatedly undergoes esthetic procedures but is never satisfied with appearance. What is the diagnosis?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A patient repeatedly undergoes esthetic procedures but is never satisfied with appearance. What is the diagnosis?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A patient repeatedly undergoes esthetic procedures but is never satisfied with appearance. What is the diagnosis?' LIMIT 1);
@@ -11483,9 +11483,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Check INR', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #605 (Prosthodontics - medium)
+-- Question #605 (Oral Surgery - medium)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Prosthodontics' LIMIT 1), 'What is the most common consequence of inadequate occlusal reduction in PFM crown preparation?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'What is the most common consequence of inadequate occlusal reduction in PFM crown preparation?', 'medium', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'What is the most common consequence of inadequate occlusal reduction in PFM crown preparation?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'What is the most common consequence of inadequate occlusal reduction in PFM crown preparation?' LIMIT 1);
@@ -11654,9 +11654,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', '10 mm', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #614 (Dental Surgery - easy)
+-- Question #614 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'How many mg of lidocaine are present in 1 mL of 2% solution?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'How many mg of lidocaine are present in 1 mL of 2% solution?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'How many mg of lidocaine are present in 1 mL of 2% solution?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'How many mg of lidocaine are present in 1 mL of 2% solution?' LIMIT 1);
@@ -11730,9 +11730,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Increase then decrease', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #618 (Dental Surgery - easy)
+-- Question #618 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Minimum age for implant placement is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Minimum age for implant placement is:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Minimum age for implant placement is:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Minimum age for implant placement is:' LIMIT 1);
@@ -11768,9 +11768,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Composite', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #620 (Dental Surgery - easy)
+-- Question #620 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'A discolored tooth after trauma became lighter with time. What is the management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'A discolored tooth after trauma became lighter with time. What is the management?', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'A discolored tooth after trauma became lighter with time. What is the management?');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'A discolored tooth after trauma became lighter with time. What is the management?' LIMIT 1);
@@ -11806,9 +11806,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Azithromycin', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #622 (Dental Surgery - easy)
+-- Question #622 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Dental Surgery' LIMIT 1), 'Connecting implant with natural tooth most likely leads to:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Connecting implant with natural tooth most likely leads to:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Connecting implant with natural tooth most likely leads to:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Connecting implant with natural tooth most likely leads to:' LIMIT 1);
@@ -11844,9 +11844,9 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 SELECT @new_qid, 'D', 'Poor hygiene', 0, NOW(), NOW()
 WHERE @new_qid IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Options WHERE questionId = @new_qid AND `order` = 'D');
 
--- Question #624 (Restorative - easy)
+-- Question #624 (Oral Surgery - easy)
 INSERT INTO Questions (specialtyId, text, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt)
-SELECT (SELECT id FROM Specialties WHERE name = 'Restorative' LIMIT 1), 'Energy required to fracture a material is called:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
+SELECT (SELECT id FROM Specialties WHERE name = 'Oral Surgery' LIMIT 1), 'Energy required to fracture a material is called:', 'easy', 60, 1, 0, 'اساله 2.docx', 1, NOW(), NOW()
 WHERE NOT EXISTS (SELECT 1 FROM Questions WHERE text = 'Energy required to fracture a material is called:');
 
 SET @new_qid = (SELECT id FROM Questions WHERE text = 'Energy required to fracture a material is called:' LIMIT 1);
