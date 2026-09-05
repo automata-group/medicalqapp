@@ -25,10 +25,10 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "backend/insert_file2_questions.sql,backend/insert_file1_questions.sql,backend/insert_missing_questions.sql"
+          source: "backend/merge_surgery_and_add_infection_control.sql,backend/insert_file1_questions.sql"
           target: "/opt/medical-qbank"
 
-      - name: Execute Deduplicated Import on Database
+      - name: Execute Specialties Update and Questions Import
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -37,7 +37,7 @@ jobs:
           port: ${{ secrets.SERVER_PORT }}
           script: |
             echo "======================================================"
-            echo "🚀 STARTING DEDUPLICATED QUESTIONS PIPELINE IMPORT"
+            echo "🚀 1. UPDATING SPECIALTIES (MERGE SURGERY & ADD INFECTION CONTROL)"
             echo "======================================================"
             cd /opt/medical-qbank
             SUDO_PW="${{ secrets.SERVER_PASSWORD }}"
@@ -47,58 +47,59 @@ jobs:
                 DB_PASSWORD="${DB_PASS:-Saadshabib.12}"
             fi
 
-            echo "1. Checking question count in DB BEFORE import..."
-            BEFORE_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null || echo "0")
-            echo "Total questions before import: $BEFORE_COUNT"
+            MERGE_SQL="/opt/medical-qbank/backend/merge_surgery_and_add_infection_control.sql"
+            [ ! -f "$MERGE_SQL" ] && MERGE_SQL="/opt/medical-qbank/merge_surgery_and_add_infection_control.sql"
 
-            FILE2="/opt/medical-qbank/backend/insert_file2_questions.sql"
-            [ ! -f "$FILE2" ] && FILE2="/opt/medical-qbank/insert_file2_questions.sql"
-
-            if [ -f "$FILE2" ]; then
-                echo "2. Transferring File 2 migration (633 questions) into MySQL container..."
-                echo "$SUDO_PW" | sudo -S docker cp "$FILE2" medical_qbank_db:/tmp/file2.sql
-                
-                echo "3. Executing deduplicated import for File 2..."
-                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/file2.sql"
-                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/file2.sql
-                echo "✅ File 2 migration completed successfully!"
+            if [ -f "$MERGE_SQL" ]; then
+                echo "Applying specialty schema updates..."
+                echo "$SUDO_PW" | sudo -S docker cp "$MERGE_SQL" medical_qbank_db:/tmp/merge_surgery.sql
+                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/merge_surgery.sql"
+                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/merge_surgery.sql
+                echo "✅ Specialties updated successfully!"
             fi
+
+            echo ""
+            echo "======================================================"
+            echo "🚀 2. IMPORTING 1,851 QUESTIONS FROM 'اساله 1.docx'"
+            echo "======================================================"
+
+            echo "Checking question count before import..."
+            BEFORE_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null || echo "0")
+            echo "Total questions in DB before import: $BEFORE_COUNT"
 
             FILE1="/opt/medical-qbank/backend/insert_file1_questions.sql"
             [ ! -f "$FILE1" ] && FILE1="/opt/medical-qbank/insert_file1_questions.sql"
 
             if [ -f "$FILE1" ]; then
-                echo "4. Transferring File 1 migration into MySQL container..."
+                echo "Transferring File 1 (1,851 questions) into MySQL container..."
                 echo "$SUDO_PW" | sudo -S docker cp "$FILE1" medical_qbank_db:/tmp/file1.sql
                 
-                echo "5. Executing deduplicated import for File 1..."
+                echo "Executing import for File 1..."
                 echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/file1.sql"
                 echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/file1.sql
                 echo "✅ File 1 migration completed successfully!"
+            else
+                echo "❌ File 1 not found!"
+                exit 1
             fi
 
-            SQL_FILE="/opt/medical-qbank/backend/insert_missing_questions.sql"
-            [ ! -f "$SQL_FILE" ] && SQL_FILE="/opt/medical-qbank/insert_missing_questions.sql"
-
-            if [ -f "$SQL_FILE" ]; then
-                echo "6. Transferring auxiliary migration into MySQL container..."
-                echo "$SUDO_PW" | sudo -S docker cp "$SQL_FILE" medical_qbank_db:/tmp/missing_questions.sql
-                
-                echo "7. Executing deduplicated import..."
-                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/missing_questions.sql"
-                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/missing_questions.sql
-                echo "✅ Migration completed successfully!"
-            fi
-
-            echo "8. Checking question count in DB AFTER import..."
             AFTER_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null || echo "0")
-
             NEW_ADDED=$((AFTER_COUNT - BEFORE_COUNT))
+
             echo ""
             echo "======================================================"
-            echo "📊 DEDUPLICATION & IMPORT REPORT:"
+            echo "📊 QUESTIONS COUNT BY SPECIALTY:"
+            echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "
+              SELECT s.id, s.name, COUNT(q.id) AS question_count 
+              FROM Specialties s 
+              LEFT JOIN Questions q ON q.specialtyId = s.id 
+              GROUP BY s.id, s.name 
+              ORDER BY s.sortOrder, s.id;
+            "
+            echo "======================================================"
+            echo "📊 FINAL IMPORT REPORT:"
             echo "   Previous Total:   $BEFORE_COUNT questions"
             echo "   New Questions:    +$NEW_ADDED added"
-            echo "   New Total:        $AFTER_COUNT questions"
+            echo "   Total in DB:      $AFTER_COUNT questions"
             echo "======================================================"
-            echo "🎉 Pipeline finished cleanly with zero duplicates!"
+            echo "🎉 Pipeline finished successfully!"
