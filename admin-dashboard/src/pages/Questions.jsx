@@ -236,7 +236,7 @@ export default function Questions() {
                     specialtyId: q.specialtyId || '',
                     topicId: q.topicId || '',
                     difficulty: q.difficulty || 'medium',
-                    options: q.options?.length > 0 ? q.options.map(o => ({ text: o.text, isCorrect: o.isCorrect })) : [
+                    options: q.options?.length > 0 ? q.options.map(o => ({ text: o.text || '', isCorrect: Boolean(o.isCorrect) })) : [
                         { text: '', isCorrect: true },
                         { text: '', isCorrect: false }
                     ],
@@ -689,8 +689,8 @@ export default function Questions() {
             {/* Modal */}
             {showModal && (
                 <div className={pageStyles.modalOverlay}>
-                    <div className={pageStyles.modalCard} style={{ maxWidth: '860px', width: '94%', maxHeight: '92vh', overflow: 'hidden' }}>
-                        <div className={pageStyles.modalHeader}>
+                    <div className={pageStyles.modalCard} style={{ maxWidth: '860px', width: '94%', maxHeight: '90vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                        <div className={pageStyles.modalHeader} style={{ flexShrink: 0 }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{
                                     width: '36px',
@@ -716,8 +716,8 @@ export default function Questions() {
                             </div>
                             <button className={pageStyles.closeBtn} onClick={() => setShowModal(false)}>&times;</button>
                         </div>
-                        <form onSubmit={handleSubmit} className={pageStyles.form} style={{ overflowX: 'hidden', padding: '20px 24px' }}>
-                            <div className={pageStyles.formRow}>
+                        <form onSubmit={handleSubmit} className={pageStyles.modalForm} style={{ display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto', overflowX: 'hidden', padding: '20px 24px', flex: '1 1 auto', minHeight: 0, width: '100%', boxSizing: 'border-box' }}>
+                            <div className={pageStyles.formRow} style={{ flexShrink: 0, width: '100%' }}>
                                 <div className={pageStyles.formGroup} style={{ flex: 1, minWidth: 0, width: '100%' }}>
                                     <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <span>📝</span> Question Text (Scenario or clinical question) <span style={{ color: '#ef4444' }}>*</span>
@@ -734,7 +734,7 @@ export default function Questions() {
                             </div>
 
                             {/* Row 1: Specialty & Topic */}
-                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%' }}>
+                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%', flexShrink: 0 }}>
                                 <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
                                     <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <span>🩺</span> Main Specialty <span style={{ color: '#ef4444' }}>*</span>
@@ -766,7 +766,7 @@ export default function Questions() {
                             </div>
 
                             {/* Row 2: Difficulty & Premium Access */}
-                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%' }}>
+                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%', flexShrink: 0 }}>
                                 <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
                                     <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <span>⚡</span> Difficulty Level
@@ -824,7 +824,7 @@ export default function Questions() {
                                 </div>
                             </div>
 
-                            <div className={pageStyles.formSection} style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
+                            <div className={pageStyles.formSection} style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', flexShrink: 0 }}>
                                 <div className={pageStyles.sectionHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <label style={{ margin: 0, fontWeight: 700, color: '#f8fafc', fontSize: '14px' }}>📋 Answer Options</label>
@@ -873,7 +873,8 @@ export default function Questions() {
                                             width: '100%',
                                             maxWidth: '100%',
                                             boxSizing: 'border-box',
-                                            minWidth: 0
+                                            minWidth: 0,
+                                            flexShrink: 0
                                         }}
                                     >
                                         {/* Option Letter Badge (A, B, C, D) */}
@@ -974,7 +975,7 @@ export default function Questions() {
                                 ))}
                             </div>
 
-                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box', flexShrink: 0 }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                                     <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, margin: 0 }}>💡 Explanation</label>
                                     {editingId && (
@@ -1012,7 +1013,7 @@ export default function Questions() {
                                 />
                             </div>
 
-                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box', flexShrink: 0 }}>
                                 <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>📚 References</label>
                                 <input
                                     type="text"
