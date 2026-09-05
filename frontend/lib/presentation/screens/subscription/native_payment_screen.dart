@@ -37,13 +37,13 @@ class _NativePaymentScreenState extends State<NativePaymentScreen> {
       creditCard: CreditCardConfig(saveCard: false, manual: false),
       applePay: ApplePayConfig(
         merchantId: 'merchant.com.healthlicenseprep',
-        label: 'Medical Q',
+        label: 'SDLE',
         manual: false,
         saveCard: false,
       ),
       // samsungPay: SamsungPayConfig(
       //   serviceId: 'your_samsung_pay_service_id_here', // <-- يجب تغييره لاحقاً من سامسونج
-      //   merchantName: 'Medical Q',
+      //   merchantName: 'SDLE',
       //   manual: false,
       // ),
     );

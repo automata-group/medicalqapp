@@ -3,7 +3,7 @@ import { getSystemSettings, updateSystemSettings } from '../api/api';
 
 export default function Settings() {
     const [settings, setSettings] = useState({
-        appName: 'Medical QBank',
+        appName: 'SDLE',
         maintenanceMode: false,
         allowRegistration: true,
         defaultLanguage: 'ar',

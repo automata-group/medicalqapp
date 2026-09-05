@@ -18,6 +18,7 @@ const Topics = lazy(() => import('./pages/Topics'));
 const MockExams = lazy(() => import('./pages/MockExams'));
 const Achievements = lazy(() => import('./pages/Achievements'));
 const Settings = lazy(() => import('./pages/Settings'));
+const Contributions = lazy(() => import('./pages/Contributions'));
 
 
 const PageLoader = () => (
@@ -68,6 +69,7 @@ export default function App() {
               <Route index element={<Dashboard />} />
               <Route path="users" element={<Users />} />
               <Route path="questions" element={<Questions />} />
+              <Route path="contributions" element={<Contributions />} />
               <Route path="ai-insights" element={<AIInsights />} />
               <Route path="categories" element={<Categories />} />
               <Route path="topics" element={<Topics />} />

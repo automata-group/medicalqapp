@@ -1,7 +1,7 @@
 const { AppSetting } = require('../../models');
 
 const defaultSystemSettings = {
-    appName: "Medical QBank",
+    appName: "SDLE",
     maintenanceMode: false,
     allowRegistration: true,
     defaultLanguage: "ar",

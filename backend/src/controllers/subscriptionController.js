@@ -150,7 +150,7 @@ exports.createCheckoutSession = async (req, res, next) => {
             publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
             amount,
             currency: plan.currency || 'SAR',
-            description: `Medical Q ${plan.name}`,
+            description: `SDLE ${plan.name}`,
             callbackUrl,
             metadata: {
                 user_id: req.user.id.toString(),
@@ -173,7 +173,7 @@ exports.createCheckoutSession = async (req, res, next) => {
             publishableKey: process.env.MOYASAR_PUBLISHABLE_KEY,
             amount: amount,
             currency: plan.currency || 'SAR',
-            description: `Medical Q ${plan.name}`,
+            description: `SDLE ${plan.name}`,
             metadata: {
                 user_id: req.user.id.toString(),
                 plan_id: plan.id.toString(),

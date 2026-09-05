@@ -29,8 +29,8 @@ export default function Login() {
         <div className={styles.container}>
             <div className={styles.card}>
                 <div className={styles.logo}>
-                    <span className={styles.logoIcon}>⚕</span>
-                    <h1>Medical Q</h1>
+                    <img src="/logo.jpeg" alt="SDLE" className={styles.logoImg} />
+                    <h1>SDLE</h1>
                     <p>Admin Portal</p>
                 </div>
                 <form onSubmit={handleSubmit}>
@@ -38,7 +38,7 @@ export default function Login() {
                     <label>Email</label>
                     <input
                         type="email"
-                        placeholder="admin@medicalq.com"
+                        placeholder="admin@sdle.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required

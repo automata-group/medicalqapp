@@ -4,9 +4,9 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'Medical QBank API',
+            title: 'SDLE API',
             version: '1.0.0',
-            description: 'API Documentation for Medical QBank user and admin endpoints',
+            description: 'API Documentation for SDLE user and admin endpoints',
             contact: {
                 name: 'Developer',
                 email: 'dev@example.com'

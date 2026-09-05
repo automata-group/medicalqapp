@@ -126,6 +126,12 @@ export const deleteAchievement = (id) => api.delete(`/admin/achievements/${id}`)
 export const getSystemSettings = () => api.get('/admin/config/settings');
 export const updateSystemSettings = (data) => api.put('/admin/config/settings', data);
 
+// ─── Question Contributions (Recalls) ──────────────────────
+export const getContributions = (params) => api.get('/admin/contributions', { params });
+export const getContribution = (id) => api.get(`/admin/contributions/${id}`);
+export const updateContributionStatus = (id, data) => api.patch(`/admin/contributions/${id}/status`, data);
+export const convertContributionToQuestion = (id, data) => api.post(`/admin/contributions/${id}/convert-to-question`, data);
+
 export default api;
 
 

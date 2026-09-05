@@ -57,11 +57,13 @@ app.use('/api/v1/user', require('./routes/settingsRoutes')); // Mounted at /user
 app.use('/api/v1/referrals', require('./routes/referralRoutes'));
 app.use('/api/v1/ai-feedback', require('./routes/aiFeedbackRoutes'));
 app.use('/api/v1/sessions', require('./routes/sessionRoutes'));
+app.use('/api/v1/contributions', require('./routes/contributionRoutes'));
 
 // Admin Routes
 app.use('/api/v1/admin/auth', require('./routes/admin/authRoutes'));
 app.use('/api/v1/admin/users', require('./routes/admin/userRoutes'));
 app.use('/api/v1/admin/questions', require('./routes/admin/questionRoutes'));
+app.use('/api/v1/admin/contributions', require('./routes/admin/contributionRoutes'));
 app.use('/api/v1/admin/reports', require('./routes/admin/reportRoutes'));
 app.use('/api/v1/admin/content-updates', require('./routes/admin/contentUpdateRoutes'));
 app.use('/api/v1/admin/notifications', require('./routes/admin/notificationRoutes')); // Note: Check conflict with user notifications path? User is /api/v1/notifications, Admin is /api/v1/admin/notifications. Safe.
@@ -81,7 +83,7 @@ app.use('/api/v1/admin/achievements', require('./routes/admin/achievementRoutes'
 // Basic Route for testing
 app.get('/', (req, res) => {
     res.json({
-        message: 'Medical Question Bank API is running',
+        message: 'SDLE Question Bank API is running',
         version: '0.0.3',
         databaseStatus: 'connected'
     });

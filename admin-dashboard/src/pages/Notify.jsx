@@ -54,7 +54,7 @@ export default function Notify() {
                         <div style={{ background: '#0f172a', borderRadius: 12, padding: 16, border: '1px solid #1e293b' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
                                 <span style={{ fontSize: 14 }}>🔔</span>
-                                <span style={{ color: '#64748b', fontSize: 12 }}>Medical Q · Preview</span>
+                                <span style={{ color: '#64748b', fontSize: 12 }}>SDLE · Preview</span>
                             </div>
                             <div style={{ color: '#f1f5f9', fontWeight: 600, fontSize: 15 }}>{form.title || '…'}</div>
                             <div style={{ color: '#94a3b8', fontSize: 14, marginTop: 4 }}>{form.message || '…'}</div>

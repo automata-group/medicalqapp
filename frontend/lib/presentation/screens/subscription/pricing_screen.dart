@@ -58,6 +58,10 @@ class _PricingScreenState extends State<PricingScreen>
             String durationStr = '/mo';
             if (days == 365) {
               durationStr = '/yr';
+            } else if (days == 90) {
+              durationStr = '/3mo';
+            } else if (days == 180) {
+              durationStr = '/6mo';
             } else if (days != 30) {
               durationStr = '/${days}d';
             }

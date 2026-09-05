@@ -17,6 +17,7 @@ import 'presentation/providers/notification_provider.dart';
 import 'presentation/providers/admin_provider.dart';
 import 'presentation/providers/reminder_provider.dart';
 import 'presentation/providers/ai_feedback_provider.dart';
+import 'presentation/providers/contribution_provider.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/screens/splash_screen.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
@@ -62,11 +63,12 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => di.sl<NotificationProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<ReminderProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<AIFeedbackProvider>()),
+        ChangeNotifierProvider(create: (_) => di.sl<ContributionProvider>()),
         ChangeNotifierProvider(
             create: (_) => AdminProvider()), // Inject AdminProvider
       ],
       child: MaterialApp(
-        title: 'healthlicenseprep',
+        title: 'SDLE',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,

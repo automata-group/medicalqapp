@@ -22,9 +22,9 @@ class FCMService {
 
   // Notification channel for Android
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
-    'medical_q_push', // id
-    'Medical Q Notifications', // name
-    description: 'Push notifications from Medical Q app',
+    'sdle_push', // id
+    'SDLE Notifications', // name
+    description: 'Push notifications from SDLE app',
     importance: Importance.high,
     playSound: true,
   );

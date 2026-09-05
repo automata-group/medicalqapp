@@ -6,6 +6,7 @@ const navItems = [
     { to: '/', label: 'Dashboard', icon: '📊' },
     { to: '/users', label: 'Users', icon: '👤' },
     { to: '/questions', label: 'Questions', icon: '📚' },
+    { to: '/contributions', label: 'Contributions', icon: '📥' },
     { to: '/categories', label: 'Categories', icon: '🗂️' },
     { to: '/topics', label: 'Topics', icon: '📂' },
     { to: '/mock-exams', label: 'Mock Exams', icon: '📝' },
@@ -31,8 +32,8 @@ export default function Sidebar({ collapsed, setCollapsed }) {
     return (
         <aside className={`${styles.sidebar} ${collapsed ? styles.collapsed : ''}`}>
             <div className={styles.header}>
-                <span className={styles.logo}>⚕</span>
-                {!collapsed && <span className={styles.title}>Medical Q</span>}
+                <img src="/logo.jpeg" alt="SDLE" className={styles.logoImg} />
+                {!collapsed && <span className={styles.title}>SDLE</span>}
                 <button className={styles.toggle} onClick={() => setCollapsed(!collapsed)}>
                     {collapsed ? '→' : '←'}
                 </button>

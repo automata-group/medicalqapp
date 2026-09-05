@@ -31,6 +31,7 @@ import '../../data/datasources/notification_remote_data_source.dart';
 import '../../presentation/providers/notification_provider.dart';
 import '../../data/datasources/ai_feedback_remote_data_source.dart';
 import '../../presentation/providers/ai_feedback_provider.dart';
+import '../../presentation/providers/contribution_provider.dart';
 
 final sl = GetIt.instance;
 
@@ -148,5 +149,10 @@ Future<void> init() async {
   );
   sl.registerFactory(
     () => AIFeedbackProvider(remoteDataSource: sl()),
+  );
+
+  // Contributions
+  sl.registerFactory(
+    () => ContributionProvider(dioClient: sl()),
   );
 }

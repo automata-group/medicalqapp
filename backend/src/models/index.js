@@ -34,6 +34,8 @@ const UserMockExamAnswer = require('./UserMockExamAnswer');
 const SectionQuestion = require('./SectionQuestion');
 const UserProgress = require('./UserProgress');
 const AppSetting = require('./AppSetting');
+const ContributionCluster = require('./ContributionCluster');
+const QuestionContribution = require('./QuestionContribution');
 
 
 // --- User Associations ---
@@ -87,6 +89,25 @@ User.hasMany(QuestionReport, { foreignKey: 'userId', as: 'reports' });
 QuestionReport.belongsTo(User, { foreignKey: 'userId', as: 'user' });
 Question.hasMany(QuestionReport, { foreignKey: 'questionId', as: 'reports' });
 QuestionReport.belongsTo(Question, { foreignKey: 'questionId', as: 'question' });
+
+// Question Contributions & Clusters
+User.hasMany(QuestionContribution, { foreignKey: 'userId', as: 'contributions', constraints: false });
+QuestionContribution.belongsTo(User, { foreignKey: 'userId', as: 'user', constraints: false });
+
+Specialty.hasMany(QuestionContribution, { foreignKey: 'specialtyId', as: 'contributions', constraints: false });
+QuestionContribution.belongsTo(Specialty, { foreignKey: 'specialtyId', as: 'specialty', constraints: false });
+
+Topic.hasMany(QuestionContribution, { foreignKey: 'topicId', as: 'contributions', constraints: false });
+QuestionContribution.belongsTo(Topic, { foreignKey: 'topicId', as: 'topic', constraints: false });
+
+ContributionCluster.hasMany(QuestionContribution, { foreignKey: 'clusterId', as: 'contributions', constraints: false });
+QuestionContribution.belongsTo(ContributionCluster, { foreignKey: 'clusterId', as: 'cluster', constraints: false });
+
+Specialty.hasMany(ContributionCluster, { foreignKey: 'specialtyId', as: 'clusters', constraints: false });
+ContributionCluster.belongsTo(Specialty, { foreignKey: 'specialtyId', as: 'specialty', constraints: false });
+
+QuestionContribution.belongsTo(Question, { foreignKey: 'convertedQuestionId', as: 'convertedQuestion', constraints: false });
+QuestionContribution.belongsTo(User, { foreignKey: 'reviewedBy', as: 'reviewer', constraints: false });
 
 // --- Mock Exam Associations ---
 MockExam.hasMany(MockExamSection, { foreignKey: 'mockExamId', as: 'sections' });
@@ -205,5 +226,7 @@ module.exports = {
     AIFeedback,
     StudySession,
     AppSetting,
+    ContributionCluster,
+    QuestionContribution,
     sequelize
 };
