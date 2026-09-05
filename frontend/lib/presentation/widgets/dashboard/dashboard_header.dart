@@ -151,14 +151,14 @@ class DashboardHeader extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  child: const Row(
+                                  child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
-                                      Icon(Icons.star, color: Colors.white, size: 12),
-                                      SizedBox(width: 3),
+                                      const Icon(Icons.star, color: Colors.white, size: 12),
+                                      const SizedBox(width: 3),
                                       Text(
-                                        'ترقية',
-                                        style: TextStyle(
+                                        l10n.upgrade,
+                                        style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
                                           fontWeight: FontWeight.bold,

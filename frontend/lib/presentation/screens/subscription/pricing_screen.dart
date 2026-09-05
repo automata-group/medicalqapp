@@ -191,7 +191,7 @@ class _PricingScreenState extends State<PricingScreen>
                         ),
                         const SizedBox(height: 16),
                         const Text(
-                          'Mastery PRO',
+                          'SDLE PRO',
                           style: TextStyle(
                             fontSize: 28,
                             fontWeight: FontWeight.w900,
@@ -201,11 +201,12 @@ class _PricingScreenState extends State<PricingScreen>
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Pass your dental boards with confidence.',
+                          l10n.passExamWithConfidence,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey.shade300,
                           ),
+                          textAlign: TextAlign.center,
                         ),
                       ],
                     ),
@@ -232,7 +233,7 @@ class _PricingScreenState extends State<PricingScreen>
                     children: [
                       // Subtitle
                       Text(
-                        'Choose Your Plan',
+                        l10n.chooseYourPlan,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 20,
@@ -255,7 +256,7 @@ class _PricingScreenState extends State<PricingScreen>
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'جميع الخطط تمنح وصولاً كاملاً لكافة الأسئلة ومزايا الذكاء الاصطناعي — الفرق فقط في المدة والسعر',
+                                l10n.allPlansFullAccessNotice,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.blue.shade900,
@@ -317,7 +318,7 @@ class _PricingScreenState extends State<PricingScreen>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text(
-                              'What\'s Included',
+                              l10n.whatsIncluded,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -332,19 +333,19 @@ class _PricingScreenState extends State<PricingScreen>
 
                       // Modern Feature List
                       _buildFeatureRow(
-                        'Unlimited Questions',
+                        l10n.unlimitedQuestions,
                         Icons.all_inclusive,
                       ),
                       _buildFeatureRow(
-                        'AI Insights & Explanations',
+                        l10n.detailedExplanations,
                         Icons.auto_awesome,
                       ),
-                      _buildFeatureRow('Full Premium Mock Exams', Icons.quiz),
+                      _buildFeatureRow(l10n.mockExams, Icons.quiz),
                       _buildFeatureRow(
-                        'Offline Mode Support',
-                        Icons.offline_bolt,
+                        l10n.advancedStats,
+                        Icons.insights,
                       ),
-                      _buildFeatureRow('Ad-Free Experience', Icons.block),
+                      _buildFeatureRow(l10n.adFree, Icons.block),
 
                       const SizedBox(height: 40),
 
@@ -445,6 +446,7 @@ class _PricingScreenState extends State<PricingScreen>
   }
 
   Widget _buildPlanCard(int index) {
+    final l10n = AppLocalizations.of(context)!;
     final plan = _plans[index];
     final isSelected = _selectedPlanIndex == index;
     final isBest = plan['best'] == true;
@@ -519,7 +521,17 @@ class _PricingScreenState extends State<PricingScreen>
                     ],
                   ),
                   Text(
-                    'SAR${plan['duration']}',
+                    l10n.localeName == 'ar'
+                        ? (plan['duration'] == '/mo'
+                            ? 'ر.س / شهرياً'
+                            : plan['duration'] == '/3mo'
+                                ? 'ر.س / 3 أشهر'
+                                : plan['duration'] == '/6mo'
+                                    ? 'ر.س / 6 أشهر'
+                                    : plan['duration'] == '/yr'
+                                        ? 'ر.س / سنوياً'
+                                        : 'ر.س ${plan['duration']}')
+                        : 'SAR ${plan['duration']}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
@@ -576,18 +588,18 @@ class _PricingScreenState extends State<PricingScreen>
                         ),
                       ],
                     ),
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.local_fire_department,
                           size: 12,
                           color: Colors.white,
                         ),
-                        SizedBox(width: 4),
+                        const SizedBox(width: 4),
                         Text(
-                          'BEST VALUE',
-                          style: TextStyle(
+                          l10n.bestValue,
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,

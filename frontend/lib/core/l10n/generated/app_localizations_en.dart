@@ -610,4 +610,22 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get studyPlanSaveError =>
       'Failed to save study plan. Please try again.';
+
+  @override
+  String get splashSubtitle =>
+      'Your Premier Platform for Saudi Dental Licensure Examination';
+
+  @override
+  String get chooseYourPlan => 'Choose Your Plan';
+
+  @override
+  String get whatsIncluded => 'What\'s Included';
+
+  @override
+  String get passExamWithConfidence =>
+      'Pass your dental boards with confidence.';
+
+  @override
+  String get allPlansFullAccessNotice =>
+      'All plans provide full access to questions and AI features — difference is only in duration.';
 }

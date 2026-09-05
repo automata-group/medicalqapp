@@ -606,4 +606,21 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get studyPlanSaveError =>
       'فشل حفظ خطة المذاكرة، يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get splashSubtitle =>
+      'منصتك الأولى لاجتياز اختبار رخصة طب الأسنان السعودي';
+
+  @override
+  String get chooseYourPlan => 'اختر باقتك المناسبة';
+
+  @override
+  String get whatsIncluded => 'ماذا تشمل باقاتنا؟';
+
+  @override
+  String get passExamWithConfidence => 'اجتز اختبار الهيئة بكل ثقة وتفوق.';
+
+  @override
+  String get allPlansFullAccessNotice =>
+      'جميع الخطط تمنح وصولاً كاملاً لكافة الأسئلة ومزايا الذكاء الاصطناعي — الفرق فقط في المدة والسعر';
 }

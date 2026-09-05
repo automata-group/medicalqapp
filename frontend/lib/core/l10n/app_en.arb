@@ -249,5 +249,10 @@
   "backToHome": "Back to Home",
   "submissionError": "An error occurred while submitting",
   "studyPlanSaved": "Study plan saved successfully!",
-  "studyPlanSaveError": "Failed to save study plan. Please try again."
+  "studyPlanSaveError": "Failed to save study plan. Please try again.",
+  "splashSubtitle": "Your Premier Platform for Saudi Dental Licensure Examination",
+  "chooseYourPlan": "Choose Your Plan",
+  "whatsIncluded": "What's Included",
+  "passExamWithConfidence": "Pass your dental boards with confidence.",
+  "allPlansFullAccessNotice": "All plans provide full access to questions and AI features — difference is only in duration."
 }

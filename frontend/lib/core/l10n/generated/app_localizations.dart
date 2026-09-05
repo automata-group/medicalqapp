@@ -1213,6 +1213,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save study plan. Please try again.'**
   String get studyPlanSaveError;
+
+  /// No description provided for @splashSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Premier Platform for Saudi Dental Licensure Examination'**
+  String get splashSubtitle;
+
+  /// No description provided for @chooseYourPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Plan'**
+  String get chooseYourPlan;
+
+  /// No description provided for @whatsIncluded.
+  ///
+  /// In en, this message translates to:
+  /// **'What\'s Included'**
+  String get whatsIncluded;
+
+  /// No description provided for @passExamWithConfidence.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass your dental boards with confidence.'**
+  String get passExamWithConfidence;
+
+  /// No description provided for @allPlansFullAccessNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'All plans provide full access to questions and AI features — difference is only in duration.'**
+  String get allPlansFullAccessNotice;
 }
 
 class _AppLocalizationsDelegate

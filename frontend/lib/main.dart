@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         themeMode: ThemeMode.system,
-        locale: const Locale('en'), // Default to English
+        locale: const Locale('ar'), // Default to Arabic
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         home: const SplashScreen(),
