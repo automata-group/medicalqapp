@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -33,6 +34,7 @@ class FCMService {
 
   /// Initialize FCM: request permissions, setup channels, get token
   Future<void> initialize({required String baseUrl}) async {
+    if (kIsWeb) return;
     _baseUrl = baseUrl;
 
     // 1. Request permissions

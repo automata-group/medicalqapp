@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'بنك الأسئلة الطبي';
+  String get appTitle => 'SDLE';
 
   @override
   String get mockExams => 'اختبارات تجريبية';
@@ -421,4 +421,189 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shuffleQuestions => 'خلط الأسئلة';
+
+  @override
+  String get examRecallTitle => 'تذكّر سؤالاً جاءك في الاختبار؟';
+
+  @override
+  String get examRecallSubtitle =>
+      'ساهم بالسؤال وساعد زملاءك في الاستعداد للاختبار.';
+
+  @override
+  String get shareNow => 'شارك الآن';
+
+  @override
+  String get examContributionTitle => 'مساهمة بسؤال اختبار';
+
+  @override
+  String get examContributionSubtitle =>
+      'ساهم بالسؤال وساعد زملاءك في الاستعداد لاختبار الهيئة. سيتم تدقيقه واعتماده رسمياً.';
+
+  @override
+  String get specialtyRequired => 'التخصص *';
+
+  @override
+  String get selectSpecialtyHint => 'اختر التخصص';
+
+  @override
+  String get questionTextLabel => 'ما الذي تتذكره من السؤال؟ *';
+
+  @override
+  String get questionTextHint =>
+      'اكتب نص السؤال أو الحالة السريرية أو الأعراض كما تذكرتها...';
+
+  @override
+  String get questionTextValidation => 'يرجى كتابة ما تتذكره من السؤال';
+
+  @override
+  String get optionsOptional => 'الخيارات إن كنت تتذكرها (اختياري)';
+
+  @override
+  String get perceivedCorrectAnswer => 'ما الإجابة التي تعتقد أنها صحيحة؟';
+
+  @override
+  String get unsureAnswer => 'غير متأكد';
+
+  @override
+  String get confidenceLevelQuestion => 'مدى ثقتك بتذكرك للسؤال؟ *';
+
+  @override
+  String get confidenceHighTitle => 'أتذكره بشكل جيد';
+
+  @override
+  String get confidenceHighSubtitle =>
+      'حرفياً أو شبه مطابق لما ورد في الاختبار';
+
+  @override
+  String get confidenceMediumTitle => 'أتذكر معظمه';
+
+  @override
+  String get confidenceMediumSubtitle =>
+      'قريب جداً من النص الأصلي مع نسيان بعض التفاصيل';
+
+  @override
+  String get confidenceLowTitle => 'أتذكر الفكرة فقط';
+
+  @override
+  String get confidenceLowSubtitle =>
+      'أتذكر فكرة الحالة السريرية والموضوع العام';
+
+  @override
+  String get examDateOptional => 'متى اختبرت؟ (اختياري)';
+
+  @override
+  String get selectExamDateHint => 'اختر تاريخ الاختبار إن كنت تتذكره';
+
+  @override
+  String get notesOptional => 'شرح أو ملاحظة (اختياري)';
+
+  @override
+  String get notesHint =>
+      'أضف أي ملاحظة حول سبب اختيارك أو تفاصيل إضافية عن السؤال...';
+
+  @override
+  String get attachImageOptional => 'إرفاق صورة (اختياري)';
+
+  @override
+  String get pickImageFromDevice => 'اختيار صورة من الجهاز';
+
+  @override
+  String get imagePrivacyNotice =>
+      'تنبيه: يرجى عدم رفع أي صور تحتوي على بيانات شخصية أو مواد محظورة.';
+
+  @override
+  String get submitForReview => 'إرسال للمراجعة';
+
+  @override
+  String get reportQuestionTitle => 'الإبلاغ عن مشكلة في السؤال';
+
+  @override
+  String get reportQuestionSubtitle =>
+      'ساعدنا في الحفاظ على دقة بنك الأسئلة ومراجعتها من قبل المختصين';
+
+  @override
+  String get reportReasonLabel => 'نوع المشكلة';
+
+  @override
+  String get reportReasonWrongAnswer => 'الإجابة الصحيحة غير دقيقة';
+
+  @override
+  String get reportReasonWrongAnswerDesc =>
+      'مفتاح الحل المعلم كصحيح غير مطابق للصواب';
+
+  @override
+  String get reportReasonScientific => 'خطأ علمي أو طبي';
+
+  @override
+  String get reportReasonScientificDesc =>
+      'خطأ في المعلومة الطبية، الحالة، أو التفسير';
+
+  @override
+  String get reportReasonTypo => 'خطأ لغوي أو إملائي';
+
+  @override
+  String get reportReasonTypoDesc => 'أخطاء في الصياغة، الترجمة أو التنسيق';
+
+  @override
+  String get reportReasonConfusing => 'سؤال غامض أو غير مكتمل';
+
+  @override
+  String get reportReasonConfusingDesc =>
+      'السؤال غير واضح، ناقص خيارات أو غير مفهوم';
+
+  @override
+  String get reportReasonOther => 'سبب آخر';
+
+  @override
+  String get reportReasonOtherDesc => 'أي ملاحظة أخرى تود إضافتها';
+
+  @override
+  String get reportDescriptionLabel => 'تفاصيل إضافية (اختياري)';
+
+  @override
+  String get reportDescriptionHint =>
+      'وضح تفاصيل الخطأ أو الملاحظة لمساعدة المدققين...';
+
+  @override
+  String get reportSubmitButton => 'إرسال البلاغ';
+
+  @override
+  String get reportSuccessMessage => 'تم إرسال البلاغ بنجاح، شكراً لمساهمتك!';
+
+  @override
+  String get reportFailedMessage =>
+      'تعذر إرسال البلاغ، يرجى المحاولة مرة أخرى.';
+
+  @override
+  String optionTextHint(String key) {
+    return 'نص الخيار ($key)';
+  }
+
+  @override
+  String optionLabel(String key) {
+    return 'الخيار $key';
+  }
+
+  @override
+  String get pleaseSelectSpecialty => 'يرجى اختيار التخصص';
+
+  @override
+  String get contributionReceivedTitle => 'تم استلام مساهمتك';
+
+  @override
+  String get contributionReceivedMessage =>
+      'شكرًا لمساعدتك في تطوير بنك الأسئلة.\nسيقوم فريقنا بمراجعة السؤال والتحقق منه قبل إضافته.';
+
+  @override
+  String get contributeAnotherQuestion => 'مساهمة بسؤال آخر';
+
+  @override
+  String get submissionError => 'حدث خطأ أثناء الإرسال';
+
+  @override
+  String get studyPlanSaved => 'تم حفظ خطة المذاكرة بنجاح!';
+
+  @override
+  String get studyPlanSaveError =>
+      'فشل حفظ خطة المذاكرة، يرجى المحاولة مرة أخرى.';
 }

@@ -9,6 +9,7 @@ class SessionModel extends Equatable {
   final int? lastQuestionId;
 
   final String? sessionType;
+  final int correctCount;
   
   const SessionModel({
     required this.id,
@@ -18,6 +19,7 @@ class SessionModel extends Equatable {
     required this.attemptedIds,
     this.lastQuestionId,
     this.sessionType,
+    this.correctCount = 0,
   });
 
   factory SessionModel.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class SessionModel extends Equatable {
       attemptedIds: List<int>.from(json['attemptedIds'] ?? []),
       lastQuestionId: json['lastQuestionId'],
       sessionType: json['sessionType'],
+      correctCount: json['correctCount'] ?? 0,
     );
   }
 
@@ -40,9 +43,10 @@ class SessionModel extends Equatable {
         'attemptedIds': attemptedIds,
         'lastQuestionId': lastQuestionId,
         'sessionType': sessionType,
+        'correctCount': correctCount,
       };
 
   @override
   List<Object?> get props =>
-      [id, specialtyId, subTopic, filter, attemptedIds, lastQuestionId, sessionType];
+      [id, specialtyId, subTopic, filter, attemptedIds, lastQuestionId, sessionType, correctCount];
 }

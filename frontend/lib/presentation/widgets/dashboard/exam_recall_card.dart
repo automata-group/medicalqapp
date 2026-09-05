@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import '../../screens/practice/exam_question_contribution_screen.dart';
+import '../../../core/l10n/generated/app_localizations.dart';
 
 class ExamRecallCard extends StatelessWidget {
   const ExamRecallCard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: InkWell(
@@ -57,9 +60,9 @@ class ExamRecallCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'تذكّر سؤالاً جاءك في الاختبار؟',
-                      style: TextStyle(
+                    Text(
+                      l10n?.examRecallTitle ?? 'تذكّر سؤالاً جاءك في الاختبار؟',
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -67,7 +70,8 @@ class ExamRecallCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'ساهم بالسؤال وساعد زملاءك في الاستعداد للاختبار.',
+                      l10n?.examRecallSubtitle ??
+                          'ساهم بالسؤال وساعد زملاءك في الاستعداد للاختبار.',
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.9),
                         fontSize: 12,
@@ -84,19 +88,19 @@ class ExamRecallCard extends StatelessWidget {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            'شارك الآن',
-                            style: TextStyle(
+                            l10n?.shareNow ?? 'شارك الآن',
+                            style: const TextStyle(
                               color: Color(0xFF4F46E5),
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(width: 4),
-                          Icon(
+                          const SizedBox(width: 4),
+                          const Icon(
                             Icons.arrow_forward,
                             color: Color(0xFF4F46E5),
                             size: 13,

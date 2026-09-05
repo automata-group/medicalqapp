@@ -9,6 +9,7 @@ import 'components/exam_header.dart';
 import 'components/exam_question_card.dart';
 import 'components/exam_answer_option.dart';
 import 'components/exam_explanation_sheet.dart';
+import 'components/exam_report_sheet.dart';
 import '../subscription/pricing_screen.dart';
 import '../../../core/utils/toast_utils.dart';
 import '../../../core/theme/app_colors.dart';
@@ -39,10 +40,6 @@ class _ExamScreenState extends State<ExamScreen> {
   bool _isAnswerChecked = false;
   Timer? _timer;
   int _secondsElapsed = 0;
-
-  // Report State
-  final _reportReasonController = TextEditingController();
-  String _selectedReportReason = 'typo';
 
   @override
   void initState() {
@@ -136,83 +133,11 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   void _showReportDialog() {
-    _reportReasonController.clear();
-    _selectedReportReason = 'typo';
+    final provider = context.read<QuestionProvider>();
+    final question = provider.currentQuestion;
+    if (question == null) return;
 
-    showDialog(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (stateContext, setDialogState) {
-            return AlertDialog(
-              title: const Text('Report Question'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    DropdownButtonFormField<String>(
-                      initialValue: _selectedReportReason,
-                      decoration: const InputDecoration(labelText: 'Reason'),
-                      items: const [
-                        DropdownMenuItem(
-                            value: 'typo', child: Text('Typo/Formatting')),
-                        DropdownMenuItem(
-                            value: 'scientific_error',
-                            child: Text('Scientific Error')),
-                        DropdownMenuItem(
-                            value: 'wrong_answer',
-                            child: Text('Wrong Answer Key')),
-                        DropdownMenuItem(value: 'other', child: Text('Other')),
-                      ],
-                      onChanged: (val) {
-                        if (val != null) {
-                          setDialogState(() => _selectedReportReason = val);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _reportReasonController,
-                      decoration: const InputDecoration(
-                        labelText: 'Description (Optional)',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                    ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel'),
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    final provider = context.read<QuestionProvider>();
-                    final navigator = Navigator.of(dialogContext);
-
-                    final success = await provider.submitReport(
-                      _selectedReportReason,
-                      _reportReasonController.text,
-                    );
-                    navigator.pop();
-                    if (mounted) {
-                      if (success) {
-                        ToastUtils.showSuccess(context, 'Report submitted successfully.');
-                      } else {
-                        ToastUtils.showError(context, 'Failed to submit report.');
-                      }
-                    }
-                  },
-                  child: const Text('Submit'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
+    ExamReportSheet.show(context, questionId: question.id);
   }
 
   void _showExplanationSheet(bool isCorrect) {
@@ -649,9 +574,7 @@ class _ExamScreenState extends State<ExamScreen> {
           children: [
             // Header with Previous Question support
             ExamHeader(
-              currentQuestionIndex: provider.currentHistoryIndex >= 0
-                  ? provider.currentHistoryIndex
-                  : provider.sessionTotalCount,
+              currentQuestionIndex: provider.currentQuestionIndex,
               totalQuestions: _getTotalQuestions(provider),
               timeElapsed: _formatTime(_secondsElapsed),
               progress: _calculateProgress(provider),
@@ -840,7 +763,6 @@ class _ExamScreenState extends State<ExamScreen> {
   double _calculateProgress(QuestionProvider provider) {
     final total = _getTotalQuestions(provider);
     if (total == 0) return 0;
-    final currentIdx = provider.currentHistoryIndex >= 0 ? provider.currentHistoryIndex : provider.sessionTotalCount;
-    return (currentIdx + 1) / total;
+    return (provider.currentQuestionIndex + 1) / total;
   }
 }

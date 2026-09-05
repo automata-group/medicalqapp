@@ -158,5 +158,75 @@
   "questionBank": "بنك الأسئلة",
   "allSpecialties": "جميع التخصصات",
   "shuffleQuestions": "خلط الأسئلة",
-  "finishExam": "إنهاء الاختبار"
+  "finishExam": "إنهاء الاختبار",
+  "examRecallTitle": "تذكّر سؤالاً جاءك في الاختبار؟",
+  "examRecallSubtitle": "ساهم بالسؤال وساعد زملاءك في الاستعداد للاختبار.",
+  "shareNow": "شارك الآن",
+  "examContributionTitle": "مساهمة بسؤال اختبار",
+  "examContributionSubtitle": "ساهم بالسؤال وساعد زملاءك في الاستعداد لاختبار الهيئة. سيتم تدقيقه واعتماده رسمياً.",
+  "specialtyRequired": "التخصص *",
+  "selectSpecialtyHint": "اختر التخصص",
+  "questionTextLabel": "ما الذي تتذكره من السؤال؟ *",
+  "questionTextHint": "اكتب نص السؤال أو الحالة السريرية أو الأعراض كما تذكرتها...",
+  "questionTextValidation": "يرجى كتابة ما تتذكره من السؤال",
+  "optionsOptional": "الخيارات إن كنت تتذكرها (اختياري)",
+  "perceivedCorrectAnswer": "ما الإجابة التي تعتقد أنها صحيحة؟",
+  "unsureAnswer": "غير متأكد",
+  "confidenceLevelQuestion": "مدى ثقتك بتذكرك للسؤال؟ *",
+  "confidenceHighTitle": "أتذكره بشكل جيد",
+  "confidenceHighSubtitle": "حرفياً أو شبه مطابق لما ورد في الاختبار",
+  "confidenceMediumTitle": "أتذكر معظمه",
+  "confidenceMediumSubtitle": "قريب جداً من النص الأصلي مع نسيان بعض التفاصيل",
+  "confidenceLowTitle": "أتذكر الفكرة فقط",
+  "confidenceLowSubtitle": "أتذكر فكرة الحالة السريرية والموضوع العام",
+  "examDateOptional": "متى اختبرت؟ (اختياري)",
+  "selectExamDateHint": "اختر تاريخ الاختبار إن كنت تتذكره",
+  "notesOptional": "شرح أو ملاحظة (اختياري)",
+  "notesHint": "أضف أي ملاحظة حول سبب اختيارك أو تفاصيل إضافية عن السؤال...",
+  "attachImageOptional": "إرفاق صورة (اختياري)",
+  "pickImageFromDevice": "اختيار صورة من الجهاز",
+  "imagePrivacyNotice": "تنبيه: يرجى عدم رفع أي صور تحتوي على بيانات شخصية أو مواد محظورة.",
+  "submitForReview": "إرسال للمراجعة",
+  "reportQuestionTitle": "الإبلاغ عن مشكلة في السؤال",
+  "reportQuestionSubtitle": "ساعدنا في الحفاظ على دقة بنك الأسئلة ومراجعتها من قبل المختصين",
+  "reportReasonLabel": "نوع المشكلة",
+  "reportReasonWrongAnswer": "الإجابة الصحيحة غير دقيقة",
+  "reportReasonWrongAnswerDesc": "مفتاح الحل المعلم كصحيح غير مطابق للصواب",
+  "reportReasonScientific": "خطأ علمي أو طبي",
+  "reportReasonScientificDesc": "خطأ في المعلومة الطبية، الحالة، أو التفسير",
+  "reportReasonTypo": "خطأ لغوي أو إملائي",
+  "reportReasonTypoDesc": "أخطاء في الصياغة، الترجمة أو التنسيق",
+  "reportReasonConfusing": "سؤال غامض أو غير مكتمل",
+  "reportReasonConfusingDesc": "السؤال غير واضح، ناقص خيارات أو غير مفهوم",
+  "reportReasonOther": "سبب آخر",
+  "reportReasonOtherDesc": "أي ملاحظة أخرى تود إضافتها",
+  "reportDescriptionLabel": "تفاصيل إضافية (اختياري)",
+  "reportDescriptionHint": "وضح تفاصيل الخطأ أو الملاحظة لمساعدة المدققين...",
+  "reportSubmitButton": "إرسال البلاغ",
+  "reportSuccessMessage": "تم إرسال البلاغ بنجاح، شكراً لمساهمتك!",
+  "reportFailedMessage": "تعذر إرسال البلاغ، يرجى المحاولة مرة أخرى.",
+  "optionTextHint": "نص الخيار ({key})",
+  "@optionTextHint": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "optionLabel": "الخيار {key}",
+  "@optionLabel": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectSpecialty": "يرجى اختيار التخصص",
+  "contributionReceivedTitle": "تم استلام مساهمتك",
+  "contributionReceivedMessage": "شكرًا لمساعدتك في تطوير بنك الأسئلة.\nسيقوم فريقنا بمراجعة السؤال والتحقق منه قبل إضافته.",
+  "contributeAnotherQuestion": "مساهمة بسؤال آخر",
+  "backToHome": "العودة للرئيسية",
+  "submissionError": "حدث خطأ أثناء الإرسال",
+  "studyPlanSaved": "تم حفظ خطة المذاكرة بنجاح!",
+  "studyPlanSaveError": "فشل حفظ خطة المذاكرة، يرجى المحاولة مرة أخرى."
 }

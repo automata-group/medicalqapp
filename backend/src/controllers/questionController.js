@@ -138,10 +138,10 @@ exports.getNextQuestion = async (req, res, next) => {
         }
 
         // 1. Count total matching rows (BEFORE applying exclude for the current session)
-        const count = await Question.count({ where: whereClause });
+        const totalCount = await Question.count({ where: whereClause });
 
-        if (id) {
-            whereClause.id = id;
+        if (totalCount === 0 && !id) {
+            return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
         }
 
         // Exclude questions already seen in this session
@@ -166,39 +166,63 @@ exports.getNextQuestion = async (req, res, next) => {
             }
         }
 
-        if (count === 0) {
-            return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
-        }
-
-        // 2. Determine if we should shuffle (default: true)
-        const shouldShuffle = req.query.shuffle !== 'false';
         let question;
 
-        if (shouldShuffle) {
-            // Generate random offset
-            const randomIndex = Math.floor(Math.random() * count);
-            
-            // Fetch the single random question
+        if (id) {
+            // Direct lookup for session resume or specific question - NO SHUFFLE / NO OFFSET
+            whereClause.id = id;
             question = await Question.findOne({
                 where: whereClause,
-                offset: randomIndex,
                 include: [
                     { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
                     { model: Specialty, as: 'specialty', attributes: ['name'] },
                     { model: Topic, as: 'topic', attributes: ['name'] }
                 ]
             });
+
+            // Fallback: if specialty/subTopic filters caused a mismatch, still attempt direct primary key lookup
+            if (!question) {
+                question = await Question.findByPk(id, {
+                    include: [
+                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
+                        { model: Specialty, as: 'specialty', attributes: ['name'] },
+                        { model: Topic, as: 'topic', attributes: ['name'] }
+                    ]
+                });
+            }
         } else {
-            // Fetch the next question sequentially by ID
-            question = await Question.findOne({
-                where: whereClause,
-                order: [['id', 'ASC']],
-                include: [
-                    { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
-                    { model: Specialty, as: 'specialty', attributes: ['name'] },
-                    { model: Topic, as: 'topic', attributes: ['name'] }
-                ]
-            });
+            // Count remaining available questions AFTER exclude is applied
+            const remainingCount = await Question.count({ where: whereClause });
+            if (remainingCount === 0) {
+                return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
+            }
+
+            // 2. Determine if we should shuffle (default: true)
+            const shouldShuffle = req.query.shuffle !== 'false';
+            if (shouldShuffle) {
+                // Generate random offset strictly within the remaining available questions
+                const randomIndex = Math.floor(Math.random() * remainingCount);
+                question = await Question.findOne({
+                    where: whereClause,
+                    offset: randomIndex,
+                    include: [
+                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
+                        { model: Specialty, as: 'specialty', attributes: ['name'] },
+                        { model: Topic, as: 'topic', attributes: ['name'] }
+                    ]
+                });
+            } else {
+                // Fetch the next question sequentially by ID
+                question = await Question.findOne({
+                    where: whereClause,
+                    order: [['id', 'ASC']],
+                    include: [
+                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
+                        { model: Specialty, as: 'specialty', attributes: ['name'] },
+                        { model: Topic, as: 'topic', attributes: ['name'] }
+                    ]
+                });
+            }
         }
 
 
@@ -220,7 +244,7 @@ exports.getNextQuestion = async (req, res, next) => {
             data: {
                 ...questionData,
                 isBookmarked: !!isBookmarked,
-                totalInCategory: count
+                totalInCategory: totalCount
             }
         });
     } catch (error) {
@@ -416,18 +440,35 @@ exports.bookmarkQuestion = async (req, res, next) => {
 // @access  Private
 exports.reportQuestion = async (req, res, next) => {
     try {
-        const questionId = req.params.id;
-        const { reason, description } = req.body;
+        const questionId = parseInt(req.params.id, 10);
+        let { reason, description, details } = req.body;
+        const desc = (description || details || '').trim();
 
-        const report = await QuestionReport.create({
-            userId: req.user.id,
-            questionId,
-            reason,
-            description,
-            status: 'pending'
-        });
+        // Valid reasons in our model
+        const validReasons = ['wrong_answer', 'typo', 'confusing', 'scientific_error', 'other'];
+        let dbReason = validReasons.includes(reason) ? reason : 'other';
 
-        res.status(201).json({ success: true, message: 'Report submitted', data: report });
+        let report;
+        try {
+            report = await QuestionReport.create({
+                userId: req.user.id,
+                questionId,
+                reason: dbReason,
+                description: desc,
+                status: 'pending'
+            });
+        } catch (createErr) {
+            // If MySQL table enum on live server does not yet include scientific_error, fallback to 'other'
+            report = await QuestionReport.create({
+                userId: req.user.id,
+                questionId,
+                reason: 'other',
+                description: reason && reason !== 'other' ? `[${reason}] ${desc}`.trim() : desc,
+                status: 'pending'
+            });
+        }
+
+        res.status(201).json({ success: true, message: 'Report submitted successfully', data: report });
     } catch (error) {
         next(error);
     }

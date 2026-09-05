@@ -1,4 +1,4 @@
-const { StudySession } = require('../../models');
+const { StudySession, QuestionAttempt } = require('../../models');
 const { Op } = require('sequelize');
 
 /**
@@ -63,8 +63,24 @@ exports.getActiveSessionLogic = async (userId, type, filters = {}) => {
 
     if (!session) return null;
 
+    const attemptedIds = session.attemptedIds 
+        ? session.attemptedIds.split(',').map(id => parseInt(id, 10)).filter(id => !isNaN(id)) 
+        : [];
+
+    let correctCount = 0;
+    if (attemptedIds.length > 0) {
+        correctCount = await QuestionAttempt.count({
+            where: {
+                userId,
+                questionId: { [Op.in]: attemptedIds },
+                isCorrect: true
+            }
+        });
+    }
+
     return {
         ...session.toJSON(),
-        attemptedIds: session.attemptedIds ? session.attemptedIds.split(',').map(id => parseInt(id)) : []
+        attemptedIds,
+        correctCount
     };
 };

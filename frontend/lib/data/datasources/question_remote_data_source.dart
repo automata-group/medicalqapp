@@ -138,15 +138,22 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
   @override
   Future<void> reportQuestion(
       int questionId, String reason, String description) async {
-    final response = await dioClient.post(
-      '/questions/$questionId/report',
-      data: {
-        'reason': reason,
-        'description': description,
-      },
-    );
-    if (response.data['success'] != true) {
-      throw Exception('Failed to submit report');
+    try {
+      final response = await dioClient.post(
+        '/questions/$questionId/report',
+        data: {
+          'reason': reason,
+          'description': description,
+        },
+      );
+      if (response.data['success'] != true) {
+        throw Exception(response.data['message'] ?? 'Failed to submit report');
+      }
+    } on DioException catch (e) {
+      final serverMsg = (e.response?.data is Map)
+          ? e.response?.data['message']?.toString()
+          : null;
+      throw Exception(serverMsg ?? 'Failed to submit report. Please check your connection.');
     }
   }
 

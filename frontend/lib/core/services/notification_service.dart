@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest_all.dart' as tz;
@@ -16,6 +17,8 @@ class NotificationService {
       'Daily reminders to keep your study streak going';
 
   Future<void> initialize() async {
+    if (kIsWeb) return;
+
     tz.initializeTimeZones();
 
     const androidSettings =
@@ -35,6 +38,8 @@ class NotificationService {
   }
 
   Future<bool> requestPermission() async {
+    if (kIsWeb) return true;
+
     final android = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (android != null) {
@@ -52,6 +57,8 @@ class NotificationService {
     required int hour,
     required int minute,
   }) async {
+    if (kIsWeb) return;
+
     const androidDetails = AndroidNotificationDetails(
       _studyChannelId,
       _studyChannelName,
@@ -84,10 +91,12 @@ class NotificationService {
   }
 
   Future<void> cancelReminder(int id) async {
+    if (kIsWeb) return;
     await _plugin.cancel(id);
   }
 
   Future<void> cancelAllReminders() async {
+    if (kIsWeb) return;
     await _plugin.cancelAll();
   }
 

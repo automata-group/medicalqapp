@@ -23,25 +23,32 @@ import 'presentation/screens/splash_screen.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import 'core/di/service_locator.dart' as di;
 
+import 'package:flutter/foundation.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
   // Initialize Firebase
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Register background message handler
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  // Register background message handler on mobile
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  }
 
   await di.init();
 
   // Initialize FCM service (permissions, token registration, etc.)
-  FCMService.instance.initialize(baseUrl: 'https://healthlicenseprep.com/api/v1');
+  if (!kIsWeb) {
+    FCMService.instance.initialize(baseUrl: 'https://healthlicenseprep.com/api/v1');
+  }
 
   // Initialize Notification Service for local reminders
-  await NotificationService.instance.initialize();
+  if (!kIsWeb) {
+    await NotificationService.instance.initialize();
+  }
 
   runApp(const MyApp());
 }

@@ -115,8 +115,18 @@ class QuestionProvider with ChangeNotifier {
 
   int get sessionCorrectCount => _sessionCorrectCount;
   int get sessionTotalCount => _sessionAttemptedIds.length;
+  List<int> get sessionAttemptedIds => _sessionAttemptedIds;
   bool get hasMistakes => _failedSessionQuestions.isNotEmpty;
   bool get isRetryMode => _isRetryMode;
+
+  int get currentQuestionIndex {
+    if (_history.isEmpty || _historyIndex < 0) {
+      return _sessionAttemptedIds.length;
+    }
+    final offsetFromLatest = (_history.length - 1) - _historyIndex;
+    final index = _sessionAttemptedIds.length - offsetFromLatest;
+    return index < 0 ? 0 : index;
+  }
 
   SessionModel? _activeSessionToResume;
   SessionModel? get activeSessionToResume => _activeSessionToResume;
@@ -346,6 +356,7 @@ class QuestionProvider with ChangeNotifier {
         } else {
           _currentQuestion = null;
           _status = QuestionStatus.noQuestions;
+          repository.clearSession();
         }
       }
     } catch (e) {
@@ -503,9 +514,10 @@ class QuestionProvider with ChangeNotifier {
     try {
       await repository.reportQuestion(
           _currentQuestion!.id, reason, description);
+      _errorMessage = null;
       return true;
     } catch (e) {
-      _errorMessage = 'Failed to submit report: ${e.toString()}';
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
       return false;
     }
@@ -577,7 +589,7 @@ class QuestionProvider with ChangeNotifier {
     
     _failedSessionQuestions.clear();
     _isRetryMode = false;
-    _sessionCorrectCount = 0;
+    _sessionCorrectCount = session.correctCount;
 
     await loadNextQuestion(
       specialtyId: _lastSpecialtyId,

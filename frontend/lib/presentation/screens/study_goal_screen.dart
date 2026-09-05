@@ -58,11 +58,30 @@ class _StudyGoalView extends StatelessWidget {
               const SizedBox(height: 12),
               InkWell(
                 onTap: () async {
+                  final now = DateTime.now();
+                  final today = DateTime(now.year, now.month, now.day);
+                  final initial = (provider.selectedDate != null &&
+                          !provider.selectedDate!.isBefore(today))
+                      ? provider.selectedDate!
+                      : today;
+
                   final date = await showDatePicker(
                     context: context,
-                    initialDate: DateTime.now().add(const Duration(days: 30)),
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+                    initialDate: initial,
+                    firstDate: today,
+                    lastDate: today.add(const Duration(days: 365 * 2)),
+                    builder: (context, child) {
+                      return Theme(
+                        data: Theme.of(context).copyWith(
+                          colorScheme: ColorScheme.light(
+                            primary: AppColors.primary,
+                            onPrimary: Colors.white,
+                            onSurface: const Color(0xFF1E293B),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
                   );
                   if (date != null) {
                     provider.setDate(date);
@@ -148,7 +167,7 @@ class _StudyGoalView extends StatelessWidget {
                           // For now, just show a snackbar simulation or print
                           if (context.mounted) {
                             if (success) {
-                              ToastUtils.showSuccess(context, 'Study Plan Saved!');
+                              ToastUtils.showSuccess(context, l10n.studyPlanSaved);
                               Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
@@ -157,7 +176,7 @@ class _StudyGoalView extends StatelessWidget {
                                 (route) => false,
                               );
                             } else {
-                              ToastUtils.showError(context, 'Failed to save study plan. Please try again.');
+                              ToastUtils.showError(context, l10n.studyPlanSaveError);
                             }
                           }
                         }

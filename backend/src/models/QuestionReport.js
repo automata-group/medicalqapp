@@ -8,7 +8,7 @@ const QuestionReport = sequelize.define('QuestionReport', {
         primaryKey: true
     },
     reason: {
-        type: DataTypes.ENUM('wrong_answer', 'typo', 'confusing', 'other'),
+        type: DataTypes.ENUM('wrong_answer', 'typo', 'confusing', 'scientific_error', 'other'),
         allowNull: false
     },
     description: {

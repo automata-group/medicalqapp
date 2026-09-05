@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Medical Q'**
+  /// **'SDLE'**
   String get appTitle;
 
   /// No description provided for @mockExams.
@@ -883,6 +883,336 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Shuffle Questions'**
   String get shuffleQuestions;
+
+  /// No description provided for @examRecallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember a question from the exam?'**
+  String get examRecallTitle;
+
+  /// No description provided for @examRecallSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute the question and help your colleagues prepare for the exam.'**
+  String get examRecallSubtitle;
+
+  /// No description provided for @shareNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Share Now'**
+  String get shareNow;
+
+  /// No description provided for @examContributionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute Exam Question'**
+  String get examContributionTitle;
+
+  /// No description provided for @examContributionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute the question and help your colleagues prepare for the board exam. It will be reviewed and officially approved.'**
+  String get examContributionSubtitle;
+
+  /// No description provided for @specialtyRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialty *'**
+  String get specialtyRequired;
+
+  /// No description provided for @selectSpecialtyHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Specialty'**
+  String get selectSpecialtyHint;
+
+  /// No description provided for @questionTextLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you remember from the question? *'**
+  String get questionTextLabel;
+
+  /// No description provided for @questionTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Write the question text, clinical scenario, or symptoms as you recall...'**
+  String get questionTextHint;
+
+  /// No description provided for @questionTextValidation.
+  ///
+  /// In en, this message translates to:
+  /// **'Please write what you remember from the question'**
+  String get questionTextValidation;
+
+  /// No description provided for @optionsOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Options if you remember them (optional)'**
+  String get optionsOptional;
+
+  /// No description provided for @perceivedCorrectAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Which answer do you think is correct?'**
+  String get perceivedCorrectAnswer;
+
+  /// No description provided for @unsureAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsure'**
+  String get unsureAnswer;
+
+  /// No description provided for @confidenceLevelQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'How confident are you in recalling the question? *'**
+  String get confidenceLevelQuestion;
+
+  /// No description provided for @confidenceHighTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember very well'**
+  String get confidenceHighTitle;
+
+  /// No description provided for @confidenceHighSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verbatim or nearly identical to what appeared on the exam'**
+  String get confidenceHighSubtitle;
+
+  /// No description provided for @confidenceMediumTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember most of it'**
+  String get confidenceMediumTitle;
+
+  /// No description provided for @confidenceMediumSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Very close to original text with some details forgotten'**
+  String get confidenceMediumSubtitle;
+
+  /// No description provided for @confidenceLowTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember the general idea'**
+  String get confidenceLowTitle;
+
+  /// No description provided for @confidenceLowSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Remember the clinical concept and general topic'**
+  String get confidenceLowSubtitle;
+
+  /// No description provided for @examDateOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'When did you take the exam? (Optional)'**
+  String get examDateOptional;
+
+  /// No description provided for @selectExamDateHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Select exam date if you remember'**
+  String get selectExamDateHint;
+
+  /// No description provided for @notesOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Explanation or note (optional)'**
+  String get notesOptional;
+
+  /// No description provided for @notesHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add any note on your reasoning or additional details about the question...'**
+  String get notesHint;
+
+  /// No description provided for @attachImageOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Attach image (optional)'**
+  String get attachImageOptional;
+
+  /// No description provided for @pickImageFromDevice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose image from device'**
+  String get pickImageFromDevice;
+
+  /// No description provided for @imagePrivacyNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Notice: Please do not upload photos containing personal data or prohibited content.'**
+  String get imagePrivacyNotice;
+
+  /// No description provided for @submitForReview.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit for Review'**
+  String get submitForReview;
+
+  /// No description provided for @reportQuestionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Report Question'**
+  String get reportQuestionTitle;
+
+  /// No description provided for @reportQuestionSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Help us keep question bank accurate and reviewed by specialists'**
+  String get reportQuestionSubtitle;
+
+  /// No description provided for @reportReasonLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Issue Type'**
+  String get reportReasonLabel;
+
+  /// No description provided for @reportReasonWrongAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect Answer Key'**
+  String get reportReasonWrongAnswer;
+
+  /// No description provided for @reportReasonWrongAnswerDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The marked correct answer appears to be wrong'**
+  String get reportReasonWrongAnswerDesc;
+
+  /// No description provided for @reportReasonScientific.
+  ///
+  /// In en, this message translates to:
+  /// **'Scientific / Medical Error'**
+  String get reportReasonScientific;
+
+  /// No description provided for @reportReasonScientificDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Factual error in medical concept, scenario, or explanation'**
+  String get reportReasonScientificDesc;
+
+  /// No description provided for @reportReasonTypo.
+  ///
+  /// In en, this message translates to:
+  /// **'Typo / Formatting'**
+  String get reportReasonTypo;
+
+  /// No description provided for @reportReasonTypoDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Spelling, grammar, phrasing, or translation issue'**
+  String get reportReasonTypoDesc;
+
+  /// No description provided for @reportReasonConfusing.
+  ///
+  /// In en, this message translates to:
+  /// **'Confusing / Incomplete'**
+  String get reportReasonConfusing;
+
+  /// No description provided for @reportReasonConfusingDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'The question is ambiguous, incomplete, or missing options'**
+  String get reportReasonConfusingDesc;
+
+  /// No description provided for @reportReasonOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Reason'**
+  String get reportReasonOther;
+
+  /// No description provided for @reportReasonOtherDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Any other observation or comment'**
+  String get reportReasonOtherDesc;
+
+  /// No description provided for @reportDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Details (Optional)'**
+  String get reportDescriptionLabel;
+
+  /// No description provided for @reportDescriptionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Add any details to help reviewers verify and fix the issue...'**
+  String get reportDescriptionHint;
+
+  /// No description provided for @reportSubmitButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Report'**
+  String get reportSubmitButton;
+
+  /// No description provided for @reportSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Report submitted successfully. Thank you!'**
+  String get reportSuccessMessage;
+
+  /// No description provided for @reportFailedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to submit report. Please try again.'**
+  String get reportFailedMessage;
+
+  /// No description provided for @optionTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Option ({key}) text'**
+  String optionTextHint(String key);
+
+  /// No description provided for @optionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Option {key}'**
+  String optionLabel(String key);
+
+  /// No description provided for @pleaseSelectSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a specialty'**
+  String get pleaseSelectSpecialty;
+
+  /// No description provided for @contributionReceivedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribution Received'**
+  String get contributionReceivedTitle;
+
+  /// No description provided for @contributionReceivedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank you for helping develop our question bank.\nOur team will review and verify the question before adding it.'**
+  String get contributionReceivedMessage;
+
+  /// No description provided for @contributeAnotherQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Contribute Another Question'**
+  String get contributeAnotherQuestion;
+
+  /// No description provided for @submissionError.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred while submitting'**
+  String get submissionError;
+
+  /// No description provided for @studyPlanSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Study plan saved successfully!'**
+  String get studyPlanSaved;
+
+  /// No description provided for @studyPlanSaveError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save study plan. Please try again.'**
+  String get studyPlanSaveError;
 }
 
 class _AppLocalizationsDelegate

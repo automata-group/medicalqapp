@@ -179,5 +179,75 @@
   "questionBank": "Question Bank",
   "allSpecialties": "All Specialties",
   "shuffleQuestions": "Shuffle Questions",
-  "finishExam": "Finish Exam"
+  "finishExam": "Finish Exam",
+  "examRecallTitle": "Remember a question from the exam?",
+  "examRecallSubtitle": "Contribute the question and help your colleagues prepare for the exam.",
+  "shareNow": "Share Now",
+  "examContributionTitle": "Contribute Exam Question",
+  "examContributionSubtitle": "Contribute the question and help your colleagues prepare for the board exam. It will be reviewed and officially approved.",
+  "specialtyRequired": "Specialty *",
+  "selectSpecialtyHint": "Select Specialty",
+  "questionTextLabel": "What do you remember from the question? *",
+  "questionTextHint": "Write the question text, clinical scenario, or symptoms as you recall...",
+  "questionTextValidation": "Please write what you remember from the question",
+  "optionsOptional": "Options if you remember them (optional)",
+  "perceivedCorrectAnswer": "Which answer do you think is correct?",
+  "unsureAnswer": "Unsure",
+  "confidenceLevelQuestion": "How confident are you in recalling the question? *",
+  "confidenceHighTitle": "Remember very well",
+  "confidenceHighSubtitle": "Verbatim or nearly identical to what appeared on the exam",
+  "confidenceMediumTitle": "Remember most of it",
+  "confidenceMediumSubtitle": "Very close to original text with some details forgotten",
+  "confidenceLowTitle": "Remember the general idea",
+  "confidenceLowSubtitle": "Remember the clinical concept and general topic",
+  "examDateOptional": "When did you take the exam? (Optional)",
+  "selectExamDateHint": "Select exam date if you remember",
+  "notesOptional": "Explanation or note (optional)",
+  "notesHint": "Add any note on your reasoning or additional details about the question...",
+  "attachImageOptional": "Attach image (optional)",
+  "pickImageFromDevice": "Choose image from device",
+  "imagePrivacyNotice": "Notice: Please do not upload photos containing personal data or prohibited content.",
+  "submitForReview": "Submit for Review",
+  "reportQuestionTitle": "Report Question",
+  "reportQuestionSubtitle": "Help us keep question bank accurate and reviewed by specialists",
+  "reportReasonLabel": "Select Issue Type",
+  "reportReasonWrongAnswer": "Incorrect Answer Key",
+  "reportReasonWrongAnswerDesc": "The marked correct answer appears to be wrong",
+  "reportReasonScientific": "Scientific / Medical Error",
+  "reportReasonScientificDesc": "Factual error in medical concept, scenario, or explanation",
+  "reportReasonTypo": "Typo / Formatting",
+  "reportReasonTypoDesc": "Spelling, grammar, phrasing, or translation issue",
+  "reportReasonConfusing": "Confusing / Incomplete",
+  "reportReasonConfusingDesc": "The question is ambiguous, incomplete, or missing options",
+  "reportReasonOther": "Other Reason",
+  "reportReasonOtherDesc": "Any other observation or comment",
+  "reportDescriptionLabel": "Additional Details (Optional)",
+  "reportDescriptionHint": "Add any details to help reviewers verify and fix the issue...",
+  "reportSubmitButton": "Submit Report",
+  "reportSuccessMessage": "Report submitted successfully. Thank you!",
+  "reportFailedMessage": "Failed to submit report. Please try again.",
+  "optionTextHint": "Option ({key}) text",
+  "@optionTextHint": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "optionLabel": "Option {key}",
+  "@optionLabel": {
+    "placeholders": {
+      "key": {
+        "type": "String"
+      }
+    }
+  },
+  "pleaseSelectSpecialty": "Please select a specialty",
+  "contributionReceivedTitle": "Contribution Received",
+  "contributionReceivedMessage": "Thank you for helping develop our question bank.\nOur team will review and verify the question before adding it.",
+  "contributeAnotherQuestion": "Contribute Another Question",
+  "backToHome": "Back to Home",
+  "submissionError": "An error occurred while submitting",
+  "studyPlanSaved": "Study plan saved successfully!",
+  "studyPlanSaveError": "Failed to save study plan. Please try again."
 }
