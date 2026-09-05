@@ -581,7 +581,7 @@ class _ExamScreenState extends State<ExamScreen> {
               isBookmarked: provider.isBookmarked,
               hasPrevious: provider.hasPreviousQuestion,
               onPrevious: _loadPreviousQuestion,
-              showTotalQuestions: dashboardProvider.showQuestionCount,
+              showTotalQuestions: !widget.shuffle && dashboardProvider.showQuestionCount,
               onBookmark: () async {
                 await provider.toggleBookmark();
                 if (context.mounted) {
@@ -754,6 +754,7 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   int _getTotalQuestions(QuestionProvider provider) {
+    if (widget.shuffle) return 0;
     if (provider.totalInCategory > 0) {
       return provider.totalInCategory;
     }

@@ -299,5 +299,24 @@
   "startRandomPractice": "Start Random Practice",
   "practiceAllQuestionsSubtitle": "Practice all questions from this specialty",
   "resumeWhereLeftOff": "Resume where you left off",
-  "noActivityData": "No activity data"
+  "noActivityData": "No activity data",
+  "questionNumber": "Question {number}",
+  "@questionNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "questionNumberWithTotal": "Question {current} of {total}",
+  "@questionNumberWithTotal": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

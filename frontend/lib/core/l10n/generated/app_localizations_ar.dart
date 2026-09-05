@@ -724,4 +724,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noActivityData => 'لا توجد بيانات نشاط';
+
+  @override
+  String questionNumber(int number) {
+    return 'السؤال $number';
+  }
+
+  @override
+  String questionNumberWithTotal(int current, int total) {
+    return 'السؤال $current من $total';
+  }
 }

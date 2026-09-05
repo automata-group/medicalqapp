@@ -730,4 +730,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noActivityData => 'No activity data';
+
+  @override
+  String questionNumber(int number) {
+    return 'Question $number';
+  }
+
+  @override
+  String questionNumberWithTotal(int current, int total) {
+    return 'Question $current of $total';
+  }
 }

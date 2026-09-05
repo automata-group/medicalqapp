@@ -264,5 +264,24 @@
   "startRandomPractice": "بدء تدريب عشوائي",
   "practiceAllQuestionsSubtitle": "تدرب على جميع أسئلة هذا التخصص",
   "resumeWhereLeftOff": "المتابعة من حيث توقفت",
-  "noActivityData": "لا توجد بيانات نشاط"
+  "noActivityData": "لا توجد بيانات نشاط",
+  "questionNumber": "السؤال {number}",
+  "@questionNumber": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "questionNumberWithTotal": "السؤال {current} من {total}",
+  "@questionNumberWithTotal": {
+    "placeholders": {
+      "current": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  }
 }

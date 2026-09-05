@@ -1429,6 +1429,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No activity data'**
   String get noActivityData;
+
+  /// No description provided for @questionNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {number}'**
+  String questionNumber(int number);
+
+  /// No description provided for @questionNumberWithTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Question {current} of {total}'**
+  String questionNumberWithTotal(int current, int total);
 }
 
 class _AppLocalizationsDelegate

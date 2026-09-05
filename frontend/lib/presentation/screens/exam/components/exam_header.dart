@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class ExamHeader extends StatelessWidget {
@@ -31,6 +32,16 @@ class ExamHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final bool shouldShowTotal = showTotalQuestions && totalQuestions > 0;
+    final String questionText = l10n != null
+        ? (shouldShowTotal
+            ? l10n.questionNumberWithTotal(currentQuestionIndex + 1, totalQuestions)
+            : l10n.questionNumber(currentQuestionIndex + 1))
+        : (shouldShowTotal
+            ? 'Question ${currentQuestionIndex + 1} of $totalQuestions'
+            : 'Question ${currentQuestionIndex + 1}');
+
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
         textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.15),
@@ -97,9 +108,7 @@ class ExamHeader extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Text(
-                      (showTotalQuestions && totalQuestions > 0)
-                          ? 'Question ${currentQuestionIndex + 1} of $totalQuestions'
-                          : 'Question ${currentQuestionIndex + 1}',
+                      questionText,
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -160,19 +169,20 @@ class ExamHeader extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-
-            // Progress Bar
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: LinearProgressIndicator(
-                value: progress,
-                backgroundColor: Colors.grey[200],
-                valueColor:
-                    const AlwaysStoppedAnimation<Color>(AppColors.primary),
-                minHeight: 6,
+            if (shouldShowTotal) ...[
+              const SizedBox(height: 10),
+              // Progress Bar
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  value: progress,
+                  backgroundColor: Colors.grey[200],
+                  valueColor:
+                      const AlwaysStoppedAnimation<Color>(AppColors.primary),
+                  minHeight: 6,
+                ),
               ),
-            ),
+            ],
           ],
         ),
       ),
