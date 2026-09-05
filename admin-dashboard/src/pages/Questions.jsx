@@ -6,6 +6,8 @@ import {
     getTopics,
     createQuestion,
     updateQuestion,
+    moveQuestion,
+    bulkMoveQuestions,
     getQuestion,
     aiGenerateExplanation,
     aiGenerateQuestion
@@ -65,6 +67,14 @@ export default function Questions() {
     });
 
     const [formTopics, setFormTopics] = useState([]);
+
+    // Move Modal State
+    const [showMoveModal, setShowMoveModal] = useState(false);
+    const [moveTarget, setMoveTarget] = useState(null); // { type: 'single', question } or { type: 'bulk', count }
+    const [targetSpecialtyId, setTargetSpecialtyId] = useState('');
+    const [targetTopicId, setTargetTopicId] = useState('');
+    const [moveTopics, setMoveTopics] = useState([]);
+    const [moveLoading, setMoveLoading] = useState(false);
 
     const loadQuestions = useCallback(async () => {
         setLoading(true);
@@ -136,6 +146,63 @@ export default function Questions() {
             setDocxTopics([]);
         }
     }, [docxData.specialtyId]);
+
+    // Load topics for Move Modal
+    useEffect(() => {
+        if (targetSpecialtyId) {
+            getTopics(targetSpecialtyId).then(r => setMoveTopics(r.data?.data || []));
+            setTargetTopicId('');
+        } else {
+            setMoveTopics([]);
+            setTargetTopicId('');
+        }
+    }, [targetSpecialtyId]);
+
+    const openSingleMoveModal = (question) => {
+        setMoveTarget({ type: 'single', question });
+        setTargetSpecialtyId(question.specialtyId || question.specialty?.id || '');
+        setTargetTopicId(question.topicId || question.topic?.id || '');
+        setShowMoveModal(true);
+    };
+
+    const openBulkMoveModal = () => {
+        if (!selectedIds.length) return;
+        setMoveTarget({ type: 'bulk', count: selectedIds.length });
+        setTargetSpecialtyId('');
+        setTargetTopicId('');
+        setShowMoveModal(true);
+    };
+
+    const handleConfirmMove = async (e) => {
+        e.preventDefault();
+        if (!targetSpecialtyId) {
+            alert('Please select a target specialty.');
+            return;
+        }
+        setMoveLoading(true);
+        try {
+            if (moveTarget?.type === 'single') {
+                await moveQuestion(moveTarget.question.id, {
+                    specialtyId: targetSpecialtyId,
+                    topicId: targetTopicId || null
+                });
+            } else {
+                await bulkMoveQuestions({
+                    questionIds: selectedIds,
+                    specialtyId: targetSpecialtyId,
+                    topicId: targetTopicId || null
+                });
+                setSelectedIds([]);
+            }
+            setShowMoveModal(false);
+            await loadQuestions();
+        } catch (error) {
+            console.error('Failed to move question', error);
+            alert(error.response?.data?.message || 'Failed to move question(s)');
+        } finally {
+            setMoveLoading(false);
+        }
+    };
 
     const openCreateModal = () => {
         setEditingId(null);
@@ -472,11 +539,20 @@ export default function Questions() {
                         {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {selectedIds.length > 0 && (
-                        <button className={`${pageStyles.btn} ${pageStyles.btnDanger}`} onClick={handleDeleteSelected}>
-                            🗑️ Delete Selected ({selectedIds.length})
-                        </button>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                            <button
+                                className={pageStyles.btn}
+                                style={{ background: '#0284c7', color: '#fff', display: 'flex', alignItems: 'center', gap: '6px' }}
+                                onClick={openBulkMoveModal}
+                            >
+                                🔄 Move Selected ({selectedIds.length})
+                            </button>
+                            <button className={`${pageStyles.btn} ${pageStyles.btnDanger}`} onClick={handleDeleteSelected}>
+                                🗑️ Delete Selected ({selectedIds.length})
+                            </button>
+                        </div>
                     )}
                     <span className={pageStyles.count}>Page {page} of {totalPages} ({totalCount} total questions)</span>
                 </div>
@@ -541,6 +617,14 @@ export default function Questions() {
                                         </span>
                                     </td>
                                     <td className={pageStyles.actions}>
+                                        <button
+                                            className={`${pageStyles.btn} ${pageStyles.btnSmall}`}
+                                            style={{ background: '#0284c7', color: '#fff' }}
+                                            onClick={() => openSingleMoveModal(q)}
+                                            title="Move to another specialty"
+                                        >
+                                            Move
+                                        </button>
                                         <button className={`${pageStyles.btn} ${pageStyles.btnSmall}`} onClick={() => openEditModal(q.id)}>
                                             Edit
                                         </button>
@@ -610,14 +694,13 @@ export default function Questions() {
                                     </select>
                                 </div>
                                 <div className={pageStyles.formGroup}>
-                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Specific Topic</label>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Specific Topic (Optional)</label>
                                     <select
-                                        required
                                         value={formData.topicId}
                                         onChange={(e) => handleFormChange('topicId', e.target.value)}
                                         disabled={!formData.specialtyId}
                                     >
-                                        <option value="">Select Topic</option>
+                                        <option value="">None / General</option>
                                         {formTopics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                     </select>
                                 </div>
@@ -897,6 +980,133 @@ export default function Questions() {
                                 <button type="button" className={pageStyles.btnSecondary} onClick={() => { setShowDocxModal(false); setStreamProgressPercent(null); }}>Cancel</button>
                                 <button type="submit" className={pageStyles.btnPrimary} disabled={docxLoading}>
                                     {docxLoading ? 'AI is Parsing...' : 'Import Questions'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+            {/* Move to Specialty Modal */}
+            {showMoveModal && (
+                <div className={pageStyles.modalOverlay} onClick={() => !moveLoading && setShowMoveModal(false)}>
+                    <div className={pageStyles.modalCard} style={{ maxWidth: '540px', width: '90%' }} onClick={(e) => e.stopPropagation()}>
+                        <div className={pageStyles.modalHeader}>
+                            <h3>
+                                {moveTarget?.type === 'single'
+                                    ? '🔄 Move Question to Another Specialty'
+                                    : `🔄 Move ${moveTarget?.count || selectedIds.length} Questions to Another Specialty`}
+                            </h3>
+                            <button
+                                className={pageStyles.closeBtn}
+                                onClick={() => !moveLoading && setShowMoveModal(false)}
+                            >
+                                &times;
+                            </button>
+                        </div>
+                        <form onSubmit={handleConfirmMove} className={pageStyles.form}>
+                            {moveTarget?.type === 'single' && moveTarget?.question && (
+                                <div style={{
+                                    padding: '12px 14px',
+                                    background: '#1e293b',
+                                    borderRadius: '8px',
+                                    border: '1px solid #334155'
+                                }}>
+                                    <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '4px' }}>
+                                        Current Specialty: <strong style={{ color: '#60a5fa' }}>{moveTarget.question.specialty?.name || 'None'}</strong>
+                                    </div>
+                                    <div style={{
+                                        fontSize: '13px',
+                                        color: '#e2e8f0',
+                                        overflow: 'hidden',
+                                        textOverflow: 'ellipsis',
+                                        display: '-webkit-box',
+                                        WebkitLineClamp: 2,
+                                        WebkitBoxOrient: 'vertical'
+                                    }}>
+                                        {moveTarget.question.text}
+                                    </div>
+                                </div>
+                            )}
+
+                            {moveTarget?.type === 'bulk' && (
+                                <div style={{
+                                    padding: '12px 14px',
+                                    background: '#0c4a6e22',
+                                    borderRadius: '8px',
+                                    border: '1px solid #0284c7'
+                                }}>
+                                    <div style={{ fontSize: '13px', color: '#38bdf8' }}>
+                                        You are moving <strong>{moveTarget.count}</strong> questions to a new specialty.
+                                    </div>
+                                </div>
+                            )}
+
+                            <div className={pageStyles.formGroup}>
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600 }}>
+                                    Target Specialty *
+                                </label>
+                                <select
+                                    required
+                                    value={targetSpecialtyId}
+                                    onChange={(e) => setTargetSpecialtyId(e.target.value)}
+                                    style={{
+                                        padding: '10px 14px',
+                                        background: '#1e293b',
+                                        border: '1px solid #334155',
+                                        borderRadius: '8px',
+                                        color: '#f8fafc',
+                                        fontSize: '14px'
+                                    }}
+                                >
+                                    <option value="">-- Choose Target Specialty --</option>
+                                    {specialties.map(s => (
+                                        <option key={s.id} value={s.id}>{s.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className={pageStyles.formGroup}>
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600 }}>
+                                    Target Topic (Optional)
+                                </label>
+                                <select
+                                    value={targetTopicId}
+                                    onChange={(e) => setTargetTopicId(e.target.value)}
+                                    disabled={!targetSpecialtyId}
+                                    style={{
+                                        padding: '10px 14px',
+                                        background: '#1e293b',
+                                        border: '1px solid #334155',
+                                        borderRadius: '8px',
+                                        color: '#f8fafc',
+                                        fontSize: '14px'
+                                    }}
+                                >
+                                    <option value="">
+                                        {moveTopics.length === 0 && targetSpecialtyId ? 'No topics available (General)' : '-- None / General (Optional) --'}
+                                    </option>
+                                    {moveTopics.map(t => (
+                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            <div className={pageStyles.modalFooter} style={{ padding: '16px 0 0 0' }}>
+                                <button
+                                    type="button"
+                                    className={pageStyles.btnSecondary}
+                                    disabled={moveLoading}
+                                    onClick={() => setShowMoveModal(false)}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={pageStyles.btnPrimary}
+                                    style={{ background: '#0284c7' }}
+                                    disabled={moveLoading || !targetSpecialtyId}
+                                >
+                                    {moveLoading ? 'Moving...' : 'Confirm Move'}
                                 </button>
                             </div>
                         </form>

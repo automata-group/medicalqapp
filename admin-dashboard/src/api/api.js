@@ -43,6 +43,8 @@ export const getQuestions = (params) => api.get('/admin/questions', { params });
 export const getQuestion = (id) => api.get(`/admin/questions/${id}`);
 export const createQuestion = (data) => api.post('/admin/questions', data);
 export const updateQuestion = (id, data) => api.put(`/admin/questions/${id}`, data);
+export const moveQuestion = (id, data) => api.put(`/admin/questions/${id}/move`, data);
+export const bulkMoveQuestions = (data) => api.post('/admin/questions/bulk-move', data);
 export const deleteQuestion = (id) => api.delete(`/admin/questions/${id}`);
 export const bulkImportQuestions = (formData) =>
     api.post('/admin/questions/bulk-import', formData, {

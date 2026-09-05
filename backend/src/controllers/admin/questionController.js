@@ -225,6 +225,109 @@ exports.deleteQuestion = async (req, res, next) => {
     }
 };
 
+// @desc    Move Single Question to Another Specialty / Topic
+// @route   PUT /api/v1/admin/questions/:id/move
+// @access  Private (Admin)
+exports.moveQuestion = async (req, res, next) => {
+    try {
+        const { specialtyId, topicId } = req.body;
+        const questionId = req.params.id;
+
+        if (!specialtyId) {
+            return res.status(400).json({ success: false, message: 'Please specify the target specialty' });
+        }
+
+        const question = await Question.findByPk(questionId);
+        if (!question) {
+            return res.status(404).json({ success: false, message: 'Question not found' });
+        }
+
+        const targetSpecialty = await Specialty.findByPk(specialtyId);
+        if (!targetSpecialty) {
+            return res.status(404).json({ success: false, message: 'Target specialty not found' });
+        }
+
+        await question.update({
+            specialtyId: parseInt(specialtyId),
+            topicId: topicId ? parseInt(topicId) : null
+        });
+
+        const updatedQuestion = await Question.findByPk(questionId, {
+            include: [
+                { model: Specialty, as: 'specialty', attributes: ['id', 'name'] },
+                { model: Topic, as: 'topic', attributes: ['id', 'name'] }
+            ]
+        });
+
+        if (req.user) {
+            await AdminActivityLog.create({
+                adminId: req.user.id,
+                action: 'MOVE_QUESTION',
+                targetResource: `Question:${questionId} moved to Specialty:${specialtyId}`,
+                ipAddress: req.ip
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Question moved successfully to ${targetSpecialty.name}`,
+            data: updatedQuestion
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Bulk Move Questions to Another Specialty / Topic
+// @route   POST /api/v1/admin/questions/bulk-move
+// @access  Private (Admin)
+exports.bulkMoveQuestions = async (req, res, next) => {
+    try {
+        const { questionIds, specialtyId, topicId } = req.body;
+
+        if (!questionIds || !Array.isArray(questionIds) || questionIds.length === 0) {
+            return res.status(400).json({ success: false, message: 'Please provide an array of question IDs' });
+        }
+
+        if (!specialtyId) {
+            return res.status(400).json({ success: false, message: 'Please specify the target specialty' });
+        }
+
+        const targetSpecialty = await Specialty.findByPk(specialtyId);
+        if (!targetSpecialty) {
+            return res.status(404).json({ success: false, message: 'Target specialty not found' });
+        }
+
+        const updateData = {
+            specialtyId: parseInt(specialtyId),
+            topicId: topicId ? parseInt(topicId) : null
+        };
+
+        const [updatedCount] = await Question.update(updateData, {
+            where: {
+                id: questionIds
+            }
+        });
+
+        if (req.user) {
+            await AdminActivityLog.create({
+                adminId: req.user.id,
+                action: 'BULK_MOVE_QUESTIONS',
+                targetResource: `${updatedCount} Questions moved to Specialty:${specialtyId}`,
+                ipAddress: req.ip
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: `Successfully moved ${updatedCount} question(s) to ${targetSpecialty.name}`,
+            data: { updatedCount, specialtyId, topicId: updateData.topicId }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 const csv = require('csv-parser');
 const fs = require('fs');
 const mammoth = require('mammoth');
