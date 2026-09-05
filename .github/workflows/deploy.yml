@@ -112,11 +112,11 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
+          command_timeout: 10m
           script: |
-            echo "🧹 Cleaning up server space before SCP..."
+            echo "🧹 Cleaning up dangling Docker space before SCP..."
             SUDO_PW="${{ secrets.SERVER_PASSWORD }}"
             echo "$SUDO_PW" | sudo -S docker system prune -f
-            echo "$SUDO_PW" | sudo -S docker image prune -af
             echo "✅ Space cleaned."
 
       - name: Copy docker-compose.yml to Server
@@ -136,6 +136,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
+          command_timeout: 30m
           script: |
             echo "========== STARTING DEPLOYMENT =========="
             cd /opt/medical-qbank
@@ -145,9 +146,8 @@ jobs:
             echo "1. Logging into GHCR on server..."
             echo "$SUDO_PW" | sudo -S sh -c "echo '${{ secrets.GITHUB_TOKEN }}' | docker login ghcr.io -u ${{ github.actor }} --password-stdin"
             
-            echo "2. Cleaning up old Docker artifacts to free space..."
-            echo "$SUDO_PW" | sudo -S docker system prune -f
-            echo "$SUDO_PW" | sudo -S docker image prune -af
+            echo "2. Cleaning up dangling Docker artifacts..."
+            echo "$SUDO_PW" | sudo -S docker image prune -f
 
             echo "3. Pulling latest images..."
             echo "$SUDO_PW" | sudo -S docker compose pull
