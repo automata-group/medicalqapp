@@ -39,6 +39,7 @@ export default function App() {
       import('./pages/Dashboard');
       import('./pages/Users');
       import('./pages/Questions');
+      import('./pages/Contributions');
       import('./pages/AIInsights');
       import('./pages/Categories');
       import('./pages/Topics');

@@ -6,7 +6,7 @@ const navItems = [
     { to: '/', label: 'Dashboard', icon: '📊' },
     { to: '/users', label: 'Users', icon: '👤' },
     { to: '/questions', label: 'Questions', icon: '📚' },
-    { to: '/contributions', label: 'Contributions', icon: '📥' },
+    { to: '/contributions', label: 'مساهمات الأسئلة (Recalls)', icon: '📥' },
     { to: '/categories', label: 'Categories', icon: '🗂️' },
     { to: '/topics', label: 'Topics', icon: '📂' },
     { to: '/mock-exams', label: 'Mock Exams', icon: '📝' },
