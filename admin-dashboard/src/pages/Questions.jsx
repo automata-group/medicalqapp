@@ -753,28 +753,111 @@ export default function Questions() {
                                     )}
                                 </div>
                                 {formData.options.map((opt, idx) => (
-                                    <div key={idx} className={pageStyles.optionRow}>
-                                        <input
-                                            type="radio"
-                                            name="correctOption"
-                                            checked={opt.isCorrect}
-                                            onChange={() => setCorrectOption(idx)}
-                                        />
+                                    <div
+                                        key={idx}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '12px',
+                                            padding: '10px 14px',
+                                            borderRadius: '12px',
+                                            background: opt.isCorrect ? '#064e3b25' : '#0f172a',
+                                            border: opt.isCorrect ? '1.5px solid #10b981' : '1px solid #334155',
+                                            transition: 'all 0.2s ease',
+                                            marginBottom: '10px',
+                                            boxShadow: opt.isCorrect ? '0 0 14px rgba(16, 185, 129, 0.15)' : 'none'
+                                        }}
+                                    >
+                                        {/* Option Letter Badge (A, B, C, D) */}
+                                        <div
+                                            style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '50%',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontWeight: 800,
+                                                fontSize: '13px',
+                                                background: opt.isCorrect ? '#10b981' : '#334155',
+                                                color: '#fff',
+                                                flexShrink: 0,
+                                                boxShadow: opt.isCorrect ? '0 2px 8px rgba(16, 185, 129, 0.4)' : 'none'
+                                            }}
+                                        >
+                                            {String.fromCharCode(65 + idx)}
+                                        </div>
+
+                                        {/* Option Text Input */}
                                         <input
                                             type="text"
                                             required
-                                            placeholder={`Option ${idx + 1}`}
+                                            placeholder={`Option ${String.fromCharCode(65 + idx)} text...`}
                                             value={opt.text}
                                             onChange={(e) => handleOptionChange(idx, e.target.value)}
-                                            style={{ flex: 1 }}
+                                            style={{
+                                                flex: 1,
+                                                background: '#1e293b',
+                                                border: '1px solid #334155',
+                                                borderRadius: '8px',
+                                                color: '#f8fafc',
+                                                padding: '10px 14px',
+                                                fontSize: '14px',
+                                                outline: 'none',
+                                                transition: 'border-color 0.2s'
+                                            }}
+                                            onFocus={(e) => e.target.style.borderColor = opt.isCorrect ? '#10b981' : '#6366f1'}
+                                            onBlur={(e) => e.target.style.borderColor = '#334155'}
                                         />
+
+                                        {/* Correct Toggle Pill */}
                                         <button
                                             type="button"
-                                            className={pageStyles.btnRemove}
+                                            onClick={() => setCorrectOption(idx)}
+                                            style={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: '6px',
+                                                padding: '7px 14px',
+                                                borderRadius: '20px',
+                                                border: opt.isCorrect ? '1.5px solid #10b981' : '1px solid #475569',
+                                                background: opt.isCorrect ? 'linear-gradient(135deg, #059669, #10b981)' : '#1e293b',
+                                                color: opt.isCorrect ? '#ffffff' : '#94a3b8',
+                                                fontSize: '12px',
+                                                fontWeight: 700,
+                                                cursor: 'pointer',
+                                                flexShrink: 0,
+                                                transition: 'all 0.2s'
+                                            }}
+                                            title="Click to set as correct answer"
+                                        >
+                                            {opt.isCorrect ? '✓ Correct' : '○ Select'}
+                                        </button>
+
+                                        {/* Remove Option Button */}
+                                        <button
+                                            type="button"
                                             onClick={() => removeOption(idx)}
                                             disabled={formData.options.length <= 2}
+                                            style={{
+                                                width: '32px',
+                                                height: '32px',
+                                                borderRadius: '8px',
+                                                border: '1px solid #ef444433',
+                                                background: '#ef444415',
+                                                color: '#f87171',
+                                                cursor: formData.options.length <= 2 ? 'not-allowed' : 'pointer',
+                                                opacity: formData.options.length <= 2 ? 0.3 : 1,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                fontSize: '14px',
+                                                flexShrink: 0,
+                                                transition: 'all 0.15s'
+                                            }}
+                                            title="Delete this option"
                                         >
-                                            &times;
+                                            🗑️
                                         </button>
                                     </div>
                                 ))}
@@ -899,9 +982,22 @@ export default function Questions() {
                                 </div>
                             )}
 
-                            <div className={pageStyles.modalFooter}>
-                                <button type="button" className={pageStyles.btnSecondary} onClick={() => setShowModal(false)}>Cancel</button>
-                                <button type="submit" className={pageStyles.btnPrimary}>Save Question</button>
+                            <div className={pageStyles.modalFooter} style={{ borderTop: '1px solid #1e293b', paddingTop: '16px', marginTop: '16px' }}>
+                                <button type="button" className={`${pageStyles.btn} ${pageStyles.btnSecondary}`} onClick={() => setShowModal(false)}>Cancel</button>
+                                <button
+                                    type="submit"
+                                    className={`${pageStyles.btn}`}
+                                    style={{
+                                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                                        color: '#fff',
+                                        padding: '9px 24px',
+                                        borderRadius: '8px',
+                                        fontWeight: 700,
+                                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)'
+                                    }}
+                                >
+                                    💾 Save Question
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -911,14 +1007,14 @@ export default function Questions() {
             {/* DOCX Modal */}
             {showDocxModal && (
                 <div className={pageStyles.modalOverlay}>
-                    <div className={pageStyles.modalCard} style={{ maxWidth: '450px', width: '90%' }}>
+                    <div className={pageStyles.modalCard} style={{ maxWidth: '480px', width: '90%' }}>
                         <div className={pageStyles.modalHeader}>
-                            <h3>Import Questions from DOCX</h3>
+                            <h3>📥 Import Questions from DOCX</h3>
                             <button className={pageStyles.closeBtn} onClick={() => setShowDocxModal(false)}>&times;</button>
                         </div>
                         <form onSubmit={handleDocxSubmit} className={pageStyles.form} style={{ marginTop: '15px' }}>
                             <div className={pageStyles.formGroup}>
-                                <label>Specialty</label>
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600 }}>Specialty</label>
                                 <select
                                     required
                                     value={docxData.specialtyId}
@@ -932,7 +1028,7 @@ export default function Questions() {
                                 </select>
                             </div>
                             <div className={pageStyles.formGroup}>
-                                <label>Topic</label>
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600 }}>Topic</label>
                                 <select
                                     required
                                     value={docxData.topicId}
@@ -951,14 +1047,51 @@ export default function Questions() {
                                 </select>
                             </div>
                             <div className={pageStyles.formGroup}>
-                                <label>Upload .docx File</label>
-                                <input
-                                    type="file"
-                                    accept=".docx"
-                                    required
-                                    onChange={(e) => setDocxData(prev => ({ ...prev, file: e.target.files[0] }))}
-                                    style={{ padding: '8px', background: '#0f172a', borderRadius: '8px', border: '1px solid #1e293b', color: '#fff', width: '100%' }}
-                                />
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600 }}>Word Document (.docx)</label>
+                                <div
+                                    onClick={() => document.getElementById('docx-file-input').click()}
+                                    style={{
+                                        border: '2px dashed #6366f166',
+                                        borderRadius: '12px',
+                                        padding: '24px 16px',
+                                        background: '#0f172a',
+                                        textAlign: 'center',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.2s',
+                                        position: 'relative'
+                                    }}
+                                >
+                                    <input
+                                        id="docx-file-input"
+                                        type="file"
+                                        accept=".docx"
+                                        required
+                                        onChange={(e) => setDocxData(prev => ({ ...prev, file: e.target.files[0] }))}
+                                        style={{ display: 'none' }}
+                                    />
+                                    <div style={{ fontSize: '32px', marginBottom: '8px' }}>
+                                        {docxData.file ? '📄' : '📤'}
+                                    </div>
+                                    {docxData.file ? (
+                                        <div>
+                                            <div style={{ color: '#38bdf8', fontWeight: 700, fontSize: '14px', wordBreak: 'break-all' }}>
+                                                {docxData.file.name}
+                                            </div>
+                                            <div style={{ color: '#94a3b8', fontSize: '12px', marginTop: '4px' }}>
+                                                {(docxData.file.size / 1024).toFixed(1)} KB • Click to change file
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            <div style={{ color: '#f8fafc', fontWeight: 600, fontSize: '14px' }}>
+                                                Click to upload or drag .docx file here
+                                            </div>
+                                            <div style={{ color: '#64748b', fontSize: '12px', marginTop: '4px' }}>
+                                                Supports multiple-choice questions with answers
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             {streamProgressPercent !== null && (
@@ -976,10 +1109,36 @@ export default function Questions() {
                                 </div>
                             )}
 
-                            <div className={pageStyles.modalFooter} style={{ marginTop: '20px' }}>
-                                <button type="button" className={pageStyles.btnSecondary} onClick={() => { setShowDocxModal(false); setStreamProgressPercent(null); }}>Cancel</button>
-                                <button type="submit" className={pageStyles.btnPrimary} disabled={docxLoading}>
-                                    {docxLoading ? 'AI is Parsing...' : 'Import Questions'}
+                            <div className={pageStyles.modalFooter} style={{ marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #1e293b' }}>
+                                <button
+                                    type="button"
+                                    className={`${pageStyles.btn} ${pageStyles.btnSecondary}`}
+                                    onClick={() => { setShowDocxModal(false); setStreamProgressPercent(null); }}
+                                    disabled={docxLoading}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={`${pageStyles.btn}`}
+                                    style={{
+                                        background: docxLoading || !docxData.file
+                                            ? '#475569'
+                                            : 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                                        color: '#ffffff',
+                                        padding: '10px 24px',
+                                        borderRadius: '10px',
+                                        fontWeight: 700,
+                                        boxShadow: docxLoading || !docxData.file ? 'none' : '0 4px 14px rgba(99, 102, 241, 0.4)',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px',
+                                        cursor: docxLoading || !docxData.file ? 'not-allowed' : 'pointer',
+                                        transition: 'all 0.2s'
+                                    }}
+                                    disabled={docxLoading || !docxData.file}
+                                >
+                                    {docxLoading ? '⏳ AI is Parsing...' : '🚀 Import Questions'}
                                 </button>
                             </div>
                         </form>

@@ -54,16 +54,61 @@
 .btnPrimary {
     background: #3b82f6;
     color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.btnPrimary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.btnSecondary {
+    background: #334155;
+    color: #cbd5e1;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.btnSecondary:hover {
+    background: #475569;
+    color: #fff;
 }
 
 .btnDanger {
     background: #ef444422;
     color: #fca5a5;
+    border: 1px solid #ef444433;
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.btnDanger:hover {
+    background: #ef444433;
+    color: #fff;
 }
 
 .btnGhost {
     background: #1e293b;
     color: #94a3b8;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
 }
 
 .btnSuccess {
