@@ -5,6 +5,7 @@ import '../../providers/auth_provider.dart';
 import '../../providers/notification_provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../screens/notifications/notifications_screen.dart';
+import '../../screens/subscription/pricing_screen.dart';
 
 class DashboardHeader extends StatelessWidget {
   const DashboardHeader({super.key});
@@ -117,6 +118,53 @@ class DashboardHeader extends StatelessWidget {
                                     color: Colors.white,
                                     fontSize: 10,
                                     fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            )
+                          else
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const PricingScreen(),
+                                    ),
+                                  );
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 3),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFFFFB800), Color(0xFFF59E0B)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFFFFB800).withValues(alpha: 0.35),
+                                        blurRadius: 4,
+                                        offset: const Offset(0, 1),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.star, color: Colors.white, size: 12),
+                                      SizedBox(width: 3),
+                                      Text(
+                                        'ترقية',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

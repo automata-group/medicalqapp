@@ -4,6 +4,7 @@ import '../../providers/notification_provider.dart';
 import '../../widgets/dashboard/dashboard_header.dart';
 import '../../widgets/dashboard/weekly_progress_card.dart';
 import '../../widgets/dashboard/question_bank_card.dart';
+import '../../widgets/dashboard/subscription_banner_card.dart';
 import '../../widgets/dashboard/specialties_carousel.dart';
 import '../../widgets/dashboard/exam_recall_card.dart';
 
@@ -50,6 +51,7 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
                 const DashboardHeader(),
                 const WeeklyProgressCard(),
                 const QuestionBankCard(),
+                const SubscriptionBannerCard(),
                 const ExamRecallCard(),
                 const SpecialtiesCarousel(),
               ],

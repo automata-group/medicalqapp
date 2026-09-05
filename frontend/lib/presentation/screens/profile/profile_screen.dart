@@ -12,6 +12,7 @@ import '../specialty_selection_screen.dart';
 import '../../providers/sync_provider.dart';
 import '../../../core/utils/toast_utils.dart';
 import 'edit_profile_screen.dart';
+import '../subscription/pricing_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -162,6 +163,10 @@ class ProfileScreen extends StatelessWidget {
                   _buildMasteryStats(totalSolved, accuracy, streak),
                   const SizedBox(height: 20),
 
+                  // === PRO SUBSCRIPTION BANNER ===
+                  _buildSubscriptionCard(context, user),
+                  const SizedBox(height: 20),
+
                   // === INVITE FRIENDS ===
                   if (user?.referralCode != null)
                     _buildInviteFriendsCard(context, user!.referralCode!),
@@ -171,6 +176,40 @@ class ProfileScreen extends StatelessWidget {
                   _buildSection(
                     title: l10n.account,
                     children: [
+                      _buildListTile(
+                        icon: Icons.workspace_premium_rounded,
+                        iconColor: const Color(0xFFFFB800),
+                        title: 'باقات الاشتراك والترقية (PRO)',
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: (user?.isPremium == true
+                                    ? Colors.green
+                                    : const Color(0xFFFFB800))
+                                .withValues(alpha: 0.15),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            user?.isPremium == true ? 'نشط PRO' : 'ترقية',
+                            style: TextStyle(
+                              color: user?.isPremium == true
+                                  ? Colors.green
+                                  : const Color(0xFFD97706),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const PricingScreen(),
+                            ),
+                          );
+                        },
+                      ),
                       _buildListTile(
                         icon: Icons.person_outline,
                         iconColor: AppColors.primary,
@@ -294,6 +333,136 @@ class ProfileScreen extends StatelessWidget {
 
                   const SizedBox(height: 40),
                 ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSubscriptionCard(BuildContext context, dynamic user) {
+    final isPremium = user?.isPremium == true;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: isPremium
+              ? const [Color(0xFF0F172A), Color(0xFF1E293B)]
+              : const [Color(0xFF1E1B4B), Color(0xFF312E81), Color(0xFF1D4ED8)],
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: (isPremium ? Colors.black : const Color(0xFF312E81))
+                .withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFFFB800).withValues(alpha: 0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.workspace_premium_rounded,
+                      color: Color(0xFFFFB800),
+                      size: 22,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    isPremium ? 'عضوية PRO مميزة' : 'باقات الاشتراك المميزة',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isPremium
+                      ? Colors.green.withValues(alpha: 0.2)
+                      : const Color(0xFFFFB800).withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: isPremium
+                        ? Colors.green
+                        : const Color(0xFFFFB800),
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  isPremium ? 'PRO نشط' : 'SDLE PRO',
+                  style: TextStyle(
+                    color: isPremium
+                        ? Colors.greenAccent
+                        : const Color(0xFFFFB800),
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            isPremium
+                ? 'لديك وصول كامل لجميع بنوك الأسئلة، امتحانات المحاكاة، ومزايا الذكاء الاصطناعي.'
+                : 'افتح جميع التخصصات المغلقة، امتحانات الـ Mock غير المحدودة، وتحليلات الذكاء الاصطناعي.',
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.85),
+              fontSize: 13,
+              height: 1.4,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const PricingScreen()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isPremium
+                    ? Colors.white.withValues(alpha: 0.15)
+                    : const Color(0xFFFFB800),
+                foregroundColor:
+                    isPremium ? Colors.white : const Color(0xFF0F172A),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 0,
+              ),
+              child: Text(
+                isPremium ? 'إدارة تفاصيل الاشتراك' : 'استعراض الخطط والاشتراك الآن ✨',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                ),
               ),
             ),
           ),
