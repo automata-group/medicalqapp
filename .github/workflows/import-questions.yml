@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - 'backend/insert_file1_questions.sql'
       - 'backend/insert_missing_questions.sql'
       - 'backend/scripts/import_docx_safe.js'
 
@@ -23,7 +24,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "backend/insert_missing_questions.sql"
+          source: "backend/insert_file1_questions.sql,backend/insert_missing_questions.sql"
           target: "/opt/medical-qbank"
 
       - name: Execute Deduplicated Import on Database
@@ -49,23 +50,33 @@ jobs:
             BEFORE_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null || echo "0")
             echo "Total questions before import: $BEFORE_COUNT"
 
+            FILE1="/opt/medical-qbank/backend/insert_file1_questions.sql"
+            [ ! -f "$FILE1" ] && FILE1="/opt/medical-qbank/insert_file1_questions.sql"
+
+            if [ -f "$FILE1" ]; then
+                echo "2. Transferring File 1 migration (1,851 questions) into MySQL container..."
+                echo "$SUDO_PW" | sudo -S docker cp "$FILE1" medical_qbank_db:/tmp/file1.sql
+                
+                echo "3. Executing deduplicated import for File 1..."
+                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/file1.sql"
+                echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/file1.sql
+                echo "✅ File 1 migration completed successfully!"
+            fi
+
             SQL_FILE="/opt/medical-qbank/backend/insert_missing_questions.sql"
             [ ! -f "$SQL_FILE" ] && SQL_FILE="/opt/medical-qbank/insert_missing_questions.sql"
 
             if [ -f "$SQL_FILE" ]; then
-                echo "2. Transferring migration into MySQL container..."
+                echo "4. Transferring auxiliary migration into MySQL container..."
                 echo "$SUDO_PW" | sudo -S docker cp "$SQL_FILE" medical_qbank_db:/tmp/missing_questions.sql
                 
-                echo "3. Executing SQL migration (Deduplication Enforced)..."
+                echo "5. Executing deduplicated import..."
                 echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" medical_qbank -e "source /tmp/missing_questions.sql"
                 echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db rm -f /tmp/missing_questions.sql
                 echo "✅ Migration completed successfully!"
-            else
-                echo "❌ SQL file not found at $SQL_FILE"
-                exit 1
             fi
 
-            echo "4. Checking question count in DB AFTER import..."
+            echo "6. Checking question count in DB AFTER import..."
             AFTER_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec -i medical_qbank_db mysql -u root -p"$DB_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank 2>/dev/null || echo "0")
 
             NEW_ADDED=$((AFTER_COUNT - BEFORE_COUNT))
