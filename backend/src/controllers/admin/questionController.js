@@ -1,6 +1,7 @@
 const { Question, Option, Explanation, Specialty, Topic, AdminActivityLog, sequelize } = require('../../models');
 const aiService = require('../../services/aiService');
 const { Queue, QueueEvents } = require('bullmq');
+const { Op } = require('sequelize');
 
 const redisConnection = { host: process.env.REDIS_HOST || '127.0.0.1', port: process.env.REDIS_PORT || 6379, maxRetriesPerRequest: null };
 const docxQueue = new Queue('docx-extraction', { connection: redisConnection });
@@ -11,12 +12,20 @@ const queueEvents = new QueueEvents('docx-extraction', { connection: redisConnec
 // @access  Private (Admin)
 exports.getQuestions = async (req, res, next) => {
     try {
-        const { page = 1, limit = 10, specialtyId, topicId } = req.query;
+        const { page = 1, limit = 10, specialtyId, topicId, search } = req.query;
         const offset = (page - 1) * limit;
 
         const whereClause = {};
         if (specialtyId) whereClause.specialtyId = specialtyId;
         if (topicId) whereClause.topicId = topicId;
+
+        const queryTerm = (search || req.query.q || '').trim();
+        if (queryTerm) {
+            whereClause[Op.or] = [
+                { text: { [Op.like]: `%${queryTerm}%` } },
+                { subTopic: { [Op.like]: `%${queryTerm}%` } }
+            ];
+        }
 
         const { count, rows } = await Question.findAndCountAll({
             where: whereClause,

@@ -18,6 +18,7 @@ export default function Questions() {
     const [questions, setQuestions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
     // Pagination
@@ -71,6 +72,7 @@ export default function Questions() {
             const params = { page, limit: 20 };
             if (selectedSpecialty) params.specialtyId = selectedSpecialty;
             if (selectedTopic) params.topicId = selectedTopic;
+            if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
 
             const res = await getQuestions(params);
             setQuestions(res.data?.data || []);
@@ -81,21 +83,22 @@ export default function Questions() {
         } finally {
             setLoading(false);
         }
-    }, [selectedSpecialty, selectedTopic, page]);
+    }, [selectedSpecialty, selectedTopic, page, debouncedSearch]);
 
-    const loadInitialData = useCallback(async () => {
-        try {
-            const specRes = await getSpecialties();
-            setSpecialties(specRes.data?.data || []);
-            loadQuestions();
-        } catch (error) {
-            console.error('Failed to load specialties', error);
-        }
-    }, [loadQuestions]);
+    // Debounce search input to query server across all pages
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(search);
+            setPage(1);
+        }, 350);
+        return () => clearTimeout(timer);
+    }, [search]);
 
     useEffect(() => {
-        loadInitialData();
-    }, [loadInitialData]);
+        getSpecialties()
+            .then(res => setSpecialties(res.data?.data || []))
+            .catch(err => console.error('Failed to load specialties', err));
+    }, []);
 
     useEffect(() => {
         setPage(1);
@@ -397,9 +400,7 @@ export default function Questions() {
         setSelectedIds((prev) => prev.filter(selectedId => selectedId !== id));
     };
 
-    const filteredQuestions = questions.filter((q) =>
-        (q.text || '').toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredQuestions = questions;
 
     const toggleSelectAll = (e) => {
         if (e.target.checked) {
