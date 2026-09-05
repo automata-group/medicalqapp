@@ -49,9 +49,9 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const DashboardHeader(),
+                const SubscriptionBannerCard(),
                 const WeeklyProgressCard(),
                 const QuestionBankCard(),
-                const SubscriptionBannerCard(),
                 const ExamRecallCard(),
                 const SpecialtiesCarousel(),
               ],

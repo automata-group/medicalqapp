@@ -186,17 +186,82 @@ class DashboardHeader extends StatelessWidget {
               ],
             ),
           ),
-          Consumer<NotificationProvider>(
-            builder: (ctx, notifProv, _) {
-              final count = notifProv.unreadCount;
-              return Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFF1F5F9)),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // VIP Subscription Button
+              Container(
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  gradient: user?.isPremium == true
+                      ? const LinearGradient(
+                          colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                        )
+                      : const LinearGradient(
+                          colors: [Color(0xFFFFB800), Color(0xFFF59E0B)],
+                        ),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: (user?.isPremium == true
+                              ? Colors.black
+                              : const Color(0xFFFFB800))
+                          .withValues(alpha: 0.3),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const PricingScreen(),
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.workspace_premium_rounded,
+                          color: user?.isPremium == true
+                              ? const Color(0xFFFFB800)
+                              : Colors.white,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          user?.isPremium == true ? 'PRO' : 'اشتراك',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Notification Bell
+              Consumer<NotificationProvider>(
+                builder: (ctx, notifProv, _) {
+                  final count = notifProv.unreadCount;
+                  return Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: const Color(0xFFF1F5F9)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.05),
@@ -249,6 +314,8 @@ class DashboardHeader extends StatelessWidget {
           ),
         ],
       ),
-    );
+    ],
+  ),
+);
   }
 }
