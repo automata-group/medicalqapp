@@ -1,6 +1,16 @@
 const express = require('express');
 const router = express.Router();
-const { getMockExams, createMockExam, updateMockExam, deleteMockExam, aiGenerateMockQuestions } = require('../../controllers/admin/mockExamController');
+const { 
+    getMockExams, 
+    createMockExam, 
+    updateMockExam, 
+    deleteMockExam, 
+    aiGenerateMockQuestions,
+    getMockExamQuestions,
+    addQuestionsFromBank,
+    addCustomMockQuestion,
+    deleteMockQuestion
+} = require('../../controllers/admin/mockExamController');
 const { protect, admin } = require('../../middleware/auth');
 
 router.use(protect);
@@ -16,4 +26,11 @@ router.route('/:id')
 
 router.post('/:id/ai-generate', aiGenerateMockQuestions);
 
+// Mock Exam Questions
+router.get('/:id/questions', getMockExamQuestions);
+router.post('/:id/add-from-bank', addQuestionsFromBank);
+router.post('/:id/add-custom-question', addCustomMockQuestion);
+router.delete('/:id/questions/:questionId', deleteMockQuestion);
+
 module.exports = router;
+

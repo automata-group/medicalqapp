@@ -117,6 +117,11 @@ export const createMockExam = (data) => api.post('/admin/mock-exams', data);
 export const updateMockExam = (id, data) => api.put(`/admin/mock-exams/${id}`, data);
 export const deleteMockExam = (id) => api.delete(`/admin/mock-exams/${id}`);
 export const aiGenerateMockQuestions = (id, data) => api.post(`/admin/mock-exams/${id}/ai-generate`, data);
+export const getMockExamQuestions = (id) => api.get(`/admin/mock-exams/${id}/questions`);
+export const addMockQuestionsFromBank = (id, data) => api.post(`/admin/mock-exams/${id}/add-from-bank`, data);
+export const addCustomMockQuestion = (id, data) => api.post(`/admin/mock-exams/${id}/add-custom-question`, data);
+export const deleteMockQuestion = (id, questionId) => api.delete(`/admin/mock-exams/${id}/questions/${questionId}`);
+
 
 // ─── Achievements ─────────────────────────────────────────
 export const getAdminAchievements = () => api.get('/admin/achievements');
