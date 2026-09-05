@@ -628,4 +628,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get allPlansFullAccessNotice =>
       'All plans provide full access to questions and AI features — difference is only in duration.';
+
+  @override
+  String get subscriptionCardTitle => 'Premium Subscription Plans';
+
+  @override
+  String get subscriptionCardActiveTitle => 'PRO Membership Active';
+
+  @override
+  String get subscriptionCardBadge => 'SDLE PRO';
+
+  @override
+  String get subscriptionCardActiveBadge => 'Active PRO';
+
+  @override
+  String get subscriptionCardDesc =>
+      'Unlock all specialties, unlimited mock exams, and AI analytics.';
+
+  @override
+  String get subscriptionCardActiveDesc =>
+      'You have full access to all question banks, mock exams, and AI features.';
+
+  @override
+  String get subscriptionCardBtn => 'View Plans & Subscribe Now ✨';
+
+  @override
+  String get subscriptionCardActiveBtn => 'Manage Subscription Details';
+
+  @override
+  String get subscriptionPlansTitle => 'Subscription & Upgrade Plans (PRO)';
+
+  @override
+  String get activePro => 'Active PRO';
 }

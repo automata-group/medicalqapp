@@ -179,7 +179,7 @@ class ProfileScreen extends StatelessWidget {
                       _buildListTile(
                         icon: Icons.workspace_premium_rounded,
                         iconColor: const Color(0xFFFFB800),
-                        title: 'باقات الاشتراك والترقية (PRO)',
+                        title: l10n.subscriptionPlansTitle,
                         trailing: Container(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 4),
@@ -191,7 +191,9 @@ class ProfileScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
-                            user?.isPremium == true ? 'نشط PRO' : 'ترقية',
+                            user?.isPremium == true
+                                ? l10n.activePro
+                                : l10n.upgrade,
                             style: TextStyle(
                               color: user?.isPremium == true
                                   ? Colors.green
@@ -342,6 +344,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildSubscriptionCard(BuildContext context, dynamic user) {
+    final l10n = AppLocalizations.of(context)!;
     final isPremium = user?.isPremium == true;
 
     return Container(
@@ -387,7 +390,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    isPremium ? 'عضوية PRO مميزة' : 'باقات الاشتراك المميزة',
+                    isPremium
+                        ? l10n.subscriptionCardActiveTitle
+                        : l10n.subscriptionCardTitle,
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 17,
@@ -412,7 +417,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 child: Text(
-                  isPremium ? 'PRO نشط' : 'SDLE PRO',
+                  isPremium
+                      ? l10n.subscriptionCardActiveBadge
+                      : l10n.subscriptionCardBadge,
                   style: TextStyle(
                     color: isPremium
                         ? Colors.greenAccent
@@ -427,12 +434,13 @@ class ProfileScreen extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             isPremium
-                ? 'لديك وصول كامل لجميع بنوك الأسئلة، امتحانات المحاكاة، ومزايا الذكاء الاصطناعي.'
-                : 'افتح جميع التخصصات المغلقة، امتحانات الـ Mock غير المحدودة، وتحليلات الذكاء الاصطناعي.',
+                ? l10n.subscriptionCardActiveDesc
+                : l10n.subscriptionCardDesc,
+            textAlign: TextAlign.start,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.85),
               fontSize: 13,
-              height: 1.4,
+              height: 1.5,
             ),
           ),
           const SizedBox(height: 16),
@@ -458,7 +466,9 @@ class ProfileScreen extends StatelessWidget {
                 elevation: 0,
               ),
               child: Text(
-                isPremium ? 'إدارة تفاصيل الاشتراك' : 'استعراض الخطط والاشتراك الآن ✨',
+                isPremium
+                    ? l10n.subscriptionCardActiveBtn
+                    : l10n.subscriptionCardBtn,
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13,

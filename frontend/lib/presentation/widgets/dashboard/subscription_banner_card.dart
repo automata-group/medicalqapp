@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../screens/subscription/pricing_screen.dart';
 
@@ -8,6 +9,7 @@ class SubscriptionBannerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final user = context.watch<AuthProvider>().user;
     final isPremium = user?.isPremium == true;
 
@@ -79,7 +81,9 @@ class SubscriptionBannerCard extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          isPremium ? 'PRO نشط' : 'SDLE PRO',
+                          isPremium
+                              ? l10n.subscriptionCardActiveBadge
+                              : l10n.subscriptionCardBadge,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12,
@@ -99,8 +103,8 @@ class SubscriptionBannerCard extends StatelessWidget {
               const SizedBox(height: 14),
               Text(
                 isPremium
-                    ? 'عضويتك المميزة مفعلة ✨'
-                    : 'استعد لاختبار الهيئة مع باقات PRO 🚀',
+                    ? l10n.subscriptionCardActiveTitle
+                    : l10n.subscriptionCardTitle,
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -111,12 +115,13 @@ class SubscriptionBannerCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 isPremium
-                    ? 'وصول كامل لجميع بنوك الأسئلة، امتحانات المحاكاة غير المحدودة وتحليلات الذكاء الاصطناعي.'
-                    : 'افتح جميع التخصصات المغلقة، نماذج الامتحانات الوزارية، ومزايا الذكاء الاصطناعي.',
+                    ? l10n.subscriptionCardActiveDesc
+                    : l10n.subscriptionCardDesc,
+                textAlign: TextAlign.start,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.85),
                   fontSize: 13,
-                  height: 1.4,
+                  height: 1.5,
                 ),
               ),
               const SizedBox(height: 16),
@@ -141,7 +146,9 @@ class SubscriptionBannerCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      isPremium ? 'إدارة خطة الاشتراك' : 'استعراض خطط الاشتراك والأسعار',
+                      isPremium
+                          ? l10n.subscriptionCardActiveBtn
+                          : l10n.subscriptionCardBtn,
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,

@@ -623,4 +623,36 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get allPlansFullAccessNotice =>
       'جميع الخطط تمنح وصولاً كاملاً لكافة الأسئلة ومزايا الذكاء الاصطناعي — الفرق فقط في المدة والسعر';
+
+  @override
+  String get subscriptionCardTitle => 'باقات الاشتراك المميزة';
+
+  @override
+  String get subscriptionCardActiveTitle => 'عضوية PRO مميزة';
+
+  @override
+  String get subscriptionCardBadge => 'SDLE PRO';
+
+  @override
+  String get subscriptionCardActiveBadge => 'PRO نشط';
+
+  @override
+  String get subscriptionCardDesc =>
+      'افتح جميع التخصصات، والاختبارات التجريبية غير المحدودة، ومزايا الذكاء الاصطناعي.';
+
+  @override
+  String get subscriptionCardActiveDesc =>
+      'لديك وصول كامل لجميع بنوك الأسئلة، واختبارات المحاكاة، ومزايا الذكاء الاصطناعي.';
+
+  @override
+  String get subscriptionCardBtn => 'استعراض الخطط والاشتراك الآن ✨';
+
+  @override
+  String get subscriptionCardActiveBtn => 'إدارة تفاصيل الاشتراك';
+
+  @override
+  String get subscriptionPlansTitle => 'باقات الاشتراك والترقية (PRO)';
+
+  @override
+  String get activePro => 'PRO نشط';
 }

@@ -1243,6 +1243,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All plans provide full access to questions and AI features — difference is only in duration.'**
   String get allPlansFullAccessNotice;
+
+  /// No description provided for @subscriptionCardTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Premium Subscription Plans'**
+  String get subscriptionCardTitle;
+
+  /// No description provided for @subscriptionCardActiveTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO Membership Active'**
+  String get subscriptionCardActiveTitle;
+
+  /// No description provided for @subscriptionCardBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'SDLE PRO'**
+  String get subscriptionCardBadge;
+
+  /// No description provided for @subscriptionCardActiveBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'Active PRO'**
+  String get subscriptionCardActiveBadge;
+
+  /// No description provided for @subscriptionCardDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock all specialties, unlimited mock exams, and AI analytics.'**
+  String get subscriptionCardDesc;
+
+  /// No description provided for @subscriptionCardActiveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You have full access to all question banks, mock exams, and AI features.'**
+  String get subscriptionCardActiveDesc;
+
+  /// No description provided for @subscriptionCardBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'View Plans & Subscribe Now ✨'**
+  String get subscriptionCardBtn;
+
+  /// No description provided for @subscriptionCardActiveBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Subscription Details'**
+  String get subscriptionCardActiveBtn;
+
+  /// No description provided for @subscriptionPlansTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription & Upgrade Plans (PRO)'**
+  String get subscriptionPlansTitle;
+
+  /// No description provided for @activePro.
+  ///
+  /// In en, this message translates to:
+  /// **'Active PRO'**
+  String get activePro;
 }
 
 class _AppLocalizationsDelegate

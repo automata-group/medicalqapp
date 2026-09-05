@@ -254,5 +254,15 @@
   "chooseYourPlan": "Choose Your Plan",
   "whatsIncluded": "What's Included",
   "passExamWithConfidence": "Pass your dental boards with confidence.",
-  "allPlansFullAccessNotice": "All plans provide full access to questions and AI features — difference is only in duration."
+  "allPlansFullAccessNotice": "All plans provide full access to questions and AI features — difference is only in duration.",
+  "subscriptionCardTitle": "Premium Subscription Plans",
+  "subscriptionCardActiveTitle": "PRO Membership Active",
+  "subscriptionCardBadge": "SDLE PRO",
+  "subscriptionCardActiveBadge": "Active PRO",
+  "subscriptionCardDesc": "Unlock all specialties, unlimited mock exams, and AI analytics.",
+  "subscriptionCardActiveDesc": "You have full access to all question banks, mock exams, and AI features.",
+  "subscriptionCardBtn": "View Plans & Subscribe Now ✨",
+  "subscriptionCardActiveBtn": "Manage Subscription Details",
+  "subscriptionPlansTitle": "Subscription & Upgrade Plans (PRO)",
+  "activePro": "Active PRO"
 }
