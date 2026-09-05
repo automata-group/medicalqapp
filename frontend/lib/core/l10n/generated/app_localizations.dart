@@ -1441,6 +1441,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question {current} of {total}'**
   String questionNumberWithTotal(int current, int total);
+
+  /// No description provided for @resumeSessionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume Session?'**
+  String get resumeSessionTitle;
+
+  /// No description provided for @resumeSessionContent.
+  ///
+  /// In en, this message translates to:
+  /// **'You have a saved session in {subTopic}.\nWould you like to continue from where you left off?'**
+  String resumeSessionContent(String subTopic);
+
+  /// No description provided for @thisSpecialty.
+  ///
+  /// In en, this message translates to:
+  /// **'this specialty'**
+  String get thisSpecialty;
+
+  /// No description provided for @startNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Start New'**
+  String get startNew;
+
+  /// No description provided for @exitExamTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit Exam?'**
+  String get exitExamTitle;
+
+  /// No description provided for @exitExamContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to exit? Your progress may be lost.'**
+  String get exitExamContent;
+
+  /// No description provided for @exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit;
 }
 
 class _AppLocalizationsDelegate

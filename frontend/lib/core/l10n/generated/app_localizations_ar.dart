@@ -734,4 +734,28 @@ class AppLocalizationsAr extends AppLocalizations {
   String questionNumberWithTotal(int current, int total) {
     return 'السؤال $current من $total';
   }
+
+  @override
+  String get resumeSessionTitle => 'استئناف الجلسة؟';
+
+  @override
+  String resumeSessionContent(String subTopic) {
+    return 'لديك جلسة محفوظة في $subTopic.\nهل ترغب في المتابعة من حيث توقفت؟';
+  }
+
+  @override
+  String get thisSpecialty => 'هذا التخصص';
+
+  @override
+  String get startNew => 'بدء جديد';
+
+  @override
+  String get exitExamTitle => 'الخروج من الاختبار؟';
+
+  @override
+  String get exitExamContent =>
+      'هل أنت متأكد من رغبتك في الخروج؟ قد تفقد تقدمك الحالي.';
+
+  @override
+  String get exit => 'خروج';
 }

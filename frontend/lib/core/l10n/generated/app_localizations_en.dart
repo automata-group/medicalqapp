@@ -740,4 +740,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String questionNumberWithTotal(int current, int total) {
     return 'Question $current of $total';
   }
+
+  @override
+  String get resumeSessionTitle => 'Resume Session?';
+
+  @override
+  String resumeSessionContent(String subTopic) {
+    return 'You have a saved session in $subTopic.\nWould you like to continue from where you left off?';
+  }
+
+  @override
+  String get thisSpecialty => 'this specialty';
+
+  @override
+  String get startNew => 'Start New';
+
+  @override
+  String get exitExamTitle => 'Exit Exam?';
+
+  @override
+  String get exitExamContent =>
+      'Are you sure you want to exit? Your progress may be lost.';
+
+  @override
+  String get exit => 'Exit';
 }

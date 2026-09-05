@@ -91,20 +91,21 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
+        final l10n = AppLocalizations.of(context);
         final confirm = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Exit Exam?'),
-            content: const Text(
+            title: Text(l10n?.exitExamTitle ?? 'Exit Exam?'),
+            content: Text(l10n?.exitExamContent ??
                 'Are you sure you want to exit? Your progress may be lost.'),
             actions: [
               TextButton(
                   onPressed: () => Navigator.pop(context, false),
-                  child: const Text('Cancel')),
+                  child: Text(l10n?.cancel ?? 'Cancel')),
               TextButton(
                   onPressed: () => Navigator.pop(context, true),
                   child:
-                      const Text('Exit', style: TextStyle(color: Colors.red))),
+                      Text(l10n?.exit ?? 'Exit', style: const TextStyle(color: Colors.red))),
             ],
           ),
         );

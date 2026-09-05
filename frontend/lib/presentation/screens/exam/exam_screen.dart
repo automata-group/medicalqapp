@@ -224,24 +224,30 @@ class _ExamScreenState extends State<ExamScreen> {
   }
 
   Future<bool?> _showResumeDialog(SessionModel session) {
+    final l10n = AppLocalizations.of(context);
+    final String subTopic = session.subTopic ?? l10n?.thisSpecialty ?? 'this specialty';
+    final String title = l10n?.resumeSessionTitle ?? 'Resume Session?';
+    final String content = l10n != null
+        ? l10n.resumeSessionContent(subTopic)
+        : 'You have a saved session in $subTopic.\nWould you like to continue from where you left off?';
+    final String startNewText = l10n?.startNew ?? 'Start New';
+    final String continueText = l10n?.continueAction ?? 'Continue';
+
     return showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('Resume Session?'),
-        content: Text(
-          'You have a saved session in ${session.subTopic ?? 'this specialty'}.\n'
-          'Would you like to continue from where you left off?'
-        ),
+        title: Text(title),
+        content: Text(content),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Start New', style: TextStyle(color: Colors.grey)),
+            child: Text(startNewText, style: const TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-            child: const Text('Continue', style: TextStyle(color: Colors.white)),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: Text(continueText, style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),

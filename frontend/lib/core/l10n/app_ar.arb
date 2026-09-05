@@ -283,5 +283,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "resumeSessionTitle": "استئناف الجلسة؟",
+  "resumeSessionContent": "لديك جلسة محفوظة في {subTopic}.\nهل ترغب في المتابعة من حيث توقفت؟",
+  "@resumeSessionContent": {
+    "placeholders": {
+      "subTopic": {
+        "type": "String"
+      }
+    }
+  },
+  "thisSpecialty": "هذا التخصص",
+  "startNew": "بدء جديد",
+  "exitExamTitle": "الخروج من الاختبار؟",
+  "exitExamContent": "هل أنت متأكد من رغبتك في الخروج؟ قد تفقد تقدمك الحالي.",
+  "exit": "خروج"
 }

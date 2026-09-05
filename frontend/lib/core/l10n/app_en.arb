@@ -318,5 +318,19 @@
         "type": "int"
       }
     }
-  }
+  },
+  "resumeSessionTitle": "Resume Session?",
+  "resumeSessionContent": "You have a saved session in {subTopic}.\nWould you like to continue from where you left off?",
+  "@resumeSessionContent": {
+    "placeholders": {
+      "subTopic": {
+        "type": "String"
+      }
+    }
+  },
+  "thisSpecialty": "this specialty",
+  "startNew": "Start New",
+  "exitExamTitle": "Exit Exam?",
+  "exitExamContent": "Are you sure you want to exit? Your progress may be lost.",
+  "exit": "Exit"
 }
