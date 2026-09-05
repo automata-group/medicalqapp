@@ -11,5 +11,6 @@ router.get('/', getReports);
 router.get('/statistics', getReportStats);
 router.get('/:id', getReport);
 router.put('/:id/status', updateReportStatus);
+router.put('/:id', updateReportStatus);
 
 module.exports = router;

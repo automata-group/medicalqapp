@@ -67,9 +67,10 @@ export const deleteAIFeedback = (id) => api.delete(`/admin/ai/feedbacks/${id}`);
 export const cleanupExpiredFeedback = () => api.post('/admin/ai/cleanup');
 
 // ─── Reports ───────────────────────────────────────────────
-export const getReports = () => api.get('/admin/reports');
-export const updateReportStatus = (id, status) =>
-    api.put(`/admin/reports/${id}`, { status });
+export const getReports = (params) => api.get('/admin/reports', { params });
+export const getReport = (id) => api.get(`/admin/reports/${id}`);
+export const updateReportStatus = (id, status, adminNotes) =>
+    api.put(`/admin/reports/${id}/status`, { status, adminNotes });
 
 // ─── Specialties & Topics ─────────────────────────────────────────
 export const getSpecialties = () => api.get('/admin/specialties');
