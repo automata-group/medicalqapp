@@ -200,6 +200,8 @@
     flex-direction: column;
     max-height: 90vh;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .modalHeader {
@@ -237,14 +239,21 @@
 .form {
     padding: 24px;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
 }
 
 .formRow {
     display: flex;
     gap: 16px;
+    flex-wrap: wrap;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .formGroup {
@@ -252,6 +261,8 @@
     flex-direction: column;
     gap: 6px;
     flex: 1;
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 .formGroup label {
@@ -260,7 +271,9 @@
     font-weight: 500;
 }
 
-.formGroup input, .formGroup select, .formGroup textarea {
+.formGroup input:not([type="checkbox"]):not([type="radio"]), 
+.formGroup select, 
+.formGroup textarea {
     padding: 10px 14px;
     background: #1e293b;
     border: 1px solid #334155;
@@ -268,6 +281,17 @@
     color: #f8fafc;
     font-size: 14px;
     outline: none;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.formGroup select {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    cursor: pointer;
 }
 
 .formGroup input:focus, .formGroup select:focus, .formGroup textarea:focus {
@@ -279,6 +303,10 @@
     border-radius: 12px;
     padding: 16px;
     background: #0f172a88;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .sectionHeader {

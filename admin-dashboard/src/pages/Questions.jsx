@@ -689,95 +689,172 @@ export default function Questions() {
             {/* Modal */}
             {showModal && (
                 <div className={pageStyles.modalOverlay}>
-                    <div className={pageStyles.modalCard} style={{ maxWidth: '800px', width: '90%' }}>
+                    <div className={pageStyles.modalCard} style={{ maxWidth: '860px', width: '94%', maxHeight: '92vh', overflow: 'hidden' }}>
                         <div className={pageStyles.modalHeader}>
-                            <h3>{editingId ? 'Edit Question' : 'Create New Question'}</h3>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <div style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '10px',
+                                    background: editingId ? 'rgba(59, 130, 246, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                                    border: editingId ? '1px solid rgba(59, 130, 246, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    fontSize: '18px'
+                                }}>
+                                    {editingId ? '✏️' : '✨'}
+                                </div>
+                                <div>
+                                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#f8fafc' }}>
+                                        {editingId ? 'Edit Question' : 'Create New Question'}
+                                    </h3>
+                                    <span style={{ fontSize: '12px', color: '#64748b' }}>
+                                        {editingId ? `Editing Question #${editingId}` : 'Add a new question to the bank'}
+                                    </span>
+                                </div>
+                            </div>
                             <button className={pageStyles.closeBtn} onClick={() => setShowModal(false)}>&times;</button>
                         </div>
-                        <form onSubmit={handleSubmit} className={pageStyles.form}>
+                        <form onSubmit={handleSubmit} className={pageStyles.form} style={{ overflowX: 'hidden', padding: '20px 24px' }}>
                             <div className={pageStyles.formRow}>
-                                <div className={pageStyles.formGroup} style={{ flex: 1 }}>
-                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Question Text (Scenario or clinical question)</label>
+                                <div className={pageStyles.formGroup} style={{ flex: 1, minWidth: 0, width: '100%' }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>📝</span> Question Text (Scenario or clinical question) <span style={{ color: '#ef4444' }}>*</span>
+                                    </label>
                                     <textarea
                                         required
                                         rows="3"
                                         value={formData.text}
                                         onChange={(e) => handleFormChange('text', e.target.value)}
                                         placeholder="e.g. A 45-year-old male presents with sudden chest pain..."
+                                        style={{ width: '100%', minWidth: 0, boxSizing: 'border-box', lineHeight: '1.5' }}
                                     />
                                 </div>
                             </div>
 
-                            <div className={pageStyles.formRow}>
-                                <div className={pageStyles.formGroup}>
-                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Main Specialty</label>
+                            {/* Row 1: Specialty & Topic */}
+                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%' }}>
+                                <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>🩺</span> Main Specialty <span style={{ color: '#ef4444' }}>*</span>
+                                    </label>
                                     <select
                                         required
                                         value={formData.specialtyId}
                                         onChange={(e) => handleFormChange('specialtyId', e.target.value)}
+                                        style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                                     >
                                         <option value="">Select Specialty</option>
                                         {specialties.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                     </select>
                                 </div>
-                                <div className={pageStyles.formGroup}>
-                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Specific Topic (Optional)</label>
+                                <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>🏷️</span> Specific Topic <span style={{ fontSize: '11px', color: '#64748b' }}>(Optional)</span>
+                                    </label>
                                     <select
                                         value={formData.topicId}
                                         onChange={(e) => handleFormChange('topicId', e.target.value)}
                                         disabled={!formData.specialtyId}
+                                        style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                                     >
                                         <option value="">None / General</option>
                                         {formTopics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                     </select>
                                 </div>
-                                <div className={pageStyles.formGroup}>
-                                    <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Difficulty Level</label>
+                            </div>
+
+                            {/* Row 2: Difficulty & Premium Access */}
+                            <div className={pageStyles.formRow} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '16px', width: '100%' }}>
+                                <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>⚡</span> Difficulty Level
+                                    </label>
                                     <select
                                         value={formData.difficulty}
                                         onChange={(e) => handleFormChange('difficulty', e.target.value)}
+                                        style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                                     >
-                                        <option value="easy">Easy (1 Point)</option>
-                                        <option value="medium">Medium (2 Points)</option>
-                                        <option value="hard">Hard (3 Points)</option>
+                                        <option value="easy">🟢 Easy (1 Point)</option>
+                                        <option value="medium">🟡 Medium (2 Points)</option>
+                                        <option value="hard">🔴 Hard (3 Points)</option>
                                     </select>
                                 </div>
-                                <div className={pageStyles.formGroup} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', paddingTop: '25px' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', color: '#cbd5e1' }}>
+                                <div className={pageStyles.formGroup} style={{ minWidth: 0 }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <span>🔒</span> Access Tier
+                                    </label>
+                                    <div
+                                        onClick={() => handleFormChange('isPremium', !formData.isPremium)}
+                                        style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'space-between',
+                                            padding: '8px 14px',
+                                            background: formData.isPremium ? 'rgba(245, 158, 11, 0.12)' : '#1e293b',
+                                            border: formData.isPremium ? '1px solid rgba(245, 158, 11, 0.4)' : '1px solid #334155',
+                                            borderRadius: '10px',
+                                            cursor: 'pointer',
+                                            userSelect: 'none',
+                                            transition: 'all 0.2s ease',
+                                            height: '42px',
+                                            boxSizing: 'border-box'
+                                        }}
+                                    >
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '16px' }}>{formData.isPremium ? '👑' : '🔓'}</span>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: formData.isPremium ? '#f59e0b' : '#cbd5e1' }}>
+                                                {formData.isPremium ? 'Premium Question' : 'Free / Standard Question'}
+                                            </span>
+                                        </div>
                                         <input
                                             type="checkbox"
                                             checked={formData.isPremium}
                                             onChange={(e) => handleFormChange('isPremium', e.target.checked)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            style={{
+                                                width: '18px',
+                                                height: '18px',
+                                                accentColor: '#f59e0b',
+                                                cursor: 'pointer'
+                                            }}
                                         />
-                                        <span style={{ fontWeight: 600 }}>Premium Content</span>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className={pageStyles.formSection}>
-                                <div className={pageStyles.sectionHeader}>
-                                    <label>Options</label>
-                                    <button type="button" className={pageStyles.btnAddSmall} onClick={addOption}>+ Add Option</button>
-                                    {!editingId && formData.specialtyId && formData.topicId && (
-                                        <button
-                                            type="button"
-                                            onClick={handleAIGenerateNew}
-                                            disabled={aiLoading}
-                                            style={{
-                                                background: aiLoading ? '#334155' : 'linear-gradient(135deg, #059669, #10b981)',
-                                                color: '#fff',
-                                                border: 'none',
-                                                padding: '6px 14px',
-                                                borderRadius: '6px',
-                                                cursor: aiLoading ? 'wait' : 'pointer',
-                                                fontSize: '11px',
-                                                fontWeight: 700,
-                                                transition: 'all 0.2s'
-                                            }}
-                                        >
-                                            {aiLoading ? 'Generating...' : 'AI Generate Question'}
-                                        </button>
-                                    )}
+                            <div className={pageStyles.formSection} style={{ width: '100%', maxWidth: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
+                                <div className={pageStyles.sectionHeader} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <label style={{ margin: 0, fontWeight: 700, color: '#f8fafc', fontSize: '14px' }}>📋 Answer Options</label>
+                                        <span style={{ fontSize: '11px', color: '#94a3b8', background: '#1e293b', padding: '2px 8px', borderRadius: '12px', border: '1px solid #334155' }}>
+                                            Select the correct answer
+                                        </span>
+                                    </div>
+                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                        <button type="button" className={pageStyles.btnAddSmall} onClick={addOption}>+ Add Option</button>
+                                        {!editingId && formData.specialtyId && formData.topicId && (
+                                            <button
+                                                type="button"
+                                                onClick={handleAIGenerateNew}
+                                                disabled={aiLoading}
+                                                style={{
+                                                    background: aiLoading ? '#334155' : 'linear-gradient(135deg, #059669, #10b981)',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    padding: '6px 14px',
+                                                    borderRadius: '6px',
+                                                    cursor: aiLoading ? 'wait' : 'pointer',
+                                                    fontSize: '11px',
+                                                    fontWeight: 700,
+                                                    transition: 'all 0.2s'
+                                                }}
+                                            >
+                                                {aiLoading ? 'Generating...' : '✨ AI Generate Question'}
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
                                 {formData.options.map((opt, idx) => (
                                     <div
@@ -785,14 +862,18 @@ export default function Questions() {
                                         style={{
                                             display: 'flex',
                                             alignItems: 'center',
-                                            gap: '12px',
-                                            padding: '10px 14px',
+                                            gap: '10px',
+                                            padding: '10px 12px',
                                             borderRadius: '12px',
                                             background: opt.isCorrect ? '#064e3b25' : '#0f172a',
                                             border: opt.isCorrect ? '1.5px solid #10b981' : '1px solid #334155',
                                             transition: 'all 0.2s ease',
                                             marginBottom: '10px',
-                                            boxShadow: opt.isCorrect ? '0 0 14px rgba(16, 185, 129, 0.15)' : 'none'
+                                            boxShadow: opt.isCorrect ? '0 0 14px rgba(16, 185, 129, 0.15)' : 'none',
+                                            width: '100%',
+                                            maxWidth: '100%',
+                                            boxSizing: 'border-box',
+                                            minWidth: 0
                                         }}
                                     >
                                         {/* Option Letter Badge (A, B, C, D) */}
@@ -824,6 +905,9 @@ export default function Questions() {
                                             onChange={(e) => handleOptionChange(idx, e.target.value)}
                                             style={{
                                                 flex: 1,
+                                                minWidth: 0,
+                                                width: '100%',
+                                                boxSizing: 'border-box',
                                                 background: '#1e293b',
                                                 border: '1px solid #334155',
                                                 borderRadius: '8px',
@@ -890,9 +974,9 @@ export default function Questions() {
                                 ))}
                             </div>
 
-                            <div className={pageStyles.formGroup}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <label>Explanation</label>
+                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, margin: 0 }}>💡 Explanation</label>
                                     {editingId && (
                                         <button
                                             type="button"
@@ -902,34 +986,34 @@ export default function Questions() {
                                                 background: aiLoading ? '#334155' : 'linear-gradient(135deg, #6366f1, #8b5cf6)',
                                                 color: '#fff',
                                                 border: 'none',
-                                                padding: '8px 20px',
+                                                padding: '7px 16px',
                                                 borderRadius: '8px',
                                                 cursor: aiLoading ? 'wait' : 'pointer',
-                                                fontSize: '12px',
+                                                fontSize: '11px',
                                                 fontWeight: 700,
                                                 letterSpacing: '0.5px',
                                                 opacity: aiLoading ? 0.7 : 1,
                                                 transition: 'all 0.2s'
                                             }}
                                         >
-                                            {aiLoading ? 'Generating...' : 'AI Generate'}
+                                            {aiLoading ? 'Generating...' : '✨ AI Generate'}
                                         </button>
                                     )}
                                 </div>
                                 <textarea
                                     placeholder="Explanation will be auto-filled by AI..."
-                                    rows="6"
+                                    rows="5"
                                     value={formData.explanation.text}
                                     onChange={(e) => setFormData(prev => ({
                                         ...prev,
                                         explanation: { ...prev.explanation, text: e.target.value }
                                     }))}
-                                    style={{ fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.6' }}
+                                    style={{ fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.6', width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                                 />
                             </div>
 
-                            <div className={pageStyles.formGroup}>
-                                <label>References</label>
+                            <div className={pageStyles.formGroup} style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}>
+                                <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '6px' }}>📚 References</label>
                                 <input
                                     type="text"
                                     placeholder="Medical references (auto-filled by AI)"
@@ -938,6 +1022,7 @@ export default function Questions() {
                                         ...prev,
                                         explanation: { ...prev.explanation, references: e.target.value }
                                     }))}
+                                    style={{ width: '100%', minWidth: 0, boxSizing: 'border-box' }}
                                 />
                             </div>
 
