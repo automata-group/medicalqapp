@@ -34,35 +34,40 @@ class ContributionProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final Map<String, dynamic> map = {
+      final Map<String, dynamic> payload = {
         'specialtyId': specialtyId,
         'questionText': questionText.trim(),
         'confidenceLevel': confidenceLevel,
       };
 
-      if (topicId != null) map['topicId'] = topicId;
-      if (userAnswer != null && userAnswer.isNotEmpty) map['userAnswer'] = userAnswer;
-      if (notes != null && notes.trim().isNotEmpty) map['notes'] = notes.trim();
+      if (topicId != null) payload['topicId'] = topicId;
+      if (userAnswer != null && userAnswer.isNotEmpty) payload['userAnswer'] = userAnswer;
+      if (notes != null && notes.trim().isNotEmpty) payload['notes'] = notes.trim();
       if (examDate != null) {
-        map['examDate'] = examDate.toIso8601String().split('T').first;
+        payload['examDate'] = examDate.toIso8601String().split('T').first;
       }
       if (options != null && options.isNotEmpty) {
-        map['options'] = jsonEncode(options);
+        payload['options'] = options;
       }
 
+      Response response;
       if (imagePath != null && imagePath.isNotEmpty) {
-        map['image'] = await MultipartFile.fromFile(
+        final formMap = Map<String, dynamic>.from(payload);
+        formMap['options'] = jsonEncode(options);
+        formMap['image'] = await MultipartFile.fromFile(
           imagePath,
           filename: imagePath.split(RegExp(r'[/\\]')).last,
         );
+        response = await dioClient.post(
+          '/contributions',
+          data: FormData.fromMap(formMap),
+        );
+      } else {
+        response = await dioClient.post(
+          '/contributions',
+          data: payload,
+        );
       }
-
-      final formData = FormData.fromMap(map);
-
-      final response = await dioClient.post(
-        '/contributions',
-        data: formData,
-      );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _successMessage = response.data?['message'] ??

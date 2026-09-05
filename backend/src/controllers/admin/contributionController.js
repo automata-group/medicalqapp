@@ -77,7 +77,7 @@ exports.getAllContributions = async (req, res) => {
                 {
                     model: User,
                     as: 'user',
-                    attributes: ['id', 'name', 'email']
+                    attributes: ['id', 'fullName', ['fullName', 'name'], 'email']
                 },
                 {
                     model: ContributionCluster,
@@ -152,7 +152,7 @@ exports.getContributionById = async (req, res) => {
                 {
                     model: User,
                     as: 'user',
-                    attributes: ['id', 'name', 'email']
+                    attributes: ['id', 'fullName', ['fullName', 'name'], 'email']
                 },
                 {
                     model: ContributionCluster,
@@ -167,7 +167,7 @@ exports.getContributionById = async (req, res) => {
                                 {
                                     model: User,
                                     as: 'user',
-                                    attributes: ['id', 'name']
+                                    attributes: ['id', 'fullName', ['fullName', 'name']]
                                 }
                             ]
                         }
