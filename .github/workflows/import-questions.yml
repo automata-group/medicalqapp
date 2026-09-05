@@ -6,7 +6,7 @@ on:
     branches:
       - main
     paths:
-      - 'backend/insert_file22_questions.sql'
+      - 'backend/insert_file_new_questions.sql'
       - '.github/workflows/import-questions.yml'
 
 jobs:
@@ -16,17 +16,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Copy File 22 Script to Server
+      - name: Copy New Questions Script to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: ${{ secrets.SERVER_PORT }}
-          source: "backend/insert_file22_questions.sql"
+          source: "backend/insert_file_new_questions.sql"
           target: "/opt/medical-qbank"
 
-      - name: Execute Incremental Deduplicated Import for File 22
+      - name: Execute Incremental Deduplicated Import for New Questions
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_HOST }}
@@ -36,7 +36,7 @@ jobs:
           script: |
             set -e
             echo "======================================================"
-            echo "🚀 IMPORTING 1,103 NEW QUESTIONS FROM 'اساله جديده 22.docx'"
+            echo "🚀 IMPORTING 1,134 NEW QUESTIONS FROM 'اساله جديده.docx'"
             echo "======================================================"
             cd /opt/medical-qbank
             SUDO_PW="${{ secrets.SERVER_PASSWORD }}"
@@ -45,15 +45,15 @@ jobs:
             BEFORE_COUNT=$(echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" -N -e "SELECT COUNT(*) FROM Questions;" medical_qbank' 2>/dev/null || echo "0")
             echo "Total questions in DB before import: $BEFORE_COUNT"
 
-            FILE22="/opt/medical-qbank/backend/insert_file22_questions.sql"
-            [ ! -f "$FILE22" ] && FILE22="/opt/medical-qbank/insert_file22_questions.sql"
+            FILENEW="/opt/medical-qbank/backend/insert_file_new_questions.sql"
+            [ ! -f "$FILENEW" ] && FILENEW="/opt/medical-qbank/insert_file_new_questions.sql"
 
-            echo "Transferring File 22 into MySQL container..."
-            echo "$SUDO_PW" | sudo -S docker cp "$FILE22" medical_qbank_db:/tmp/file22.sql
-            echo "Executing import for File 22..."
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/file22.sql"'
-            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/file22.sql
-            echo "✅ File 22 (1,103 questions) imported successfully!"
+            echo "Transferring New Questions SQL into MySQL container..."
+            echo "$SUDO_PW" | sudo -S docker cp "$FILENEW" medical_qbank_db:/tmp/filenew.sql
+            echo "Executing import for New Questions..."
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db sh -c 'mysql -u root -p"$MYSQL_ROOT_PASSWORD" medical_qbank -e "source /tmp/filenew.sql"'
+            echo "$SUDO_PW" | sudo -S docker exec medical_qbank_db rm -f /tmp/filenew.sql
+            echo "✅ New Questions (1,134 questions) imported successfully!"
 
             echo ""
             echo "======================================================"
