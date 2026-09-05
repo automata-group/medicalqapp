@@ -15,6 +15,19 @@ exports.startMockExam = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Mock Exam not found' });
         }
 
+        // Auto-heal section question counts if 0
+        if (mockExam.sections && mockExam.sections.length > 0) {
+            for (const sec of mockExam.sections) {
+                if (!sec.questionCount || sec.questionCount === 0) {
+                    const actualCount = await SectionQuestion.count({ where: { sectionId: sec.id } });
+                    if (actualCount > 0) {
+                        sec.questionCount = actualCount;
+                        await sec.update({ questionCount: actualCount });
+                    }
+                }
+            }
+        }
+
         if (mockExam.isPremium && !req.isPremium) {
             return res.status(403).json({
                 success: false,
@@ -66,8 +79,30 @@ exports.getMockExams = async (req, res, next) => {
     try {
         const mockExams = await MockExam.findAll({
             where: { isActive: true },
-            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium']
+            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId'],
+            include: [
+                {
+                    model: MockExamSection,
+                    as: 'sections',
+                    attributes: ['id', 'title', 'timeLimit', 'questionCount', 'sortOrder']
+                }
+            ]
         });
+
+        // Auto-heal section question counts if 0
+        for (const exam of mockExams) {
+            if (exam.sections && exam.sections.length > 0) {
+                for (const sec of exam.sections) {
+                    if (!sec.questionCount || sec.questionCount === 0) {
+                        const actualCount = await SectionQuestion.count({ where: { sectionId: sec.id } });
+                        if (actualCount > 0) {
+                            sec.questionCount = actualCount;
+                            sec.update({ questionCount: actualCount }).catch(() => {});
+                        }
+                    }
+                }
+            }
+        }
 
         res.status(200).json({
             success: true,
@@ -85,8 +120,8 @@ exports.getMockExams = async (req, res, next) => {
 exports.getMockExam = async (req, res, next) => {
     try {
         const mockExam = await MockExam.findByPk(req.params.id, {
-            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions'],
-            include: [{ model: MockExamSection, as: 'sections', attributes: ['id', 'title', 'questionCount'] }]
+            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId'],
+            include: [{ model: MockExamSection, as: 'sections', attributes: ['id', 'title', 'timeLimit', 'questionCount', 'sortOrder'] }]
         });
 
         if (!mockExam) {

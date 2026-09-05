@@ -102,24 +102,61 @@ class MockExamProvider extends ChangeNotifier {
     try {
       final data = await repository.startMockExam(mockExamId);
       _currentAttemptId = data['attemptId'].toString();
-      _currentExam =
-          _availableExams.firstWhere((e) => e.id.toString() == mockExamId);
+
+      // Find from available exams if loaded
+      try {
+        _currentExam =
+            _availableExams.firstWhere((e) => e.id.toString() == mockExamId);
+      } catch (_) {
+        _currentExam = null;
+      }
+
+      // Parse sections from API response
+      final rawSections = data['sections'] as List<dynamic>?;
+      final parsedSections = rawSections
+              ?.map((e) =>
+                  MockExamSectionModel.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [];
+
+      if (_currentExam != null) {
+        if (_currentExam!.sections.isEmpty && parsedSections.isNotEmpty) {
+          _currentExam = _currentExam!.copyWith(sections: parsedSections);
+        }
+      } else {
+        _currentExam = MockExamModel(
+          id: int.tryParse(mockExamId) ?? 0,
+          title: data['examTitle'] ?? 'Mock Exam',
+          totalQuestions: parsedSections.fold<int>(
+              0, (sum, s) => sum + s.questionCount),
+          duration: 60,
+          price: 0.0,
+          isPremium: false,
+          sections: parsedSections,
+        );
+      }
+
+      final activeSections = (_currentExam?.sections.isNotEmpty ?? false)
+          ? _currentExam!.sections
+          : parsedSections;
 
       // Load section (either last active or first)
-      if (_currentExam != null && _currentExam!.sections.isNotEmpty) {
+      if (activeSections.isNotEmpty) {
         // Start Timer
-        _secondsRemaining = (_currentExam!.duration) * 60;
+        _secondsRemaining = (_currentExam?.duration ?? 60) * 60;
         _startTimer();
 
         final sectionIdToLoad = data['lastActiveSectionId']?.toString() ??
-            _currentExam!.sections[0].id.toString();
+            activeSections[0].id.toString();
 
         // Update current section index based on loaded ID
-        _currentSectionIndex = _currentExam!.sections
+        _currentSectionIndex = activeSections
             .indexWhere((s) => s.id.toString() == sectionIdToLoad);
         if (_currentSectionIndex == -1) _currentSectionIndex = 0;
 
         await loadSection(sectionIdToLoad);
+      } else {
+        _error = 'No sections available in this exam.';
       }
       return true;
     } catch (e) {
@@ -139,6 +176,11 @@ class MockExamProvider extends ChangeNotifier {
       _currentQuestions =
           await repository.getSectionQuestions(_currentAttemptId!, sectionId);
       _currentQuestionIndex = 0;
+      if ((_currentExam?.totalQuestions ?? 0) == 0 &&
+          _currentQuestions.isNotEmpty) {
+        _currentExam =
+            _currentExam?.copyWith(totalQuestions: _currentQuestions.length);
+      }
       _resetQuestionState();
     } catch (e) {
       _error = e.toString();

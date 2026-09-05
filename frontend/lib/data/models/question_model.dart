@@ -99,11 +99,10 @@ class OptionModel extends Equatable {
     return OptionModel(
       id: json['id'],
       text: json['text'] ?? '',
-      order: json['order'] as String? ?? '0',
+      order: json['order']?.toString() ?? '0',
     );
   }
 
-  @override
   @override
   List<Object?> get props => [id, text, order];
 }

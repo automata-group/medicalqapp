@@ -44,6 +44,32 @@ class MockExamModel extends Equatable {
     );
   }
 
+  MockExamModel copyWith({
+    int? id,
+    String? title,
+    String? description,
+    int? totalQuestions,
+    int? duration,
+    double? price,
+    bool? isPremium,
+    List<MockExamSectionModel>? sections,
+    int? specialtyId,
+    int? achievementId,
+  }) {
+    return MockExamModel(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      totalQuestions: totalQuestions ?? this.totalQuestions,
+      duration: duration ?? this.duration,
+      price: price ?? this.price,
+      isPremium: isPremium ?? this.isPremium,
+      sections: sections ?? this.sections,
+      specialtyId: specialtyId ?? this.specialtyId,
+      achievementId: achievementId ?? this.achievementId,
+    );
+  }
+
   @override
   List<Object?> get props => [
         id,
