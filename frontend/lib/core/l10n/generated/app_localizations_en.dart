@@ -227,6 +227,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dentalSurgery => 'Dental Surgery';
 
   @override
+  String get oralSurgery => 'Oral Surgery';
+
+  @override
+  String get infectionControl => 'Sterilization and Infection Control';
+
+  @override
   String get oralMedicine => 'Oral Medicine & Pathology';
 
   @override

@@ -90,6 +90,8 @@
   "pediatricDentistry": "طب أسنان الأطفال",
   "restorative": "العلاج التحفظي",
   "dentalSurgery": "جراحة الأسنان",
+  "oralSurgery": "جراحة الفم والوجه والفكين",
+  "infectionControl": "التعقيم ومكافحة العدوى",
   "oralMedicine": "طب وأمراض الفم",
   "dentalEthics": "أخلاقيات طب الأسنان",
   "hoursAgo": "منذ {count} ساعات • {phase}",

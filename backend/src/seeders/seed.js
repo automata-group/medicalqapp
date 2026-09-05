@@ -65,9 +65,10 @@ const seed = async () => {
             { name: 'Periodontics', nameAr: 'أمراض اللثة', icon: '👄', sortOrder: 4, isActive: true },
             { name: 'Pediatric Dentistry', nameAr: 'طب أسنان الأطفال', icon: '👶', sortOrder: 5, isActive: true },
             { name: 'Restorative', nameAr: 'العلاج التحفظي', icon: '🛠️', sortOrder: 6, isActive: true },
-            { name: 'Dental Surgery', nameAr: 'جراحة الأسنان', icon: '💉', sortOrder: 7, isActive: true },
+            { name: 'Oral Surgery', nameAr: 'جراحة الفم والوجه والفكين', icon: '💉', sortOrder: 7, isActive: true },
             { name: 'Oral Medicine & Pathology', nameAr: 'طب وأمراض الفم', icon: '🔬', sortOrder: 8, isActive: true },
             { name: 'Dental Ethics', nameAr: 'أخلاقيات طب الأسنان', icon: '⚖️', sortOrder: 9, isActive: true },
+            { name: 'Sterilization and Infection Control', nameAr: 'التعقيم ومكافحة العدوى', icon: '🧼', sortOrder: 10, isActive: true },
         ]);
         console.log(`✅ ${specialties.length} dental specialties created`);
 

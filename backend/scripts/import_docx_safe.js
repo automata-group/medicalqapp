@@ -57,13 +57,14 @@ const specialtyRules = [
         ]
     },
     {
-        name: 'Dental Surgery',
+        name: 'Oral Surgery',
         keywords: [
             'extraction', 'implant', 'surgical', 'forceps', 'elevator', 'suture',
             'local anesthesia', 'lidocaine', 'mepivacaine', 'bupivacaine', 'vasoconstrictor',
             'epinephrine', 'nerve block', 'inferior alveolar', 'dry socket',
             'alveolitis', 'osteotomy', 'flap design', 'biopsy', 'sinus lift',
-            'luxation', 'third molar', 'impaction', 'bleeding', 'socket preservation'
+            'luxation', 'third molar', 'impaction', 'bleeding', 'socket preservation',
+            'fracture', 'le fort', 'zygomatic', 'mandibular fracture'
         ]
     },
     {
@@ -90,10 +91,20 @@ const specialtyRules = [
         name: 'Dental Ethics',
         keywords: [
             'ethics', 'consent', 'informed consent', 'confidentiality', 'autonomy',
-            'beneficence', 'non-maleficence', 'justice', 'veracity', 'infection control',
-            'autoclave', 'sterilization', 'disinfection', 'ppe', 'sharps',
-            'needlestick', 'hazard', 'malpractice', 'negligence', 'patient rights',
-            'cdc', 'osha', 'standard precautions'
+            'beneficence', 'non-maleficence', 'justice', 'veracity', 'malpractice',
+            'negligence', 'patient rights', 'criticism of a colleague', 'conflict of interest',
+            'paternalism', 'surrogate'
+        ]
+    },
+    {
+        name: 'Sterilization and Infection Control',
+        keywords: [
+            'autoclave', 'sterilization', 'disinfection', 'disinfect', 'ppe', 'sharps',
+            'needlestick', 'hazard', 'infection control', 'spore test', 'biological indicator',
+            'chemical indicator', 'dry heat', 'ethylene oxide', 'glutaraldehyde', 'hand hygiene',
+            'cross contamination', 'cross-contamination', 'barrier', 'post-exposure prophylaxis',
+            'osha', 'cdc', 'standard precautions', 'asepsis', 'aseptic', 'quaternary ammonium',
+            'steam under pressure', 'critical instruments', 'semi-critical', 'non-critical'
         ]
     }
 ];

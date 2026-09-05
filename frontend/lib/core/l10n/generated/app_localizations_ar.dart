@@ -227,6 +227,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get dentalSurgery => 'جراحة الأسنان';
 
   @override
+  String get oralSurgery => 'جراحة الفم والوجه والفكين';
+
+  @override
+  String get infectionControl => 'التعقيم ومكافحة العدوى';
+
+  @override
   String get oralMedicine => 'طب وأمراض الفم';
 
   @override

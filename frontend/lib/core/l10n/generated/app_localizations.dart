@@ -518,6 +518,18 @@ abstract class AppLocalizations {
   /// **'Dental Surgery'**
   String get dentalSurgery;
 
+  /// No description provided for @oralSurgery.
+  ///
+  /// In en, this message translates to:
+  /// **'Oral Surgery'**
+  String get oralSurgery;
+
+  /// No description provided for @infectionControl.
+  ///
+  /// In en, this message translates to:
+  /// **'Sterilization and Infection Control'**
+  String get infectionControl;
+
   /// No description provided for @oralMedicine.
   ///
   /// In en, this message translates to:

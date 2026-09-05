@@ -222,6 +222,9 @@ class ContinueRevisionSection extends StatelessWidget {
     if (name.toLowerCase().contains('surg')) {
       return Icons.local_hospital;
     }
+    if (name.toLowerCase().contains('steril') || name.toLowerCase().contains('infect')) {
+      return Icons.sanitizer;
+    }
     return Icons.medical_services;
   }
 
@@ -240,7 +243,10 @@ class ContinueRevisionSection extends StatelessWidget {
       case 'Restorative':
         return l10n.restorative;
       case 'Dental Surgery':
-        return l10n.dentalSurgery;
+      case 'Oral Surgery':
+        return l10n.oralSurgery;
+      case 'Sterilization and Infection Control':
+        return l10n.infectionControl;
       case 'Oral Medicine & Pathology':
         return l10n.oralMedicine;
       case 'Dental Ethics':

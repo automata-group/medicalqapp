@@ -98,6 +98,8 @@
   "pediatricDentistry": "Pediatric Dentistry",
   "restorative": "Restorative Dentistry",
   "dentalSurgery": "Dental Surgery",
+  "oralSurgery": "Oral Surgery",
+  "infectionControl": "Sterilization and Infection Control",
   "oralMedicine": "Oral Medicine & Pathology",
   "dentalEthics": "Dental Ethics",
   "hoursAgo": "{count} hours ago • {phase}",

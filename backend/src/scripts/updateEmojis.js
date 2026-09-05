@@ -12,9 +12,10 @@ const updateEmojis = async () => {
             { name: 'Periodontics', icon: '👄' },
             { name: 'Pediatric Dentistry', icon: '👶' },
             { name: 'Restorative', icon: '🛠️' },
-            { name: 'Dental Surgery', icon: '💉' },
+            { name: 'Oral Surgery', icon: '💉' },
             { name: 'Oral Medicine & Pathology', icon: '🔬' },
             { name: 'Dental Ethics', icon: '⚖️' },
+            { name: 'Sterilization and Infection Control', icon: '🧼' },
         ];
 
         for (const update of updates) {
