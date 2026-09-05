@@ -31,12 +31,14 @@ export const login = (email, password) =>
     api.post('/auth/login', { email, password });
 
 // ─── Users ─────────────────────────────────────────────────
-export const getUsers = () => api.get('/admin/users');
+export const getUsers = (params) => api.get('/admin/users', { params });
 export const getUserStats = () => api.get('/admin/users/statistics');
 export const updateUserStatus = (id, status) =>
     api.put(`/admin/users/${id}/status`, { status });
 export const manageSubscription = (id, data) =>
     api.put(`/admin/users/${id}/subscription`, data);
+export const deleteUser = (id) => api.delete(`/admin/users/${id}`);
+export const bulkDeleteUsers = (ids) => api.post('/admin/users/bulk-delete', { ids });
 
 // ─── Questions ─────────────────────────────────────────────
 export const getQuestions = (params) => api.get('/admin/questions', { params });
