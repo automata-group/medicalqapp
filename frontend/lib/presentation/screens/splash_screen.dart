@@ -150,12 +150,12 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
                 const SizedBox(height: 24),
                 const Text(
-                  'healthlicenseprep',
+                  'SDLE',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 28,
+                    fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    letterSpacing: 0.5,
+                    letterSpacing: 1.5,
                   ),
                 ),
                 const SizedBox(height: 8),

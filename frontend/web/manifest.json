@@ -1,11 +1,11 @@
 {
-    "name": "frontend",
-    "short_name": "frontend",
+    "name": "SDLE",
+    "short_name": "SDLE",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "SDLE - Saudi Dental Licensure Examination Platform",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
