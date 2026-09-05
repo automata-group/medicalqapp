@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
+import 'package:frontend/core/utils/specialty_extension.dart';
 import '../../providers/specialty_provider.dart';
 import '../../screens/practice/specialty_topics_screen.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../domain/entities/specialty.dart';
 
 class SpecialtiesCarousel extends StatelessWidget {
   const SpecialtiesCarousel({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Consumer<SpecialtyProvider>(
       builder: (context, provider, child) {
         final specialties = provider.specialties;
@@ -27,11 +32,11 @@ class SpecialtiesCarousel extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Text(
-                'Specialties',
-                style: TextStyle(
+                l10n.specialties,
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF1E293B),
@@ -46,7 +51,7 @@ class SpecialtiesCarousel extends StatelessWidget {
                 itemCount: specialties.length,
                 itemBuilder: (context, index) {
                   final specialty = specialties[index];
-                  return _buildSpecialtyCard(context, specialty);
+                  return _buildSpecialtyCard(context, l10n, specialty);
                 },
               ),
             ),
@@ -56,7 +61,9 @@ class SpecialtiesCarousel extends StatelessWidget {
     );
   }
 
-  Widget _buildSpecialtyCard(BuildContext context, dynamic specialty) {
+  Widget _buildSpecialtyCard(BuildContext context, AppLocalizations l10n, Specialty specialty) {
+    final localizedName = specialty.getLocalizedName(l10n);
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -64,7 +71,7 @@ class SpecialtiesCarousel extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => SpecialtyTopicsScreen(
               specialtyId: specialty.id,
-              specialtyName: specialty.name,
+              specialtyName: localizedName,
             ),
           ),
         );
@@ -94,7 +101,7 @@ class SpecialtiesCarousel extends StatelessWidget {
                 color: AppColors.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: specialty.icon != null && specialty.icon.contains('/uploads/')
+              child: specialty.icon.isNotEmpty && specialty.icon.contains('/uploads/')
                 ? ClipRRect(
                     borderRadius: BorderRadius.circular(23),
                     child: Image.network(
@@ -111,7 +118,7 @@ class SpecialtiesCarousel extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Text(
-                  specialty.name,
+                  localizedName,
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

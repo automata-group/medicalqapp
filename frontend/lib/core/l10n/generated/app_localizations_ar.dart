@@ -655,4 +655,73 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get activePro => 'PRO نشط';
+
+  @override
+  String get inviteFriendsTitle => 'ادعُ أصدقاءك واكسب المكافآت 🎁';
+
+  @override
+  String get inviteFriendsDesc =>
+      'شارك رمز الإحالة الخاص بك مع زملائك، وعند تسجيلهم ستحصلان معاً على مكافآت مميزة!';
+
+  @override
+  String get referralCodeCopied => 'تم نسخ رمز الإحالة بنجاح!';
+
+  @override
+  String get mySpecialties => 'تخصصاتي';
+
+  @override
+  String get dailyReminderTime => 'وقت التذكير اليومي';
+
+  @override
+  String get offlineMode => 'المذاكرة بدون إنترنت';
+
+  @override
+  String get readyStatus => 'جاهز ✓';
+
+  @override
+  String get allAnswersSynced => 'تمت مزامنة جميع الإجابات ✓';
+
+  @override
+  String answersPendingSync(int count) {
+    return '$count إجابة بانتظار المزامنة';
+  }
+
+  @override
+  String get syncNow => 'مزامنة الآن';
+
+  @override
+  String get myMasteryProgress => 'مستوى التقدم والإتقان';
+
+  @override
+  String get questionsLabel => 'الأسئلة';
+
+  @override
+  String get streakLabel => 'أيام متواصلة';
+
+  @override
+  String streakDaysCount(int count) {
+    return '$count يوم';
+  }
+
+  @override
+  String get aiCoachTab => 'المدرب الذكي 🤖';
+
+  @override
+  String get practiceAllSpecialtiesSubtitle =>
+      'تدرب على جميع التخصصات ونماذج الامتحانات';
+
+  @override
+  String get specialties => 'التخصصات';
+
+  @override
+  String get startRandomPractice => 'بدء تدريب عشوائي';
+
+  @override
+  String get practiceAllQuestionsSubtitle => 'تدرب على جميع أسئلة هذا التخصص';
+
+  @override
+  String get resumeWhereLeftOff => 'المتابعة من حيث توقفت';
+
+  @override
+  String get noActivityData => 'لا توجد بيانات نشاط';
 }

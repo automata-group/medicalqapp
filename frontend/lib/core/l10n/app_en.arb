@@ -264,5 +264,40 @@
   "subscriptionCardBtn": "View Plans & Subscribe Now ✨",
   "subscriptionCardActiveBtn": "Manage Subscription Details",
   "subscriptionPlansTitle": "Subscription & Upgrade Plans (PRO)",
-  "activePro": "Active PRO"
+  "activePro": "Active PRO",
+  "inviteFriendsTitle": "Invite Friends & Earn Rewards 🎁",
+  "inviteFriendsDesc": "Share your referral code with friends. When they register, you both get rewards!",
+  "referralCodeCopied": "Referral Code Copied!",
+  "mySpecialties": "My Specialties",
+  "dailyReminderTime": "Daily Reminder Time",
+  "offlineMode": "Offline Mode",
+  "readyStatus": "Ready ✓",
+  "allAnswersSynced": "All answers synced ✓",
+  "answersPendingSync": "{count} answers pending sync",
+  "@answersPendingSync": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "syncNow": "Sync Now",
+  "myMasteryProgress": "My Mastery Progress",
+  "questionsLabel": "Questions",
+  "streakLabel": "Streak",
+  "streakDaysCount": "{count}d",
+  "@streakDaysCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiCoachTab": "AI Coach 🤖",
+  "practiceAllSpecialtiesSubtitle": "Practice All Specialties & Mock Exams",
+  "specialties": "Specialties",
+  "startRandomPractice": "Start Random Practice",
+  "practiceAllQuestionsSubtitle": "Practice all questions from this specialty",
+  "resumeWhereLeftOff": "Resume where you left off",
+  "noActivityData": "No activity data"
 }

@@ -1303,6 +1303,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Active PRO'**
   String get activePro;
+
+  /// No description provided for @inviteFriendsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite Friends & Earn Rewards 🎁'**
+  String get inviteFriendsTitle;
+
+  /// No description provided for @inviteFriendsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your referral code with friends. When they register, you both get rewards!'**
+  String get inviteFriendsDesc;
+
+  /// No description provided for @referralCodeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code Copied!'**
+  String get referralCodeCopied;
+
+  /// No description provided for @mySpecialties.
+  ///
+  /// In en, this message translates to:
+  /// **'My Specialties'**
+  String get mySpecialties;
+
+  /// No description provided for @dailyReminderTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reminder Time'**
+  String get dailyReminderTime;
+
+  /// No description provided for @offlineMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Offline Mode'**
+  String get offlineMode;
+
+  /// No description provided for @readyStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready ✓'**
+  String get readyStatus;
+
+  /// No description provided for @allAnswersSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'All answers synced ✓'**
+  String get allAnswersSynced;
+
+  /// No description provided for @answersPendingSync.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} answers pending sync'**
+  String answersPendingSync(int count);
+
+  /// No description provided for @syncNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Now'**
+  String get syncNow;
+
+  /// No description provided for @myMasteryProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'My Mastery Progress'**
+  String get myMasteryProgress;
+
+  /// No description provided for @questionsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Questions'**
+  String get questionsLabel;
+
+  /// No description provided for @streakLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streakLabel;
+
+  /// No description provided for @streakDaysCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count}d'**
+  String streakDaysCount(int count);
+
+  /// No description provided for @aiCoachTab.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Coach 🤖'**
+  String get aiCoachTab;
+
+  /// No description provided for @practiceAllSpecialtiesSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice All Specialties & Mock Exams'**
+  String get practiceAllSpecialtiesSubtitle;
+
+  /// No description provided for @specialties.
+  ///
+  /// In en, this message translates to:
+  /// **'Specialties'**
+  String get specialties;
+
+  /// No description provided for @startRandomPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Random Practice'**
+  String get startRandomPractice;
+
+  /// No description provided for @practiceAllQuestionsSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice all questions from this specialty'**
+  String get practiceAllQuestionsSubtitle;
+
+  /// No description provided for @resumeWhereLeftOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume where you left off'**
+  String get resumeWhereLeftOff;
+
+  /// No description provided for @noActivityData.
+  ///
+  /// In en, this message translates to:
+  /// **'No activity data'**
+  String get noActivityData;
 }
 
 class _AppLocalizationsDelegate

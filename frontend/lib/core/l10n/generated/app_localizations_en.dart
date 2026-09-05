@@ -660,4 +660,74 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get activePro => 'Active PRO';
+
+  @override
+  String get inviteFriendsTitle => 'Invite Friends & Earn Rewards 🎁';
+
+  @override
+  String get inviteFriendsDesc =>
+      'Share your referral code with friends. When they register, you both get rewards!';
+
+  @override
+  String get referralCodeCopied => 'Referral Code Copied!';
+
+  @override
+  String get mySpecialties => 'My Specialties';
+
+  @override
+  String get dailyReminderTime => 'Daily Reminder Time';
+
+  @override
+  String get offlineMode => 'Offline Mode';
+
+  @override
+  String get readyStatus => 'Ready ✓';
+
+  @override
+  String get allAnswersSynced => 'All answers synced ✓';
+
+  @override
+  String answersPendingSync(int count) {
+    return '$count answers pending sync';
+  }
+
+  @override
+  String get syncNow => 'Sync Now';
+
+  @override
+  String get myMasteryProgress => 'My Mastery Progress';
+
+  @override
+  String get questionsLabel => 'Questions';
+
+  @override
+  String get streakLabel => 'Streak';
+
+  @override
+  String streakDaysCount(int count) {
+    return '${count}d';
+  }
+
+  @override
+  String get aiCoachTab => 'AI Coach 🤖';
+
+  @override
+  String get practiceAllSpecialtiesSubtitle =>
+      'Practice All Specialties & Mock Exams';
+
+  @override
+  String get specialties => 'Specialties';
+
+  @override
+  String get startRandomPractice => 'Start Random Practice';
+
+  @override
+  String get practiceAllQuestionsSubtitle =>
+      'Practice all questions from this specialty';
+
+  @override
+  String get resumeWhereLeftOff => 'Resume where you left off';
+
+  @override
+  String get noActivityData => 'No activity data';
 }

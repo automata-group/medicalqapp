@@ -63,7 +63,7 @@ class StatsScreen extends StatelessWidget {
                     tabs: [
                       Tab(text: l10n.performanceTrend),
                       Tab(text: l10n.achievements),
-                      const Tab(text: 'AI Coach 🤖'),
+                      Tab(text: l10n.aiCoachTab),
                     ],
                   ),
                 ),

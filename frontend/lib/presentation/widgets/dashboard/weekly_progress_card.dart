@@ -110,11 +110,11 @@ class WeeklyProgressCard extends StatelessWidget {
                           ),
                         )
                       else
-                        const SizedBox(
+                        SizedBox(
                             height: 64,
                             child: Center(
-                                child: Text("No activity data",
-                                    style: TextStyle(color: Colors.white70)))),
+                                child: Text(l10n.noActivityData,
+                                    style: const TextStyle(color: Colors.white70)))),
                       const SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

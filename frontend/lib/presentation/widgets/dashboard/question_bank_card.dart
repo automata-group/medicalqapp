@@ -62,7 +62,7 @@ class QuestionBankCard extends StatelessWidget {
                         Text(
                           provider.showQuestionCount
                               ? l10n.questionsAvailable(totalQuestions)
-                              : 'Practice All Specialties & Mock Exams',
+                              : l10n.practiceAllSpecialtiesSubtitle,
                           style: TextStyle(
                             color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 14,

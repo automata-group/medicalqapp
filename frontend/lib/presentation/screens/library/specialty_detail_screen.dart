@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
+import 'package:frontend/core/utils/specialty_extension.dart';
 import '../../providers/question_provider.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../../domain/entities/specialty.dart';
@@ -39,13 +41,13 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // l10n available if needed in future
+    final l10n = AppLocalizations.of(context)!;
     final questionProvider = context.watch<QuestionProvider>();
 
     return Scaffold(
       backgroundColor: const Color(0xFFF8FAFC),
       appBar: AppBar(
-        title: Text(widget.specialty.name),
+        title: Text(widget.specialty.getLocalizedName(l10n)),
         backgroundColor: Colors.white,
         elevation: 0,
         foregroundColor: Colors.black,
@@ -93,7 +95,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    widget.specialty.name,
+                    widget.specialty.getLocalizedName(l10n),
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -102,7 +104,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                   const SizedBox(height: 8),
                   if (context.watch<DashboardProvider>().showQuestionCount)
                     Text(
-                      '${widget.specialty.totalQuestions} Questions Available',
+                      l10n.questionsAvailable(widget.specialty.totalQuestions),
                       style: TextStyle(color: Colors.grey.shade600),
                     ),
                   const SizedBox(height: 24),

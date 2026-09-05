@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../providers/question_provider.dart';
 import '../exam/exam_screen.dart';
 import '../../../core/theme/app_colors.dart';
@@ -16,6 +17,8 @@ class SpecialtyTopicsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -41,8 +44,8 @@ class SpecialtyTopicsScreen extends StatelessWidget {
               const SizedBox(height: 48),
               _buildBigButton(
                 context,
-                title: 'Start Random Practice',
-                subtitle: 'Practice all questions from this specialty',
+                title: l10n.startRandomPractice,
+                subtitle: l10n.practiceAllQuestionsSubtitle,
                 icon: Icons.shuffle_rounded,
                 color: AppColors.primary,
                 onTap: () {
@@ -61,8 +64,8 @@ class SpecialtyTopicsScreen extends StatelessWidget {
               const SizedBox(height: 20),
               _buildBigButton(
                 context,
-                title: 'Continue Revision',
-                subtitle: 'Resume where you left off',
+                title: l10n.continueRevision,
+                subtitle: l10n.resumeWhereLeftOff,
                 icon: Icons.history_rounded,
                 color: Colors.orange,
                 onTap: () {

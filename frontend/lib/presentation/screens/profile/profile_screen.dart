@@ -160,7 +160,7 @@ class ProfileScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // === MASTERY STATS ===
-                  _buildMasteryStats(totalSolved, accuracy, streak),
+                  _buildMasteryStats(context, totalSolved, accuracy, streak),
                   const SizedBox(height: 20),
 
                   // === PRO SUBSCRIPTION BANNER ===
@@ -239,7 +239,7 @@ class ProfileScreen extends StatelessWidget {
                       _buildListTile(
                         icon: Icons.school_outlined,
                         iconColor: const Color(0xFF7C3AED),
-                        title: 'My Specialties',
+                        title: l10n.mySpecialties,
                         onTap: () {
                           Navigator.push(
                             context,
@@ -276,7 +276,7 @@ class ProfileScreen extends StatelessWidget {
                               _buildListTile(
                                 icon: Icons.access_time_rounded,
                                 iconColor: AppColors.primary,
-                                title: 'Daily Reminder Time',
+                                title: l10n.dailyReminderTime,
                                 trailing: Text(
                                   reminder.formattedTime,
                                   style: const TextStyle(
@@ -512,9 +512,9 @@ class ProfileScreen extends StatelessWidget {
             children: [
               const Icon(Icons.wifi_off_rounded, color: Colors.white, size: 20),
               const SizedBox(width: 8),
-              const Text(
-                'Offline Mode',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(context)!.offlineMode,
+                style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 15),
@@ -528,8 +528,8 @@ class ProfileScreen extends StatelessWidget {
                     color: Colors.green.withValues(alpha: 0.3),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text('Ready ✓',
-                      style: TextStyle(color: Colors.white, fontSize: 11)),
+                  child: Text(AppLocalizations.of(context)!.readyStatus,
+                      style: const TextStyle(color: Colors.white, fontSize: 11)),
                 ),
             ],
           ),
@@ -539,8 +539,8 @@ class ProfileScreen extends StatelessWidget {
               Expanded(
                 child: Text(
                   isPending
-                      ? '${syncProv.pendingAttempts} answers pending sync'
-                      : 'All answers synced ✓',
+                      ? AppLocalizations.of(context)!.answersPendingSync(syncProv.pendingAttempts)
+                      : AppLocalizations.of(context)!.allAnswersSynced,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.8),
                     fontSize: 13,
@@ -579,7 +579,7 @@ class ProfileScreen extends StatelessWidget {
                             strokeWidth: 2, color: Color(0xFF2563EB)),
                       )
                     : const Icon(Icons.sync_rounded, size: 16),
-                label: const Text('Sync Now'),
+                label: Text(AppLocalizations.of(context)!.syncNow),
               ),
             ],
           ),
@@ -588,7 +588,8 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMasteryStats(int totalSolved, int accuracy, int streak) {
+  Widget _buildMasteryStats(BuildContext context, int totalSolved, int accuracy, int streak) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -604,9 +605,9 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'My Mastery Progress',
-            style: TextStyle(
+          Text(
+            l10n.myMasteryProgress,
+            style: const TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimaryLight),
@@ -619,7 +620,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.check_circle_outline,
                   iconColor: AppColors.primary,
                   bgColor: const Color(0xFFEFF6FF),
-                  label: 'Questions',
+                  label: l10n.questionsLabel,
                   value: totalSolved.toString(),
                 ),
               ),
@@ -629,7 +630,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.insights,
                   iconColor: const Color(0xFF16A34A),
                   bgColor: const Color(0xFFF0FDF4),
-                  label: 'Accuracy',
+                  label: l10n.accuracy,
                   value: '$accuracy%',
                 ),
               ),
@@ -639,8 +640,8 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.local_fire_department,
                   iconColor: const Color(0xFFD97706),
                   bgColor: const Color(0xFFFFFBEB),
-                  label: 'Streak',
-                  value: '${streak}d',
+                  label: l10n.streakLabel,
+                  value: l10n.streakDaysCount(streak),
                 ),
               ),
             ],
@@ -651,6 +652,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildInviteFriendsCard(BuildContext context, String referralCode) {
+    final l10n = AppLocalizations.of(context)!;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -670,22 +672,24 @@ class ProfileScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
-              Icon(Icons.card_giftcard, color: Colors.white, size: 24),
-              SizedBox(width: 8),
-              Text(
-                'Invite Friends & Earn Rewards!',
-                style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
+              const Icon(Icons.card_giftcard, color: Colors.white, size: 24),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  l10n.inviteFriendsTitle,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                ),
               ),
             ],
           ),
           const SizedBox(height: 8),
           Text(
-            'Share your referral code with friends. When they register, you both get rewards!',
+            l10n.inviteFriendsDesc,
             style: TextStyle(
                 fontSize: 13, color: Colors.white.withValues(alpha: 0.9)),
           ),
@@ -711,7 +715,7 @@ class ProfileScreen extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Clipboard.setData(ClipboardData(text: referralCode));
-                    ToastUtils.showSuccess(context, 'Referral Code Copied!');
+                    ToastUtils.showSuccess(context, l10n.referralCodeCopied);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
