@@ -240,7 +240,33 @@ class _PricingScreenState extends State<PricingScreen>
                           color: Colors.blueGrey.shade900,
                         ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 6),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFEFF6FF),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: const Color(0xFFBFDBFE)),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.info_outline, size: 18, color: Color(0xFF2563EB)),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'جميع الخطط تمنح وصولاً كاملاً لكافة الأسئلة ومزايا الذكاء الاصطناعي — الفرق فقط في المدة والسعر',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.blue.shade900,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 16),
 
                       // Plans Grid
                       if (_isLoading)
