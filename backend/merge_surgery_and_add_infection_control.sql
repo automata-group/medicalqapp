@@ -7,11 +7,17 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- Step 1: Reassign foreign keys from id: 17 to id: 13
-UPDATE Questions SET specialtyId = 13 WHERE specialtyId = 17;
-UPDATE Topics SET specialtyId = 13 WHERE specialtyId = 17;
-UPDATE UserSpecialties SET specialtyId = 13 WHERE specialtyId = 17;
-UPDATE MockQuestions SET specialtyId = 13 WHERE specialtyId = 17;
-UPDATE MockExams SET specialtyId = 13 WHERE specialtyId = 17;
+UPDATE IGNORE Questions SET specialtyId = 13 WHERE specialtyId = 17;
+UPDATE IGNORE Topics SET specialtyId = 13 WHERE specialtyId = 17;
+
+-- Remove duplicate UserSpecialties before reassignment
+DELETE FROM UserSpecialties 
+WHERE specialtyId = 17 
+  AND userId IN (SELECT userId FROM (SELECT userId FROM UserSpecialties WHERE specialtyId = 13) AS tmp);
+UPDATE IGNORE UserSpecialties SET specialtyId = 13 WHERE specialtyId = 17;
+
+UPDATE IGNORE MockQuestions SET specialtyId = 13 WHERE specialtyId = 17;
+UPDATE IGNORE MockExams SET specialtyId = 13 WHERE specialtyId = 17;
 
 -- Remove redundant row id: 17 or any duplicate named 'Oral Surgery' with id != 13
 DELETE FROM Specialties WHERE id = 17;
