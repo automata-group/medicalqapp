@@ -1,0 +1,777 @@
+[
+  {
+    "num": 1,
+    "image": "/uploads/questions/lesion_q01.jpeg",
+    "text": "What is this lesion?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mucocele",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Fordyce granules",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Leukoplakia",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Candidiasis",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions and Diagnosis",
+    "explanation": "Fordyce granules are ectopic sebaceous glands appearing as asymptomatic, small (1–2 mm), multiple yellowish-white papules commonly found on the buccal mucosa and vermilion border of the upper lip. They are normal anatomical variations and require no treatment.",
+    "whyWrong": "Mucocele is a bluish fluctuant swelling caused by severed salivary duct trauma. Leukoplakia presents as a white plaque that cannot be wiped off. Candidiasis typically presents as curdy white plaques that wipe off leaving an erythematous base or as erythematous patches."
+  },
+  {
+    "num": 2,
+    "image": "/uploads/questions/lesion_q02.jpeg",
+    "text": "What type of instrument grasp is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Palm grasp",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Modified pen grasp",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Pen grasp",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Reverse palm grasp",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Periodontal Instruments and Techniques",
+    "explanation": "The modified pen grasp is the standard grasp used in dental hygiene and periodontal instrumentation. The pads of the thumb and index finger hold the instrument handle, while the pad of the middle finger rests on the shank to feel tactile vibrations and guide instrument movements.",
+    "whyWrong": "Palm grasp is used for bulky surgical instruments or forceps. Standard pen grasp does not place the pad of the middle finger on the shank, resulting in less control and decreased tactile sensitivity. Reverse palm grasp is used in specific retracting situations."
+  },
+  {
+    "num": 3,
+    "image": "/uploads/questions/lesion_q03.jpeg",
+    "text": "The image shows which periodontal procedure?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Root resection",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Hemisection",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Tunneling",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Guided tissue regeneration",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Furcation Management",
+    "explanation": "Tunneling (Tunnel preparation) is a surgical periodontal procedure performed in multi-rooted teeth (commonly mandibular molars with advanced Class III furcation involvement) to create an open tunnel through the furcation area that allows patient access for interdental cleaning aids (e.g. interdental brushes).",
+    "whyWrong": "Root resection involves surgical removal of an entire root while retaining the crown. Hemisection is the division of a multi-rooted tooth and crown through the furcation with removal of one half. Guided tissue regeneration utilizes barrier membranes to regenerate periodontal apparatus."
+  },
+  {
+    "num": 4,
+    "image": "/uploads/questions/lesion_q04.jpeg",
+    "text": "The image shows a patient with which systemic disease?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Lichen planus",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Pemphigus vulgaris",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Systemic lupus erythematosus",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Erythema multiforme",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Autoimmune Disorders and Oral Health",
+    "explanation": "The classic malar or 'butterfly rash' over the bridge of the nose and malar eminences sparing the nasolabial folds is characteristic of Systemic Lupus Erythematosus (SLE), a chronic autoimmune connective tissue disease that frequently features photosensitivity and oral ulcers.",
+    "whyWrong": "Lichen planus presents with reticular or erosive oral lesions, Wickham's striae, and polygonal pruritic purple papules on flexor surfaces. Pemphigus vulgaris manifests with flaccid cutaneous and mucosal bullae with a positive Nikolsky sign. Erythema multiforme characteristically presents with target (iris) lesions."
+  },
+  {
+    "num": 5,
+    "image": "/uploads/questions/lesion_q05.jpeg",
+    "text": "The V-shaped gingival defect seen in the image is called:",
+    "options": [
+      {
+        "label": "A",
+        "text": "McCall’s festoon",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Gingival recession",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Stillman cleft",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Periodontal pocket",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Gingival Recession Causes",
+    "explanation": "A Stillman's cleft is a specific narrow, V-shaped or slit-like indentation/slit in the marginal gingiva that extends apically from the gingival margin toward or through the mucogingival junction, historically associated with trauma from occlusion or improper toothbrushing trauma.",
+    "whyWrong": "McCall's festoon is an exaggerated roll-shaped enlargement/thickening of the marginal gingiva, often seen in the canine and premolar areas. Generalized gingival recession refers to apical migration of the gingival margin without the characteristic narrow V-shaped cleft slit. A periodontal pocket is a pathological deepening of the gingival sulcus."
+  },
+  {
+    "num": 6,
+    "image": "/uploads/questions/lesion_q06.jpeg",
+    "text": "What is the diagnosis of the vascular lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Mucocele",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Varicosity",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Caliber-persistent artery",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Pyogenic granuloma",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesion Management",
+    "explanation": "A caliber-persistent artery is a vascular anomaly where a main arterial branch enters the superficial submucosa without a reduction in diameter, presenting clinically as a linear or papular pulsatile mucosal elevation, typically on the lower lip of older adults.",
+    "whyWrong": "Mucocele is a non-pulsatile pseudocyst containing mucus due to severed salivary ducts. Varicosity (lingual varix) presents as a blue-purple dilatated vein, most common on the ventral tongue and non-pulsatile. Pyogenic granuloma is a lobulated, ulcerated reactive vascular hyperplasia."
+  },
+  {
+    "num": 7,
+    "image": "/uploads/questions/lesion_q07.jpeg",
+    "text": "What is the diagnosis of the lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Peripheral giant cell granuloma",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Pyogenic granuloma",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Peripheral ossifying fibroma",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Fibroma",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions and Diagnosis",
+    "explanation": "Pyogenic granuloma is a benign, reactive vascular proliferation occurring in response to local irritation or hormonal factors (e.g. pregnancy tumor). Clinically, it appears as an erythematous, lobulated, soft, highly vascular exophytic gingival mass that bleeds easily on touch.",
+    "whyWrong": "Peripheral giant cell granuloma typically exhibits a deeper red-purple to bluish color and arises exclusively from the periosteum or periodontal ligament. Peripheral ossifying fibroma usually has a paler, firmer surface with calcifications. Irritation fibroma is pale pink, firm, and non-bleeding."
+  },
+  {
+    "num": 8,
+    "image": "/uploads/questions/lesion_q08.jpeg",
+    "text": "What is the diagnosis of the oral lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pemphigus vulgaris",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Angina bullosa hemorrhagica",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Mucocele",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Herpes simplex",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions",
+    "explanation": "Angina bullosa hemorrhagica (ABH) is a benign oral condition characterized by the sudden onset of blood-filled blisters (blood blisters) on the oral mucosa, particularly the soft palate, typically provoked by minor trauma (eating hard or hot food). It bursts rapidly, leaving a painless superficial ulcer that heals without scarring.",
+    "whyWrong": "Pemphigus vulgaris produces clear fluid-filled flaccid blisters and painful erosions with a chronic progressive course. Mucoceles are translucent or blue cystic swellings with mucus, rarely on the soft palate. Herpes simplex manifests as clusters of small vesicles on keratinized mucosa preceded by prodromal tingling."
+  },
+  {
+    "num": 9,
+    "image": "/uploads/questions/lesion_q09.jpeg",
+    "text": "What is the dental finding shown in the image and which disease is it associated with?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Fusion – Amelogenesis imperfecta",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Hutchinson teeth – Congenital syphilis",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Peg lateral – Down syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Enamel hypoplasia – Rickets",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Pediatric Dentistry",
+    "topic": "Infectious Diseases in Children",
+    "explanation": "Hutchinson's incisors (screwdriver-shaped incisors with a central incisal notch) and Mulberry molars are part of Hutchinson's triad (interstitial keratitis, eighth-nerve deafness, and notched incisors) diagnostic of congenital syphilis caused by Treponema pallidum.",
+    "whyWrong": "Amelogenesis imperfecta causes generalized enamel defects across all teeth without the specific screwdriver notch. Peg laterals can occur as an isolated microdontia or in various syndromes, but do not show notched incisal edges. Rickets leads to delayed eruption and hypoplasia, but not screwdriver incisors."
+  },
+  {
+    "num": 10,
+    "image": "/uploads/questions/lesion_q10.jpeg",
+    "text": "What is the lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Pyogenic granuloma",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Epulis fissuratum",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Fibroma",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Peripheral giant cell granuloma",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions and Diagnosis",
+    "explanation": "Epulis fissuratum (inflammatory fibrous hyperplasia / denture-induced hyperplasia) presents as elongated, fold-like redundant fibrous tissue folds in the vestibule along the ill-fitting border of an overextended complete or partial denture.",
+    "whyWrong": "Pyogenic granuloma is a vascular, red, easily bleeding mass rather than multiple firm tissue folds. Irritation fibroma is a discrete, smooth nodule. Peripheral giant cell granuloma is localized to the gingiva and contains multinucleated osteoclast-like giant cells."
+  },
+  {
+    "num": 11,
+    "image": "/uploads/questions/lesion_q11.jpeg",
+    "text": "What syndrome is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Down syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Treacher Collins syndrome",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Pierre Robin syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Crouzon syndrome",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Pediatric Dentistry",
+    "topic": "Craniofacial Syndromes and Their Dental Implicatio",
+    "explanation": "Treacher Collins syndrome (mandibulofacial dysostosis) is characterized by downward-slanting palpebral fissures, coloboma of the lower eyelids, hypoplasia of the zygomatic arches and mandible (bird-like face), microtia/malformed external ears, and conductive hearing loss.",
+    "whyWrong": "Down syndrome shows up-slanting palpebral fissures, epicanthal folds, and macroglossia. Pierre Robin sequence features micrognathia, glossoptosis, and cleft palate without lower eyelid colobomas. Crouzon syndrome features craniosynostosis with ocular proptosis and midface hypoplasia."
+  },
+  {
+    "num": 12,
+    "image": "/uploads/questions/lesion_q12.png",
+    "text": "What syndrome is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Down syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Cleidocranial dysplasia",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Crouzon syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Treacher Collins syndrome",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Pediatric Dentistry",
+    "topic": "Craniofacial Syndromes and Their Dental Implicatio",
+    "explanation": "Cleidocranial dysplasia (CCD) is an autosomal dominant condition caused by RUNX2 mutations. Hallmark features include aplasia or hypoplasia of the clavicles (enabling patients to touch their shoulders together), delayed fontanelle closure, and multiple impacted supernumerary teeth.",
+    "whyWrong": "Patients with Down, Crouzon, or Treacher Collins syndromes possess intact clavicles and cannot approximate their shoulders anteriorly in this characteristic manner."
+  },
+  {
+    "num": 13,
+    "image": "/uploads/questions/lesion_q13.jpeg",
+    "text": "What is the lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Epstein pearls",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Bohn nodules",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Mucocele",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Ranula",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions in Children",
+    "explanation": "Bohn's nodules are keratin-filled cysts derived from remnants of salivary gland tissue found scattered along the buccal and lingual aspects of the dental ridges (away from the midline) in infants.",
+    "whyWrong": "Epstein's pearls are located strictly along the median palatal raphe. Mucoceles and ranulas occur from salivary gland duct disruption and are translucent blue/cystic rather than tiny keratin cysts."
+  },
+  {
+    "num": 14,
+    "image": "/uploads/questions/lesion_q14.jpeg",
+    "text": "What is the lesion shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Bohn nodules",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Epstein pearls",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Dental lamina cyst",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Mucocele",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Medicine & Pathology",
+    "topic": "Oral Lesions in Children",
+    "explanation": "Epstein's pearls are small, white-yellow epithelial inclusion cysts occurring along the median palatal raphe of newborns, formed by entrapped epithelium during palatal fusion.",
+    "whyWrong": "Bohn nodules are found on the alveolar ridge (buccal/lingual), not on the palatal midline. Dental lamina cysts occur on the crest of the alveolar ridge. Mucoceles are uncommon in newborns and are not midline inclusion cysts."
+  },
+  {
+    "num": 15,
+    "image": "/uploads/questions/lesion_q15.jpeg",
+    "text": "What condition is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Peritonsillar abscess",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Ludwig’s angina",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Cellulitis",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Submandibular abscess",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Surgery",
+    "topic": "Maxillofacial Infections and Their Complications",
+    "explanation": "Ludwig's angina is a rapidly spreading, bilateral cellulitis involving the submandibular, sublingual, and submental spaces (often arising from lower molar odontogenic infections). The massive bilateral 'woody' induration elevates the floor of the mouth and tongue, creating an acute airway emergency.",
+    "whyWrong": "Peritonsillar abscess is unilateral and located near the soft palate/tonsillar pillar. Unilateral submandibular abscess lacks the bilateral multi-space involvement and rapid airway compromise of Ludwig's."
+  },
+  {
+    "num": 16,
+    "image": "/uploads/questions/lesion_q16.jpeg",
+    "text": "What instrument is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Analyzing rod",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Carbon marker",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Undercut gauge",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Wax trimmer",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Prosthodontics",
+    "topic": "Removable Partial Denture Design",
+    "explanation": "An undercut gauge (typically 0.010\", 0.020\", or 0.030\") is an accessory attached to a dental surveyor used in removable partial denture (RPD) design to measure and locate the exact depth of retentive undercuts on abutment teeth.",
+    "whyWrong": "The analyzing rod is a straight metal tool with no lip/gauge at the tip used to parallel surfaces. The carbon marker is used to draw the height of contour. The wax trimmer has a blade to trim blockout wax."
+  },
+  {
+    "num": 17,
+    "image": "/uploads/questions/lesion_q17.jpeg",
+    "text": "What surgical technique is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Laterally positioned flap",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Coronally advanced flap",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Double papilla flap",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Free gingival graft",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Periodontal Surgical Techniques",
+    "explanation": "The double papilla flap (Cohen and Ross technique) is a mucogingival surgical technique where interdental papillae from both sides of a recession defect are mobilized and joined together over the exposed root surface, useful when adjacent donor keratinized tissue is narrow.",
+    "whyWrong": "A laterally positioned flap transposes a single donor flap sideways from an adjacent tooth. Coronally advanced flap mobilizes tissue coronally. Free gingival graft involves an unvascularized graft harvested from the palate."
+  },
+  {
+    "num": 18,
+    "image": "/uploads/questions/lesion_q18.jpeg",
+    "text": "What component is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Healing abutment",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "UCLA abutment",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Impression coping",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Cover screw",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Prosthodontics",
+    "topic": "Implant Prosthesis Design",
+    "explanation": "The UCLA abutment is a castable or machined plastic sleeve that allows direct waxing and casting of the crown/framework directly to the implant fixture, useful for screw-retained or custom-angle restorations where interocclusal space is limited.",
+    "whyWrong": "Healing abutments are domed titanium components placed during soft tissue healing. Impression copings have specific transfer retentive grooves to transfer fixture position in an impression. Cover screws are flat screws placed flush with the implant fixture during submerged healing."
+  },
+  {
+    "num": 19,
+    "image": "/uploads/questions/lesion_q19.jpeg",
+    "text": "What is the implant component shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Healing abutment",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Impression coping",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "UCLA abutment",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Cover screw",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Prosthodontics",
+    "topic": "Implant Prosthesis Design",
+    "explanation": "An impression coping (transfer coping) is screwed into the implant fixture or abutment to accurately record its 3D spatial position and orientation within the impression material.",
+    "whyWrong": "Healing abutment guides soft tissue emergence without capturing fixture index. UCLA abutment is cast-to for fabrication. Cover screw seals the implant apex during submerged stage 1."
+  },
+  {
+    "num": 20,
+    "image": "/uploads/questions/lesion_q20.png",
+    "text": "What instrument is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Nabers probe",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Williams probe",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Explorer",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Sickle scaler",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Periodontal Instruments and Techniques",
+    "explanation": "The Nabers probe is a curved periodontal instrument specifically designed to examine and assess the degree of furcation involvement in multi-rooted teeth, featuring curved working ends with millimeter calibrations.",
+    "whyWrong": "Williams probe is a straight probe with markings at 1, 2, 3, 5, 7, 8, 9, 10 mm. An explorer has a sharp pointed tip used for caries and calculus detection. A sickle scaler has a triangular cross-section and pointed tip used for supragingival scaling."
+  },
+  {
+    "num": 21,
+    "image": "/uploads/questions/lesion_q21.jpeg",
+    "text": "What is the device shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Surgical stent",
+        "isCorrect": true
+      },
+      {
+        "label": "B",
+        "text": "Occlusal splint",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Bite registration",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Radiographic guide",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Surgery",
+    "topic": "Surgical Instruments and Techniques",
+    "explanation": "A surgical stent (surgical template/guide) is an intraoral appliance fabricated to guide the surgeon during implant osteotomy placement or pre-prosthetic bone recontouring (alveolectomy) to ensure optimal prosthetically-driven implant positioning.",
+    "whyWrong": "Occlusal splints (nightguards) cover occlusal surfaces to manage bruxism/TMD. Bite registration records interocclusal jaw relations. Radiographic guides contain radiopaque markers to plan implants on CBCT scans."
+  },
+  {
+    "num": 22,
+    "image": "/uploads/questions/lesion_q22.jpeg",
+    "text": "What syndrome is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Treacher Collins syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Crouzon syndrome",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Down syndrome",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Apert syndrome",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Pediatric Dentistry",
+    "topic": "Craniofacial Syndromes and Their Dental Implicatio",
+    "explanation": "Crouzon syndrome (craniofacial dysostosis) is characterized by premature closure of cranial sutures (craniosynostosis), midface hypoplasia, ocular proptosis (prominent bulging eyes), hypertelorism, and a beak-like nose without syndactyly (webbed digits).",
+    "whyWrong": "Apert syndrome features craniosynostosis accompanied by severe syndactyly (mitten hands/feet). Treacher Collins syndrome exhibits downward-slanting eyes and lower eyelid colobomas. Down syndrome features flat facial profile and epicanthal folds."
+  },
+  {
+    "num": 23,
+    "image": "/uploads/questions/lesion_q23.jpeg",
+    "text": "What instrument is shown in the image?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Sickle scaler",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Gracey curette",
+        "isCorrect": false
+      },
+      {
+        "label": "C",
+        "text": "Plastic scaler (implant scaler)",
+        "isCorrect": true
+      },
+      {
+        "label": "D",
+        "text": "Periodontal probe",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Periodontics",
+    "topic": "Implant Maintenance and Care",
+    "explanation": "Plastic or composite/titanium-tipped scalers are non-metallic instruments designed specifically for implant debridement and maintenance to clean titanium implant abutments and restorations without scratching or gouging the polished implant surface.",
+    "whyWrong": "Traditional stainless steel sickle scalers and Gracey curettes cause micro-scratches on titanium surfaces, leading to increased plaque retention and peri-implantitis risk."
+  },
+  {
+    "num": 24,
+    "image": "/uploads/questions/lesion_q24.jpeg",
+    "text": "What instrument is shown in the image and what is its primary use?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Hemostat – for controlling bleeding",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Chalazion forceps – for stabilizing the lip during minor oral surgery (e.g., biopsy)",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Tissue forceps – for suturing",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Needle holder – for holding sutures",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Oral Surgery",
+    "topic": "Surgical Instruments and Techniques",
+    "explanation": "Chalazion forceps have a ring-shaped loop on one side and a solid flat plate on the other with a locking screw. In oral surgery, they are commonly used during minor labial surgery (such as lower lip mucocele excision or minor salivary gland biopsy) to stabilize the lip, provide hemostasis, and isolate the surgical field.",
+    "whyWrong": "Hemostats have transverse serrations for clamping blood vessels. Standard tissue forceps have toothed tips for grasping tissues. Needle holders have cross-hatched jaws with a central groove to hold suture needles."
+  },
+  {
+    "num": 25,
+    "image": "/uploads/questions/lesion_q25.jpeg",
+    "text": "A patient presents with tissue growth beneath a pontic of a fixed partial denture as shown in the image. What is the most likely diagnosis?",
+    "options": [
+      {
+        "label": "A",
+        "text": "Inflammatory fibrous hyperplasia",
+        "isCorrect": false
+      },
+      {
+        "label": "B",
+        "text": "Subpontic osseous hyperplasia",
+        "isCorrect": true
+      },
+      {
+        "label": "C",
+        "text": "Pyogenic granuloma",
+        "isCorrect": false
+      },
+      {
+        "label": "D",
+        "text": "Peripheral ossifying fibroma",
+        "isCorrect": false
+      }
+    ],
+    "specialty": "Prosthodontics",
+    "topic": "Overdentures and Abutment Management",
+    "explanation": "Subpontic osseous hyperplasia (subpontic hyperostosis) is a benign, reactive bone proliferation developing from the alveolar crest beneath the pontic of a fixed partial denture, typically in the posterior mandible, stimulated by mechanical forces and hygiene factors.",
+    "whyWrong": "Inflammatory fibrous hyperplasia is soft tissue proliferation due to chronic friction. Pyogenic granuloma is a vascular, red, bleeding gingival mass. Peripheral ossifying fibroma occurs on the gingival margin rather than as a hard subpontic osseous mass."
+  }
+]

@@ -32,7 +32,7 @@ class QuestionModel extends Equatable {
       difficulty: json['difficulty'] ?? 'easy',
       specialty: json['specialty']?['name'],
       topic: json['topic']?['name'] ?? json['subTopic'],
-      imageUrl: json['image'],
+      imageUrl: json['image'] ?? json['imageUrl'] ?? json['image_url'],
       options: (json['options'] as List<dynamic>?)
               ?.map((e) => OptionModel.fromJson(e))
               .toList() ??

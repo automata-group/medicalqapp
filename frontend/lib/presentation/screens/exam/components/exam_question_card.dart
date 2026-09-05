@@ -12,15 +12,25 @@ class ExamQuestionCard extends StatelessWidget {
     this.imageUrl,
   });
 
+  String _resolveUrl(String url) {
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+    final cleanPath = url.startsWith('/') ? url : '/$url';
+    return 'https://healthlicenseprep.com$cleanPath';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final resolvedImageUrl = (imageUrl != null && imageUrl!.isNotEmpty)
+        ? _resolveUrl(imageUrl!)
+        : null;
+
     return Directionality(
       textDirection: TextDirection.ltr,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-
           // Question Text
           Text(
             questionText,
@@ -36,16 +46,16 @@ class ExamQuestionCard extends StatelessWidget {
           ),
 
           // Clinical Image (If available)
-          if (imageUrl != null && imageUrl!.isNotEmpty) ...[
+          if (resolvedImageUrl != null) ...[
             const SizedBox(height: 16),
             GestureDetector(
-              onTap: () => _showFullScreenImage(context, imageUrl!),
+              onTap: () => _showFullScreenImage(context, resolvedImageUrl),
               child: Hero(
-                tag: 'question_image_$imageUrl',
+                tag: 'question_image_$resolvedImageUrl',
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Image.network(
-                    imageUrl!,
+                    resolvedImageUrl,
                     width: double.infinity,
                     height: 200,
                     fit: BoxFit.cover,
@@ -69,6 +79,8 @@ class ExamQuestionCard extends StatelessWidget {
   }
 
   void _showFullScreenImage(BuildContext context, String url) {
+    final resolvedUrl = _resolveUrl(url);
+
     Navigator.of(context).push(
       PageRouteBuilder(
         opaque: false,
@@ -89,9 +101,9 @@ class ExamQuestionCard extends StatelessWidget {
                 minScale: 0.5,
                 maxScale: 4.0,
                 child: Hero(
-                  tag: 'question_image_$url',
+                  tag: 'question_image_$resolvedUrl',
                   child: Image.network(
-                    url,
+                    resolvedUrl,
                     fit: BoxFit.contain,
                     width: double.infinity,
                     height: double.infinity,
