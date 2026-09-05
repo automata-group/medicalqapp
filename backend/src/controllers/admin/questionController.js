@@ -74,18 +74,38 @@ exports.getQuestion = async (req, res, next) => {
     }
 };
 
+// @desc    Upload Question Image
+// @route   POST /api/v1/admin/questions/upload-image
+// @access  Private (Admin)
+exports.uploadQuestionImage = async (req, res, next) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ success: false, message: 'No image file uploaded' });
+        }
+        const imageUrl = `/uploads/questions/${req.file.filename}`;
+        res.status(200).json({
+            success: true,
+            imageUrl,
+            message: 'Image uploaded successfully'
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 // @desc    Create Question
 // @route   POST /api/v1/admin/questions
 // @access  Private (Admin)
 exports.createQuestion = async (req, res, next) => {
     try {
-        const { text, specialtyId, topicId, difficulty, isPremium, options, explanation } = req.body;
+        const { text, specialtyId, topicId, difficulty, isPremium, options, explanation, image } = req.body;
 
         const question = await Question.create({
             text,
             specialtyId,
             topicId,
             difficulty,
+            image: image || null,
             isPremium: isPremium || false,
             isActive: true
         });
@@ -129,7 +149,7 @@ exports.createQuestion = async (req, res, next) => {
 // @access  Private (Admin)
 exports.updateQuestion = async (req, res, next) => {
     try {
-        const { text, specialtyId, topicId, difficulty, isPremium, isActive, options, explanation } = req.body;
+        const { text, specialtyId, topicId, difficulty, isPremium, isActive, options, explanation, image } = req.body;
 
         let question = await Question.findByPk(req.params.id);
 
@@ -138,14 +158,20 @@ exports.updateQuestion = async (req, res, next) => {
         }
 
         // Update fields
-        question = await question.update({
+        const updateData = {
             text: text || question.text,
             specialtyId: specialtyId !== undefined ? specialtyId : question.specialtyId,
             topicId: topicId !== undefined ? topicId : question.topicId,
             difficulty: difficulty || question.difficulty,
             isPremium: isPremium !== undefined ? isPremium : question.isPremium,
             isActive: isActive !== undefined ? isActive : question.isActive
-        });
+        };
+
+        if (image !== undefined) {
+            updateData.image = image || null;
+        }
+
+        question = await question.update(updateData);
 
         // Update Options (Replace Strategy for simplicity)
         if (options && options.length > 0) {

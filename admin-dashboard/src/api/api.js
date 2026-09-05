@@ -60,6 +60,10 @@ export const aiGenerateExplanation = (questionId) =>
     api.post(`/admin/questions/${questionId}/ai-explain`);
 export const aiGenerateQuestion = (data) =>
     api.post('/admin/questions/ai-generate', data);
+export const uploadQuestionImage = (formData) =>
+    api.post('/admin/questions/upload-image', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+    });
 
 // ─── AI Feedback ──────────────────────────────────────────
 export const getAIFeedbacks = () => api.get('/admin/ai/feedbacks');

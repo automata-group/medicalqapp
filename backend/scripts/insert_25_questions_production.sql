@@ -1,7 +1,15 @@
 -- ==========================================
 -- Production Database Import (healthlicenseprep.com)
 -- ==========================================
-SET FOREIGN_KEY_CHECKS = 0;
+DELIMITER $$
+DROP PROCEDURE IF EXISTS ImportLesionQuestions$$
+CREATE PROCEDURE ImportLesionQuestions()
+BEGIN
+    DECLARE existing_cnt INT DEFAULT 0;
+    SELECT COUNT(*) INTO existing_cnt FROM Questions WHERE source = 'What is this lesion Docx';
+
+    IF existing_cnt = 0 THEN
+        SET FOREIGN_KEY_CHECKS = 0;
 
 -- Question 1: What is this lesion?...
 INSERT INTO Questions (specialtyId, topicId, subTopic, text, image, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt) VALUES (
@@ -503,4 +511,13 @@ INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt)
 INSERT INTO Options (questionId, `order`, text, isCorrect, createdAt, updatedAt) VALUES (@prod_qid, 'D', 'Peripheral ossifying fibroma', 0, NOW(), NOW());
 INSERT INTO Explanations (questionId, text, whyWrong, `references`, aiGenerated, createdAt, updatedAt) VALUES (@prod_qid, 'Subpontic osseous hyperplasia (subpontic hyperostosis) is a benign, reactive bone proliferation developing from the alveolar crest beneath the pontic of a fixed partial denture, typically in the posterior mandible, stimulated by mechanical forces and hygiene factors.', 'Inflammatory fibrous hyperplasia is soft tissue proliferation due to chronic friction. Pyogenic granuloma is a vascular, red, bleeding gingival mass. Peripheral ossifying fibroma occurs on the gingival margin rather than as a hard subpontic osseous mass.', 'Clinical Dental Examination', 1, NOW(), NOW());
 
-SET FOREIGN_KEY_CHECKS = 1;
+        SET FOREIGN_KEY_CHECKS = 1;
+        SELECT 'Imported 25 lesion questions successfully' AS status;
+    ELSE
+        SELECT 'Lesion questions already exist in database, skipping.' AS status;
+    END IF;
+END$$
+DELIMITER ;
+
+CALL ImportLesionQuestions();
+DROP PROCEDURE IF EXISTS ImportLesionQuestions;

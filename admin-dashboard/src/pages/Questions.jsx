@@ -10,7 +10,8 @@ import {
     bulkMoveQuestions,
     getQuestion,
     aiGenerateExplanation,
-    aiGenerateQuestion
+    aiGenerateQuestion,
+    uploadQuestionImage
 } from '../api/api';
 import { useCallback } from 'react';
 import styles from './Dashboard.module.css';
@@ -39,6 +40,9 @@ export default function Questions() {
     const [editingId, setEditingId] = useState(null);
     const [aiLoading, setAiLoading] = useState(false);
     const [aiResult, setAiResult] = useState(null);
+    const [imageFile, setImageFile] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [saving, setSaving] = useState(false);
 
     // DOCX Modal State
     const [showDocxModal, setShowDocxModal] = useState(false);
@@ -56,6 +60,7 @@ export default function Questions() {
         specialtyId: '',
         topicId: '',
         difficulty: 'medium',
+        image: null,
         options: [
             { text: '', isCorrect: true },
             { text: '', isCorrect: false },
@@ -204,14 +209,40 @@ export default function Questions() {
         }
     };
 
+    const getImageUrl = (path) => {
+        if (!path) return '';
+        if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('blob:') || path.startsWith('data:')) {
+            return path;
+        }
+        const staticBase = (import.meta.env.VITE_API_URL || '').replace('/api/v1', '');
+        return `${staticBase}${path}`;
+    };
+
+    const handleImageSelect = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImageFile(file);
+            setImagePreview(URL.createObjectURL(file));
+        }
+    };
+
+    const handleRemoveImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        setFormData(prev => ({ ...prev, image: null }));
+    };
+
     const openCreateModal = () => {
         setEditingId(null);
         setAiResult(null);
+        setImageFile(null);
+        setImagePreview(null);
         setFormData({
             text: '',
             specialtyId: '',
             topicId: '',
             difficulty: 'medium',
+            image: null,
             options: [
                 { text: '', isCorrect: true },
                 { text: '', isCorrect: false },
@@ -231,11 +262,14 @@ export default function Questions() {
             if (q) {
                 setEditingId(id);
                 setAiResult(null);
+                setImageFile(null);
+                setImagePreview(q.image ? getImageUrl(q.image) : null);
                 setFormData({
                     text: q.text,
                     specialtyId: q.specialtyId || '',
                     topicId: q.topicId || '',
                     difficulty: q.difficulty || 'medium',
+                    image: q.image || null,
                     options: q.options?.length > 0 ? q.options.map(o => ({ text: o.text || '', isCorrect: Boolean(o.isCorrect) })) : [
                         { text: '', isCorrect: true },
                         { text: '', isCorrect: false }
@@ -447,16 +481,35 @@ export default function Questions() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSaving(true);
         try {
+            let finalImageUrl = formData.image;
+            if (imageFile) {
+                const imgData = new FormData();
+                imgData.append('image', imageFile);
+                const upRes = await uploadQuestionImage(imgData);
+                if (upRes.data?.imageUrl) {
+                    finalImageUrl = upRes.data.imageUrl;
+                }
+            }
+
+            const payload = {
+                ...formData,
+                image: finalImageUrl || null
+            };
+
             if (editingId) {
-                await updateQuestion(editingId, formData);
+                await updateQuestion(editingId, payload);
             } else {
-                await createQuestion(formData);
+                await createQuestion(payload);
             }
             setShowModal(false);
             loadQuestions();
         } catch (error) {
+            console.error('Failed to save question', error);
             alert(error.response?.data?.message || 'Failed to save question');
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -607,7 +660,33 @@ export default function Questions() {
                                         />
                                     </td>
                                     <td title={q.text} style={{ maxWidth: 350, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                                        {q.text}
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            {q.image && (
+                                                <a 
+                                                    href={getImageUrl(q.image)} 
+                                                    target="_blank" 
+                                                    rel="noreferrer" 
+                                                    title="Click to view full image"
+                                                    style={{ display: 'inline-flex', flexShrink: 0 }}
+                                                    onClick={(e) => e.stopPropagation()}
+                                                >
+                                                    <img
+                                                        src={getImageUrl(q.image)}
+                                                        alt="Question"
+                                                        style={{
+                                                            width: '28px',
+                                                            height: '28px',
+                                                            objectFit: 'cover',
+                                                            borderRadius: '5px',
+                                                            border: '1px solid rgba(255,255,255,0.2)',
+                                                            cursor: 'zoom-in'
+                                                        }}
+                                                        onError={(e) => { e.target.style.display = 'none'; }}
+                                                    />
+                                                </a>
+                                            )}
+                                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{q.text}</span>
+                                        </div>
                                     </td>
                                     <td><span className={pageStyles.badge} style={{ background: '#1e3a5f', color: '#60a5fa' }}>
                                         {q.specialty?.name || '—'}
@@ -730,6 +809,126 @@ export default function Questions() {
                                         placeholder="e.g. A 45-year-old male presents with sudden chest pain..."
                                         style={{ width: '100%', minWidth: 0, boxSizing: 'border-box', lineHeight: '1.5' }}
                                     />
+                                </div>
+                            </div>
+
+                            {/* Question Image (Optional) */}
+                            <div className={pageStyles.formRow} style={{ flexShrink: 0, width: '100%' }}>
+                                <div className={pageStyles.formGroup} style={{ flex: 1, minWidth: 0, width: '100%' }}>
+                                    <label style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 600, marginBottom: '8px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                            <span>🖼️</span> Question Image / صورة توضيحية للسؤال <span style={{ color: '#64748b', fontWeight: 400, fontSize: '12px' }}>(Optional - اختياري)</span>
+                                        </span>
+                                        {imagePreview && (
+                                            <button
+                                                type="button"
+                                                onClick={handleRemoveImage}
+                                                style={{
+                                                    background: 'rgba(239, 68, 68, 0.15)',
+                                                    color: '#f87171',
+                                                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                                                    borderRadius: '6px',
+                                                    padding: '3px 9px',
+                                                    fontSize: '11px',
+                                                    fontWeight: 600,
+                                                    cursor: 'pointer',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '4px'
+                                                }}
+                                            >
+                                                ✕ Remove Image / إزالة الصورة
+                                            </button>
+                                        )}
+                                    </label>
+
+                                    {imagePreview ? (
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '16px',
+                                            padding: '14px 16px',
+                                            borderRadius: '12px',
+                                            background: 'rgba(15, 23, 42, 0.7)',
+                                            border: '1px solid rgba(51, 65, 85, 0.8)',
+                                            boxShadow: 'inset 0 1px 2px rgba(0, 0, 0, 0.2)'
+                                        }}>
+                                            <a href={imagePreview} target="_blank" rel="noreferrer" title="Click to view full size">
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="Question Preview"
+                                                    style={{
+                                                        width: '100px',
+                                                        height: '75px',
+                                                        objectFit: 'cover',
+                                                        borderRadius: '8px',
+                                                        border: '1.5px solid #38bdf8',
+                                                        boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
+                                                        cursor: 'zoom-in'
+                                                    }}
+                                                />
+                                            </a>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ fontSize: '13px', color: '#38bdf8', fontWeight: 600, marginBottom: '4px' }}>
+                                                    {imageFile ? `Selected: ${imageFile.name}` : 'Current Image Attached'}
+                                                </div>
+                                                <div style={{ fontSize: '11px', color: '#94a3b8', marginBottom: '8px' }}>
+                                                    {imageFile ? `${(imageFile.size / 1024).toFixed(1)} KB` : (formData.image || '')}
+                                                </div>
+                                                <label style={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    padding: '6px 14px',
+                                                    fontSize: '12px',
+                                                    fontWeight: 600,
+                                                    background: '#334155',
+                                                    color: '#f8fafc',
+                                                    borderRadius: '6px',
+                                                    cursor: 'pointer',
+                                                    border: '1px solid #475569',
+                                                    transition: 'all 0.15s ease'
+                                                }}>
+                                                    <span>🔄</span> Change Image / تغيير الصورة
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={handleImageSelect}
+                                                        style={{ display: 'none' }}
+                                                    />
+                                                </label>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <label style={{
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: '8px',
+                                            padding: '18px',
+                                            borderRadius: '12px',
+                                            border: '1.5px dashed #475569',
+                                            background: 'rgba(15, 23, 42, 0.4)',
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s ease',
+                                            textAlign: 'center'
+                                        }}>
+                                            <span style={{ fontSize: '28px' }}>📷</span>
+                                            <div style={{ fontSize: '13px', color: '#cbd5e1', fontWeight: 600 }}>
+                                                Click to select an image from your device (Optional)
+                                            </div>
+                                            <div style={{ fontSize: '11px', color: '#64748b' }}>
+                                                Supported: JPG, PNG, WEBP, GIF (Max 10MB)
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageSelect}
+                                                style={{ display: 'none' }}
+                                            />
+                                        </label>
+                                    )}
                                 </div>
                             </div>
 
@@ -1100,16 +1299,19 @@ export default function Questions() {
                                 <button
                                     type="submit"
                                     className={`${pageStyles.btn}`}
+                                    disabled={saving}
                                     style={{
-                                        background: 'linear-gradient(135deg, #10b981, #059669)',
+                                        background: saving ? '#475569' : 'linear-gradient(135deg, #10b981, #059669)',
                                         color: '#fff',
                                         padding: '9px 24px',
                                         borderRadius: '8px',
                                         fontWeight: 700,
-                                        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)'
+                                        boxShadow: saving ? 'none' : '0 4px 12px rgba(16, 185, 129, 0.35)',
+                                        cursor: saving ? 'wait' : 'pointer',
+                                        opacity: saving ? 0.7 : 1
                                     }}
                                 >
-                                    💾 Save Question
+                                    {saving ? '⏳ Saving Question...' : (editingId ? '💾 Update Question' : '💾 Save Question')}
                                 </button>
                             </div>
                         </form>
