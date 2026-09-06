@@ -52,24 +52,41 @@ class ExamQuestionCard extends StatelessWidget {
               onTap: () => _showFullScreenImage(context, resolvedImageUrl),
               child: Hero(
                 tag: 'question_image_$resolvedImageUrl',
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                child: Container(
+                  width: double.infinity,
+                  constraints: const BoxConstraints(
+                    maxHeight: 240,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF1F5F9),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  clipBehavior: Clip.antiAlias,
                   child: Image.network(
                     resolvedImageUrl,
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => const SizedBox
-                        .shrink(), // Silently hide on network failure
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 8),
-            const Center(
-              child: Text(
-                'Tap image to zoom',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.zoom_in_rounded, size: 14, color: Colors.grey.shade500),
+                  const SizedBox(width: 4),
+                  Text(
+                    'انقر لتكبير الصورة • Tap image to zoom',
+                    style: TextStyle(
+                      color: Colors.grey.shade600,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
