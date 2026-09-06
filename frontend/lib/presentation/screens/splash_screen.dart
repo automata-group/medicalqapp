@@ -84,11 +84,15 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (isAuthenticated) {
       final user = authProvider.user;
+      final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
+      final bool hasSelectedSpecialties = (user?.hasSpecialties ?? false) ||
+          (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
+
       if (user?.role == 'admin') {
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const AdminScaffold()),
         );
-      } else if (!(user?.hasSpecialties ?? false)) {
+      } else if (!hasSelectedSpecialties) {
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
         );

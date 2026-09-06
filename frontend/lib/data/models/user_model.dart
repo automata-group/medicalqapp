@@ -21,15 +21,42 @@ class UserModel {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
+    final bool hasSpecialties = json['hasSpecialties'] == true ||
+        (json['specialties'] is List && (json['specialties'] as List).isNotEmpty);
+    final bool hasStudyPlan = json['hasStudyPlan'] == true ||
+        (json['studyPlan'] != null && json['studyPlan'] != false);
+
     return UserModel(
       id: (json['_id'] ?? json['id'] ?? '').toString(),
       name: json['name'] ?? json['fullName'] ?? 'User',
       email: json['email'] ?? '',
-      hasSpecialties: json['hasSpecialties'] ?? false,
-      hasStudyPlan: json['hasStudyPlan'] ?? false,
+      hasSpecialties: hasSpecialties,
+      hasStudyPlan: hasStudyPlan,
       isPremium: json['isPremium'] ?? false,
       referralCode: json['referralCode'],
       role: json['role'] ?? 'user',
+    );
+  }
+
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    bool? hasSpecialties,
+    bool? hasStudyPlan,
+    bool? isPremium,
+    String? referralCode,
+    String? role,
+  }) {
+    return UserModel(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      hasSpecialties: hasSpecialties ?? this.hasSpecialties,
+      hasStudyPlan: hasStudyPlan ?? this.hasStudyPlan,
+      isPremium: isPremium ?? this.isPremium,
+      referralCode: referralCode ?? this.referralCode,
+      role: role ?? this.role,
     );
   }
 

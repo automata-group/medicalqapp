@@ -200,6 +200,7 @@ class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
                       final success = await provider.saveInterests();
                       if (context.mounted) {
                         if (success) {
+                          context.read<AuthProvider>().setHasSpecialties(true);
                           Navigator.push(
                             context,
                             MaterialPageRoute(

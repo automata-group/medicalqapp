@@ -121,4 +121,20 @@ class AuthProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  void setHasSpecialties(bool val) {
+    if (_user != null) {
+      _user = _user!.copyWith(hasSpecialties: val);
+      prefs.setString('cached_user', json.encode(_user!.toJson()));
+      notifyListeners();
+    }
+  }
+
+  void setHasStudyPlan(bool val) {
+    if (_user != null) {
+      _user = _user!.copyWith(hasStudyPlan: val);
+      prefs.setString('cached_user', json.encode(_user!.toJson()));
+      notifyListeners();
+    }
+  }
 }

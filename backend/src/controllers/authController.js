@@ -156,6 +156,8 @@ exports.getMe = async (req, res, next) => {
         // Clone user data to add isPremium (since Sequelize instance is immutable-ish without .get({plain:true}))
         const userData = user.get({ plain: true });
         userData.isPremium = !!isPremium;
+        userData.hasSpecialties = Array.isArray(userData.specialties) && userData.specialties.length > 0;
+        userData.hasStudyPlan = !!userData.studyPlan;
         delete userData.subscriptions; // Optional: hide raw subscription details
 
         res.status(200).json({

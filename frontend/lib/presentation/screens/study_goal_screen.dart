@@ -5,6 +5,7 @@ import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/toast_utils.dart';
 import '../providers/study_goal_provider.dart';
+import '../providers/auth_provider.dart';
 import 'main_container_screen.dart';
 
 class StudyGoalScreen extends StatelessWidget {
@@ -163,10 +164,10 @@ class _StudyGoalView extends StatelessWidget {
                   onPressed: provider.isValid && !provider.isLoading
                       ? () async {
                           final success = await provider.saveGoal();
-                          // Navigate to Dashboard (Next Phase)
-                          // For now, just show a snackbar simulation or print
+                          // Navigate to Dashboard
                           if (context.mounted) {
                             if (success) {
+                              context.read<AuthProvider>().setHasStudyPlan(true);
                               ToastUtils.showSuccess(context, l10n.studyPlanSaved);
                               Navigator.pushAndRemoveUntil(
                                 context,
