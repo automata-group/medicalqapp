@@ -12,20 +12,43 @@ const queueEvents = new QueueEvents('docx-extraction', { connection: redisConnec
 // @access  Private (Admin)
 exports.getQuestions = async (req, res, next) => {
     try {
-        const { page = 1, limit = 10, specialtyId, topicId, search } = req.query;
+        const { page = 1, limit = 10, specialtyId, topicId, search, hasImage } = req.query;
         const offset = (page - 1) * limit;
 
-        const whereClause = {};
-        if (specialtyId) whereClause.specialtyId = specialtyId;
-        if (topicId) whereClause.topicId = topicId;
+        const andConditions = [];
+
+        if (specialtyId) andConditions.push({ specialtyId });
+        if (topicId) andConditions.push({ topicId });
+
+        if (hasImage === 'true' || hasImage === '1' || hasImage === 'with_image') {
+            andConditions.push({
+                image: {
+                    [Op.and]: [
+                        { [Op.ne]: null },
+                        { [Op.ne]: '' }
+                    ]
+                }
+            });
+        } else if (hasImage === 'false' || hasImage === '0' || hasImage === 'without_image') {
+            andConditions.push({
+                [Op.or]: [
+                    { image: null },
+                    { image: '' }
+                ]
+            });
+        }
 
         const queryTerm = (search || req.query.q || '').trim();
         if (queryTerm) {
-            whereClause[Op.or] = [
-                { text: { [Op.like]: `%${queryTerm}%` } },
-                { subTopic: { [Op.like]: `%${queryTerm}%` } }
-            ];
+            andConditions.push({
+                [Op.or]: [
+                    { text: { [Op.like]: `%${queryTerm}%` } },
+                    { subTopic: { [Op.like]: `%${queryTerm}%` } }
+                ]
+            });
         }
+
+        const whereClause = andConditions.length > 0 ? { [Op.and]: andConditions } : {};
 
         const { count, rows } = await Question.findAndCountAll({
             where: whereClause,

@@ -34,6 +34,8 @@ export default function Questions() {
     const [topics, setTopics] = useState([]);
     const [selectedSpecialty, setSelectedSpecialty] = useState('');
     const [selectedTopic, setSelectedTopic] = useState('');
+    const [imageFilter, setImageFilter] = useState(''); // '' | 'with_image' | 'without_image'
+
 
     // Modal State
     const [showModal, setShowModal] = useState(false);
@@ -88,6 +90,7 @@ export default function Questions() {
             if (selectedSpecialty) params.specialtyId = selectedSpecialty;
             if (selectedTopic) params.topicId = selectedTopic;
             if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+            if (imageFilter) params.hasImage = imageFilter;
 
             const res = await getQuestions(params);
             setQuestions(res.data?.data || []);
@@ -98,7 +101,7 @@ export default function Questions() {
         } finally {
             setLoading(false);
         }
-    }, [selectedSpecialty, selectedTopic, page, debouncedSearch]);
+    }, [selectedSpecialty, selectedTopic, page, debouncedSearch, imageFilter]);
 
     // Debounce search input to query server across all pages
     useEffect(() => {
@@ -117,7 +120,7 @@ export default function Questions() {
 
     useEffect(() => {
         setPage(1);
-    }, [selectedSpecialty, selectedTopic]);
+    }, [selectedSpecialty, selectedTopic, imageFilter]);
 
     useEffect(() => {
         loadQuestions();
@@ -520,7 +523,11 @@ export default function Questions() {
         setSelectedIds((prev) => prev.filter(selectedId => selectedId !== id));
     };
 
-    const filteredQuestions = questions;
+    const filteredQuestions = imageFilter === 'with_image'
+        ? questions.filter(q => !!q.image)
+        : imageFilter === 'without_image'
+            ? questions.filter(q => !q.image)
+            : questions;
 
     const toggleSelectAll = (e) => {
         if (e.target.checked) {
@@ -591,6 +598,47 @@ export default function Questions() {
                         <option value="">All Topics</option>
                         {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                     </select>
+                    <select
+                        className={pageStyles.select}
+                        value={imageFilter}
+                        onChange={(e) => setImageFilter(e.target.value)}
+                        style={{
+                            borderColor: imageFilter === 'with_image' ? '#10b981' : imageFilter === 'without_image' ? '#f59e0b' : undefined,
+                            backgroundColor: imageFilter === 'with_image' ? 'rgba(16, 185, 129, 0.15)' : imageFilter === 'without_image' ? 'rgba(245, 158, 11, 0.15)' : undefined,
+                            color: imageFilter === 'with_image' ? '#34d399' : imageFilter === 'without_image' ? '#fbbf24' : '#e2e8f0',
+                            fontWeight: imageFilter ? 600 : 400
+                        }}
+                    >
+                        <option value="">🖼️ All Media (الكل)</option>
+                        <option value="with_image">📸 Images Only (أسئلة بصور فقط)</option>
+                        <option value="without_image">📝 Text Only (بدون صور)</option>
+                    </select>
+                    <button
+                        type="button"
+                        onClick={() => setImageFilter(prev => prev === 'with_image' ? '' : 'with_image')}
+                        style={{
+                            background: imageFilter === 'with_image' 
+                                ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' 
+                                : '#1e293b',
+                            color: imageFilter === 'with_image' ? '#ffffff' : '#94a3b8',
+                            border: imageFilter === 'with_image' ? '1px solid #10b981' : '1px solid #334155',
+                            padding: '8px 14px',
+                            borderRadius: '10px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            transition: 'all 0.15s ease',
+                            whiteSpace: 'nowrap',
+                            boxShadow: imageFilter === 'with_image' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none'
+                        }}
+                        title="Filter questions with images only / تصفية الأسئلة التي تحتوي على صور فقط"
+                    >
+                        <span>📸</span>
+                        <span>Images Only {imageFilter === 'with_image' ? '✓' : ''}</span>
+                    </button>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {selectedIds.length > 0 && (
