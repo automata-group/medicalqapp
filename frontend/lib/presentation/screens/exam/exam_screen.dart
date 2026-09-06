@@ -41,7 +41,6 @@ class _ExamScreenState extends State<ExamScreen> {
   bool _isAnswerChecked = false;
   Timer? _timer;
   int _secondsElapsed = 0;
-  bool _hasAutoShownPricing = false;
 
   @override
   void initState() {
@@ -204,10 +203,7 @@ class _ExamScreenState extends State<ExamScreen> {
       // When the user has answered the quota questions (15 for specialty, 30 for question bank)
       // and clicks "Next" to go to the next question:
       if (provider.sessionAttemptedIds.length >= maxAllowed || provider.currentQuestionIndex >= maxAllowed) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (_) => const PricingScreen()),
-        );
+        provider.triggerQuotaExceeded();
         return;
       }
     }
@@ -333,18 +329,6 @@ class _ExamScreenState extends State<ExamScreen> {
     if (provider.status == QuestionStatus.error &&
         provider.errorMessage != null &&
         provider.errorMessage!.contains('QUOTA_EXCEEDED')) {
-      if (!_hasAutoShownPricing) {
-        _hasAutoShownPricing = true;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => const PricingScreen()),
-            );
-          }
-        });
-      }
-
       final isSpecialty = widget.specialtyId != null || widget.subTopic != null;
       final quotaTitle = isSpecialty
           ? l10n.specialtyLimitReached
@@ -479,11 +463,23 @@ class _ExamScreenState extends State<ExamScreen> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
+                        onPressed: () async {
+                          await Navigator.push(
                             context,
                             MaterialPageRoute(builder: (_) => const PricingScreen()),
                           );
+                          if (!context.mounted) return;
+                          final user = context.read<AuthProvider>().user;
+                          if (user?.isPremium == true) {
+                            final provider = context.read<QuestionProvider>();
+                            provider.resetSession();
+                            provider.loadNextQuestion(
+                              specialtyId: widget.specialtyId,
+                              subTopic: widget.subTopic,
+                              filter: widget.filter,
+                              shuffle: widget.shuffle,
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF2563EB),

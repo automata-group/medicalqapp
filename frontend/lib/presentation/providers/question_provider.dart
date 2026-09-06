@@ -171,6 +171,13 @@ class QuestionProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void triggerQuotaExceeded() {
+    _status = QuestionStatus.error;
+    _errorMessage = 'QUOTA_EXCEEDED';
+    _prefetchedQuestion = null;
+    notifyListeners();
+  }
+
   void startRetryMode() {
     if (_failedSessionQuestions.isEmpty) return;
     _isRetryMode = true;
