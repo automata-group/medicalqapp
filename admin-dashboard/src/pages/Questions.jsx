@@ -267,14 +267,28 @@ export default function Questions() {
                 setAiResult(null);
                 setImageFile(null);
                 setImagePreview(q.image ? getImageUrl(q.image) : null);
+
+                // Sort options deterministically by order ('A', 'B'...) or id
+                const sortedOptions = (q.options || []).slice().sort((a, b) => {
+                    if (a.order && b.order) return a.order.localeCompare(b.order);
+                    return (a.id || 0) - (b.id || 0);
+                });
+
                 setFormData({
                     text: q.text,
                     specialtyId: q.specialtyId || '',
                     topicId: q.topicId || '',
                     difficulty: q.difficulty || 'medium',
                     image: q.image || null,
-                    options: q.options?.length > 0 ? q.options.map(o => ({ text: o.text || '', isCorrect: Boolean(o.isCorrect) })) : [
+                    options: sortedOptions.length > 0 ? sortedOptions.map(o => ({
+                        id: o.id,
+                        order: o.order,
+                        text: o.text || '',
+                        isCorrect: Boolean(o.isCorrect)
+                    })) : [
                         { text: '', isCorrect: true },
+                        { text: '', isCorrect: false },
+                        { text: '', isCorrect: false },
                         { text: '', isCorrect: false }
                     ],
                     explanation: {
@@ -454,17 +468,20 @@ export default function Questions() {
     };
 
     const handleOptionChange = (index, value) => {
-        const newOptions = [...formData.options];
-        newOptions[index].text = value;
-        setFormData(prev => ({ ...prev, options: newOptions }));
+        setFormData(prev => ({
+            ...prev,
+            options: prev.options.map((opt, i) => i === index ? { ...opt, text: value } : opt)
+        }));
     };
 
     const setCorrectOption = (index) => {
-        const newOptions = formData.options.map((opt, i) => ({
-            ...opt,
-            isCorrect: i === index
+        setFormData(prev => ({
+            ...prev,
+            options: prev.options.map((opt, i) => ({
+                ...opt,
+                isCorrect: i === index
+            }))
         }));
-        setFormData(prev => ({ ...prev, options: newOptions }));
     };
 
     const addOption = () => {
@@ -484,6 +501,23 @@ export default function Questions() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validation
+        if (!formData.text || !formData.text.trim()) {
+            return alert('Please enter question text');
+        }
+        if (!formData.options || formData.options.length < 2) {
+            return alert('Please provide at least 2 options');
+        }
+        const hasEmptyOption = formData.options.some(o => !o.text || !o.text.trim());
+        if (hasEmptyOption) {
+            return alert('Please fill in all option texts');
+        }
+        const hasCorrectOption = formData.options.some(o => o.isCorrect);
+        if (!hasCorrectOption) {
+            return alert('Please select a correct option');
+        }
+
         setSaving(true);
         try {
             let finalImageUrl = formData.image;
@@ -498,7 +532,16 @@ export default function Questions() {
 
             const payload = {
                 ...formData,
-                image: finalImageUrl || null
+                text: formData.text.trim(),
+                specialtyId: formData.specialtyId ? parseInt(formData.specialtyId) : null,
+                topicId: (formData.topicId && formData.topicId !== '' && formData.topicId !== 'none') ? parseInt(formData.topicId) : null,
+                image: finalImageUrl || null,
+                options: formData.options.map((opt, idx) => ({
+                    ...(opt.id ? { id: opt.id } : {}),
+                    order: String.fromCharCode(65 + idx),
+                    text: (opt.text || '').trim(),
+                    isCorrect: Boolean(opt.isCorrect)
+                }))
             };
 
             if (editingId) {

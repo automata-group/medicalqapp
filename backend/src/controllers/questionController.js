@@ -207,6 +207,10 @@ exports.getNextQuestion = async (req, res, next) => {
                     { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
                     { model: Specialty, as: 'specialty', attributes: ['name'] },
                     { model: Topic, as: 'topic', attributes: ['name'] }
+                ],
+                order: [
+                    [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                    [{ model: Option, as: 'options' }, 'id', 'ASC']
                 ]
             });
 
@@ -217,6 +221,10 @@ exports.getNextQuestion = async (req, res, next) => {
                         { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
                         { model: Specialty, as: 'specialty', attributes: ['name'] },
                         { model: Topic, as: 'topic', attributes: ['name'] }
+                    ],
+                    order: [
+                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                        [{ model: Option, as: 'options' }, 'id', 'ASC']
                     ]
                 });
             }
@@ -239,13 +247,21 @@ exports.getNextQuestion = async (req, res, next) => {
                         { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
                         { model: Specialty, as: 'specialty', attributes: ['name'] },
                         { model: Topic, as: 'topic', attributes: ['name'] }
+                    ],
+                    order: [
+                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                        [{ model: Option, as: 'options' }, 'id', 'ASC']
                     ]
                 });
             } else {
                 // Fetch the next question sequentially by ID
                 question = await Question.findOne({
                     where: whereClause,
-                    order: [['id', 'ASC']],
+                    order: [
+                        ['id', 'ASC'],
+                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                        [{ model: Option, as: 'options' }, 'id', 'ASC']
+                    ],
                     include: [
                         { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
                         { model: Specialty, as: 'specialty', attributes: ['name'] },

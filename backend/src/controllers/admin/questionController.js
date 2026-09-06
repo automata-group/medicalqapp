@@ -84,6 +84,10 @@ exports.getQuestion = async (req, res, next) => {
                 { model: Explanation, as: 'explanation' },
                 { model: Specialty, as: 'specialty' },
                 { model: Topic, as: 'topic' }
+            ],
+            order: [
+                [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                [{ model: Option, as: 'options' }, 'id', 'ASC']
             ]
         });
 
@@ -120,36 +124,46 @@ exports.uploadQuestionImage = async (req, res, next) => {
 // @route   POST /api/v1/admin/questions
 // @access  Private (Admin)
 exports.createQuestion = async (req, res, next) => {
+    const t = await sequelize.transaction();
     try {
         const { text, specialtyId, topicId, difficulty, isPremium, options, explanation, image } = req.body;
 
+        const safeSpecialtyId = specialtyId ? parseInt(specialtyId) : null;
+        const safeTopicId = (topicId && topicId !== '' && topicId !== 'none') ? parseInt(topicId) : null;
+
         const question = await Question.create({
             text,
-            specialtyId,
-            topicId,
-            difficulty,
+            specialtyId: safeSpecialtyId,
+            topicId: safeTopicId,
+            difficulty: difficulty || 'medium',
             image: image || null,
             isPremium: isPremium || false,
             isActive: true
-        });
+        }, { transaction: t });
 
-        if (options && options.length > 0) {
-            await Promise.all(options.map((opt, index) => {
-                return Option.create({
+        if (options && Array.isArray(options) && options.length > 0) {
+            for (let index = 0; index < options.length; index++) {
+                const opt = options[index];
+                const optText = typeof opt.text === 'string' ? opt.text.trim() : (opt.text || '');
+                await Option.create({
                     questionId: question.id,
-                    text: opt.text,
-                    isCorrect: opt.isCorrect,
+                    text: optText,
+                    isCorrect: Boolean(opt.isCorrect),
                     order: String.fromCharCode(65 + index) // A, B, C...
-                });
-            }));
+                }, { transaction: t });
+            }
         }
 
         if (explanation) {
-            await Explanation.create({
-                questionId: question.id,
-                text: explanation.text,
-                references: explanation.references
-            });
+            const expText = typeof explanation === 'string' ? explanation.trim() : (explanation.text || '').trim();
+            const expRefs = typeof explanation === 'object' ? (explanation.references || '') : '';
+            if (expText) {
+                await Explanation.create({
+                    questionId: question.id,
+                    text: expText,
+                    references: expRefs
+                }, { transaction: t });
+            }
         }
 
         // Log
@@ -158,11 +172,27 @@ exports.createQuestion = async (req, res, next) => {
             action: 'CREATE_QUESTION',
             targetResource: `Question:${question.id}`,
             ipAddress: req.ip
+        }, { transaction: t });
+
+        await t.commit();
+
+        const createdQuestion = await Question.findByPk(question.id, {
+            include: [
+                { model: Option, as: 'options' },
+                { model: Explanation, as: 'explanation' },
+                { model: Specialty, as: 'specialty' },
+                { model: Topic, as: 'topic' }
+            ],
+            order: [
+                [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                [{ model: Option, as: 'options' }, 'id', 'ASC']
+            ]
         });
 
-        res.status(201).json({ success: true, data: question });
+        res.status(201).json({ success: true, data: createdQuestion });
 
     } catch (error) {
+        await t.rollback();
         next(error);
     }
 };
@@ -171,56 +201,121 @@ exports.createQuestion = async (req, res, next) => {
 // @route   PUT /api/v1/admin/questions/:id
 // @access  Private (Admin)
 exports.updateQuestion = async (req, res, next) => {
+    const t = await sequelize.transaction();
     try {
         const { text, specialtyId, topicId, difficulty, isPremium, isActive, options, explanation, image } = req.body;
 
-        let question = await Question.findByPk(req.params.id);
+        let question = await Question.findByPk(req.params.id, {
+            include: [{ model: Option, as: 'options' }],
+            order: [
+                [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                [{ model: Option, as: 'options' }, 'id', 'ASC']
+            ],
+            transaction: t
+        });
 
         if (!question) {
+            await t.rollback();
             return res.status(404).json({ success: false, message: 'Question not found' });
         }
 
+        // Safely parse IDs (avoid MySQL strict empty-string error)
+        const safeSpecialtyId = specialtyId !== undefined
+            ? (specialtyId ? parseInt(specialtyId) : null)
+            : question.specialtyId;
+        const safeTopicId = topicId !== undefined
+            ? ((topicId && topicId !== '' && topicId !== 'none') ? parseInt(topicId) : null)
+            : question.topicId;
+
         // Update fields
         const updateData = {
-            text: text || question.text,
-            specialtyId: specialtyId !== undefined ? specialtyId : question.specialtyId,
-            topicId: topicId !== undefined ? topicId : question.topicId,
+            text: text !== undefined ? text : question.text,
+            specialtyId: safeSpecialtyId,
+            topicId: safeTopicId,
             difficulty: difficulty || question.difficulty,
-            isPremium: isPremium !== undefined ? isPremium : question.isPremium,
-            isActive: isActive !== undefined ? isActive : question.isActive
+            isPremium: isPremium !== undefined ? Boolean(isPremium) : question.isPremium,
+            isActive: isActive !== undefined ? Boolean(isActive) : question.isActive
         };
 
         if (image !== undefined) {
             updateData.image = image || null;
         }
 
-        question = await question.update(updateData);
+        await question.update(updateData, { transaction: t });
 
-        // Update Options (Replace Strategy for simplicity)
-        if (options && options.length > 0) {
-            await Option.destroy({ where: { questionId: question.id } });
-            await Promise.all(options.map((opt, index) => {
-                return Option.create({
-                    questionId: question.id,
-                    text: opt.text,
-                    isCorrect: opt.isCorrect,
-                    order: String.fromCharCode(65 + index)
+        // Update Options (Smart In-Place Strategy: PRESERVES Option IDs, foreign keys & student attempts)
+        if (options && Array.isArray(options) && options.length > 0) {
+            const existingOptions = question.options || [];
+            const existingById = new Map(existingOptions.map(o => [o.id, o]));
+            const retainedIds = new Set();
+
+            for (let index = 0; index < options.length; index++) {
+                const opt = options[index];
+                const orderChar = String.fromCharCode(65 + index); // 'A', 'B', 'C', 'D'
+                const optText = typeof opt.text === 'string' ? opt.text.trim() : (opt.text || '');
+                const optIsCorrect = Boolean(opt.isCorrect);
+
+                let existingOpt = null;
+                if (opt.id && existingById.has(parseInt(opt.id))) {
+                    existingOpt = existingById.get(parseInt(opt.id));
+                } else if (!opt.id && existingOptions[index] && !retainedIds.has(existingOptions[index].id)) {
+                    // Fallback match by index if ID was not supplied by caller
+                    existingOpt = existingOptions[index];
+                }
+
+                if (existingOpt) {
+                    // Update existing option in place! Preserves option.id so user answers never break
+                    await existingOpt.update({
+                        text: optText,
+                        isCorrect: optIsCorrect,
+                        order: orderChar
+                    }, { transaction: t });
+                    retainedIds.add(existingOpt.id);
+                } else {
+                    // Create new option (if admin added a new option beyond original count)
+                    const newOpt = await Option.create({
+                        questionId: question.id,
+                        text: optText,
+                        isCorrect: optIsCorrect,
+                        order: orderChar
+                    }, { transaction: t });
+                    retainedIds.add(newOpt.id);
+                }
+            }
+
+            // Remove only options explicitly deleted by the admin in the UI
+            const toDeleteIds = existingOptions
+                .map(o => o.id)
+                .filter(id => !retainedIds.has(id));
+
+            if (toDeleteIds.length > 0) {
+                await Option.destroy({
+                    where: { id: { [Op.in]: toDeleteIds } },
+                    transaction: t
                 });
-            }));
+            }
         }
 
         // Update Explanation
         if (explanation) {
-            const expParams = {
-                questionId: question.id,
-                text: explanation.text,
-                references: explanation.references
-            };
-            const existingExp = await Explanation.findOne({ where: { questionId: question.id } });
+            const expText = typeof explanation === 'string' ? explanation.trim() : (explanation.text || '').trim();
+            const expRefs = typeof explanation === 'object' ? (explanation.references || '') : '';
+            const existingExp = await Explanation.findOne({
+                where: { questionId: question.id },
+                transaction: t
+            });
+
             if (existingExp) {
-                await existingExp.update(expParams);
-            } else {
-                await Explanation.create(expParams);
+                await existingExp.update({
+                    text: expText || existingExp.text,
+                    references: expRefs
+                }, { transaction: t });
+            } else if (expText) {
+                await Explanation.create({
+                    questionId: question.id,
+                    text: expText,
+                    references: expRefs
+                }, { transaction: t });
             }
         }
 
@@ -230,11 +325,28 @@ exports.updateQuestion = async (req, res, next) => {
             action: 'UPDATE_QUESTION',
             targetResource: `Question:${question.id}`,
             ipAddress: req.ip
+        }, { transaction: t });
+
+        await t.commit();
+
+        // Fetch fresh question with ordered options to return to caller
+        const updatedQuestion = await Question.findByPk(question.id, {
+            include: [
+                { model: Option, as: 'options' },
+                { model: Explanation, as: 'explanation' },
+                { model: Specialty, as: 'specialty' },
+                { model: Topic, as: 'topic' }
+            ],
+            order: [
+                [{ model: Option, as: 'options' }, 'order', 'ASC'],
+                [{ model: Option, as: 'options' }, 'id', 'ASC']
+            ]
         });
 
-        res.status(200).json({ success: true, data: question });
+        res.status(200).json({ success: true, data: updatedQuestion });
 
     } catch (error) {
+        await t.rollback();
         next(error);
     }
 };
