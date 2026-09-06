@@ -282,9 +282,9 @@ class _ExamScreenState extends State<ExamScreen> {
     final question = provider.currentQuestion;
     final isAnswerSubmitted = _isAnswerChecked || provider.isCurrentAnswerChecked;
     final activeAnswerIndex = _selectedAnswerIndex ?? provider.selectedAnswerIndex;
+    final l10n = AppLocalizations.of(context)!;
 
     if (provider.status == QuestionStatus.loading || provider.status == QuestionStatus.initial) {
-      final l10n = AppLocalizations.of(context)!;
       return Scaffold(
         body: Center(
           child: Column(
@@ -345,65 +345,181 @@ class _ExamScreenState extends State<ExamScreen> {
         });
       }
 
-      final l10n = AppLocalizations.of(context)!;
       final isSpecialty = widget.specialtyId != null || widget.subTopic != null;
       final quotaTitle = isSpecialty
           ? l10n.specialtyLimitReached
           : l10n.questionBankLimitReached;
 
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: const Color(0xFF0F172A),
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0,
-          foregroundColor: Colors.black,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.lock, size: 80, color: Colors.orange),
-                const SizedBox(height: 24),
-                Text(
-                  quotaTitle,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 460),
+                padding: const EdgeInsets.all(28.0),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                      blurRadius: 30,
+                      spreadRadius: 2,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  l10n.upgradeToProPrompt,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const PricingScreen()));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Glowing crown badge
+                    Container(
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          colors: [
+                            const Color(0xFFF59E0B).withValues(alpha: 0.25),
+                            const Color(0xFFD97706).withValues(alpha: 0.08),
+                          ],
+                        ),
+                        border: Border.all(
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.6),
+                          width: 2,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.workspace_premium_rounded,
+                        size: 48,
+                        color: Color(0xFFF59E0B),
                       ),
                     ),
-                    child: Text(
-                      l10n.upgradeToProBtn,
-                      style: const TextStyle(
-                          fontSize: 16,
+                    const SizedBox(height: 20),
+
+                    // Pill Badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+                      ),
+                      child: Text(
+                        l10n.proMembership,
+                        style: const TextStyle(
+                          color: Color(0xFFFBBF24),
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                          letterSpacing: 1.0,
+                        ),
+                      ),
                     ),
-                  ),
-                )
-              ],
+                    const SizedBox(height: 16),
+
+                    Text(
+                      quotaTitle,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        height: 1.3,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      l10n.upgradeToProPrompt,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue.shade100.withValues(alpha: 0.8),
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Feature highlights list
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.05),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                      ),
+                      child: Column(
+                        children: [
+                          _buildProFeatureRow(l10n.tagQuestionsCount),
+                          const Divider(color: Colors.white12, height: 16),
+                          _buildProFeatureRow(l10n.tagSmartExplanations),
+                          const Divider(color: Colors.white12, height: 16),
+                          _buildProFeatureRow(l10n.tagExamSimulation),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 28),
+
+                    // Upgrade Button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const PricingScreen()),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF2563EB),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          elevation: 6,
+                          shadowColor: const Color(0xFF2563EB).withValues(alpha: 0.5),
+                        ),
+                        child: Text(
+                          l10n.upgradeToProBtn,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        l10n.backToHome,
+                        style: TextStyle(
+                          color: Colors.grey.shade400,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -411,7 +527,6 @@ class _ExamScreenState extends State<ExamScreen> {
     }
 
     if (provider.status == QuestionStatus.error) {
-      final l10n = AppLocalizations.of(context)!;
       return Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
@@ -427,13 +542,13 @@ class _ExamScreenState extends State<ExamScreen> {
               children: [
                 const Icon(Icons.error_outline, size: 64, color: Colors.red),
                 const SizedBox(height: 16),
-                const Text(
-                  'Failed to load the question',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                Text(
+                  l10n.failedToLoadQuestion,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  provider.errorMessage ?? 'Please check your connection and try again.',
+                  provider.errorMessage ?? l10n.checkConnectionPrompt,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
@@ -444,7 +559,7 @@ class _ExamScreenState extends State<ExamScreen> {
                     ElevatedButton.icon(
                       onPressed: _loadNextQuestion,
                       icon: const Icon(Icons.refresh),
-                      label: const Text('Retry'),
+                      label: Text(l10n.retry),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
@@ -724,7 +839,7 @@ class _ExamScreenState extends State<ExamScreen> {
                                 _showExplanationSheet(provider.answerResult!.isCorrect);
                               },
                               icon: const Icon(Icons.lightbulb_outline, color: AppColors.primary),
-                              label: const Text('View Explanation', style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                              label: Text(l10n.viewExplanation, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(vertical: 14),
                                 side: const BorderSide(color: AppColors.primary),
@@ -737,7 +852,7 @@ class _ExamScreenState extends State<ExamScreen> {
                             child: ElevatedButton.icon(
                               onPressed: _loadNextQuestion,
                               icon: const Icon(Icons.arrow_forward),
-                              label: const Text('Next Question', style: TextStyle(fontWeight: FontWeight.bold)),
+                              label: Text(l10n.nextQuestion, style: const TextStyle(fontWeight: FontWeight.bold)),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppColors.primary,
                                 foregroundColor: Colors.white,
@@ -812,5 +927,24 @@ class _ExamScreenState extends State<ExamScreen> {
     final total = _getTotalQuestions(provider);
     if (total == 0) return 0;
     return (provider.currentQuestionIndex + 1) / total;
+  }
+
+  Widget _buildProFeatureRow(String text) {
+    return Row(
+      children: [
+        const Icon(Icons.check_circle_rounded, color: Color(0xFF10B981), size: 18),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Text(
+            text,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

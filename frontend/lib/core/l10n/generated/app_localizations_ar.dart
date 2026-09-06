@@ -833,4 +833,32 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get upgradeToProBtn => 'الترقية إلى باقة PRO 👑';
+
+  @override
+  String get failedToLoadQuestion => 'فشل تحميل السؤال';
+
+  @override
+  String get checkConnectionPrompt =>
+      'يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get viewExplanation => 'عرض الشرح';
+
+  @override
+  String get nextQuestion => 'السؤال التالي';
+
+  @override
+  String get proMembership => 'عضوية PRO';
+
+  @override
+  String get tagQuestionsCount => '🎯 +4,700 سؤال';
+
+  @override
+  String get tagSmartExplanations => '🤖 شروحات ذكية';
+
+  @override
+  String get tagExamSimulation => '⏱️ محاكاة الهيئة';
 }

@@ -368,5 +368,14 @@
   "questionBankLimitReached": "You have reached the free limit for Question Bank (30 questions)",
   "specialtyLimitReached": "You have reached your free limit of 15 questions for this specialty",
   "upgradeToProPrompt": "Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.",
-  "upgradeToProBtn": "Upgrade to PRO 👑"
+  "upgradeToProBtn": "Upgrade to PRO 👑",
+  "failedToLoadQuestion": "Failed to load the question",
+  "checkConnectionPrompt": "Please check your connection and try again.",
+  "retry": "Retry",
+  "viewExplanation": "View Explanation",
+  "nextQuestion": "Next Question",
+  "proMembership": "PRO MEMBERSHIP",
+  "tagQuestionsCount": "🎯 4,700+ Questions",
+  "tagSmartExplanations": "🤖 AI Explanations",
+  "tagExamSimulation": "⏱️ Board Exam Simulation"
 }

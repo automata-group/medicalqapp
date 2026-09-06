@@ -137,6 +137,7 @@ class QuestionProvider with ChangeNotifier {
   String? _currentSessionType;
 
   void resetSession() {
+    _status = QuestionStatus.loading;
     _history.clear();
     _historyIndex = -1;
     _sessionAttemptedIds.clear();
@@ -161,6 +162,8 @@ class QuestionProvider with ChangeNotifier {
   }
 
   void clearCurrentQuestion() {
+    _status = QuestionStatus.loading;
+    _errorMessage = null;
     _currentQuestion = null;
     _answerResult = null;
     _selectedOptionId = null;

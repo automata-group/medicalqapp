@@ -362,15 +362,15 @@ class _PricingScreenState extends State<PricingScreen>
                           ),
                         ],
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.workspace_premium_rounded,
+                          const Icon(Icons.workspace_premium_rounded,
                               size: 16, color: Colors.white),
-                          SizedBox(width: 6),
+                          const SizedBox(width: 6),
                           Text(
-                            'PRO MEMBERSHIP',
-                            style: TextStyle(
+                            l10n.proMembership,
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
@@ -406,14 +406,14 @@ class _PricingScreenState extends State<PricingScreen>
                   ),
                   const SizedBox(height: 16),
                   // Quick stats pill row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
-                      _buildHeaderTag('🎯 +4,700 سؤال'),
-                      const SizedBox(width: 8),
-                      _buildHeaderTag('🤖 شروحات ذكية'),
-                      const SizedBox(width: 8),
-                      _buildHeaderTag('⏱️ محاكاة الهيئة'),
+                      _buildHeaderTag(l10n.tagQuestionsCount),
+                      _buildHeaderTag(l10n.tagSmartExplanations),
+                      _buildHeaderTag(l10n.tagExamSimulation),
                     ],
                   ),
                 ],

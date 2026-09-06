@@ -369,21 +369,21 @@ exports.submitAnswer = async (req, res, next) => {
                             code: 'QUOTA_EXCEEDED'
                         });
                     }
-                }
-
-                // Check 2: 30 questions limit for general Question Bank
-                const totalBankAttempts = await QuestionAttempt.count({
-                    where: { userId: req.user.id },
-                    distinct: true,
-                    col: 'questionId'
-                });
-
-                if (totalBankAttempts >= 30) {
-                    return res.status(403).json({
-                        success: false,
-                        message: 'لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً). يرجى الترقية إلى باقة PRO للمتابعة.',
-                        code: 'QUOTA_EXCEEDED'
+                } else {
+                    // Check 2: 30 questions limit for general Question Bank (without specialty)
+                    const totalBankAttempts = await QuestionAttempt.count({
+                        where: { userId: req.user.id },
+                        distinct: true,
+                        col: 'questionId'
                     });
+
+                    if (totalBankAttempts >= 30) {
+                        return res.status(403).json({
+                            success: false,
+                            message: 'لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً). يرجى الترقية إلى باقة PRO للمتابعة.',
+                            code: 'QUOTA_EXCEEDED'
+                        });
+                    }
                 }
             }
         }

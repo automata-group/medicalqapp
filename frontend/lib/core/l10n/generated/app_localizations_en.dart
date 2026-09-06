@@ -839,4 +839,32 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get upgradeToProBtn => 'Upgrade to PRO 👑';
+
+  @override
+  String get failedToLoadQuestion => 'Failed to load the question';
+
+  @override
+  String get checkConnectionPrompt =>
+      'Please check your connection and try again.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get viewExplanation => 'View Explanation';
+
+  @override
+  String get nextQuestion => 'Next Question';
+
+  @override
+  String get proMembership => 'PRO MEMBERSHIP';
+
+  @override
+  String get tagQuestionsCount => '🎯 4,700+ Questions';
+
+  @override
+  String get tagSmartExplanations => '🤖 AI Explanations';
+
+  @override
+  String get tagExamSimulation => '⏱️ Board Exam Simulation';
 }

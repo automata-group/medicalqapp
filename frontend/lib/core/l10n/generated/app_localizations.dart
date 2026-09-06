@@ -1615,6 +1615,60 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Upgrade to PRO 👑'**
   String get upgradeToProBtn;
+
+  /// No description provided for @failedToLoadQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load the question'**
+  String get failedToLoadQuestion;
+
+  /// No description provided for @checkConnectionPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Please check your connection and try again.'**
+  String get checkConnectionPrompt;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @viewExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'View Explanation'**
+  String get viewExplanation;
+
+  /// No description provided for @nextQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Next Question'**
+  String get nextQuestion;
+
+  /// No description provided for @proMembership.
+  ///
+  /// In en, this message translates to:
+  /// **'PRO MEMBERSHIP'**
+  String get proMembership;
+
+  /// No description provided for @tagQuestionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'🎯 4,700+ Questions'**
+  String get tagQuestionsCount;
+
+  /// No description provided for @tagSmartExplanations.
+  ///
+  /// In en, this message translates to:
+  /// **'🤖 AI Explanations'**
+  String get tagSmartExplanations;
+
+  /// No description provided for @tagExamSimulation.
+  ///
+  /// In en, this message translates to:
+  /// **'⏱️ Board Exam Simulation'**
+  String get tagExamSimulation;
 }
 
 class _AppLocalizationsDelegate

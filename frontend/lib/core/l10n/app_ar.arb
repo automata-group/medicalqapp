@@ -333,5 +333,14 @@
   "questionBankLimitReached": "لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً)",
   "specialtyLimitReached": "لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص",
   "upgradeToProPrompt": "قم بالترقية إلى باقة PRO لفتح جميع الأسئلة بلا حدود، والشروحات الذكية، والامتحانات التجريبية.",
-  "upgradeToProBtn": "الترقية إلى باقة PRO 👑"
+  "upgradeToProBtn": "الترقية إلى باقة PRO 👑",
+  "failedToLoadQuestion": "فشل تحميل السؤال",
+  "checkConnectionPrompt": "يرجى التحقق من اتصالك بالإنترنت والمحاولة مجدداً.",
+  "retry": "إعادة المحاولة",
+  "viewExplanation": "عرض الشرح",
+  "nextQuestion": "السؤال التالي",
+  "proMembership": "عضوية PRO",
+  "tagQuestionsCount": "🎯 +4,700 سؤال",
+  "tagSmartExplanations": "🤖 شروحات ذكية",
+  "tagExamSimulation": "⏱️ محاكاة الهيئة"
 }
