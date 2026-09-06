@@ -236,7 +236,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get oralMedicine => 'طب وأمراض الفم';
 
   @override
-  String get dentalEthics => 'أخلاقيات طب الأسنان';
+  String get dentalEthics => 'أخلاقيات طب الأسنان والمهنية';
 
   @override
   String hoursAgo(Object count, Object phase) {

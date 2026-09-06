@@ -539,7 +539,7 @@ abstract class AppLocalizations {
   /// No description provided for @dentalEthics.
   ///
   /// In en, this message translates to:
-  /// **'Dental Ethics'**
+  /// **'Dental Ethics & Professionalism'**
   String get dentalEthics;
 
   /// No description provided for @hoursAgo.

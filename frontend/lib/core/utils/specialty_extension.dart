@@ -46,6 +46,8 @@ String getSpecialtyLocalizedName(String name, AppLocalizations l10n) {
     case 'Oral Medicine':
       return l10n.oralMedicine;
     case 'Dental Ethics':
+    case 'dental ethics & professionalism':
+    case 'Dental Ethics & Professionalism':
       return l10n.dentalEthics;
     default:
       return cleanName;

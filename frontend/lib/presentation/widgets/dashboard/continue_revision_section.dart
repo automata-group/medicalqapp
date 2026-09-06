@@ -250,6 +250,8 @@ class ContinueRevisionSection extends StatelessWidget {
       case 'Oral Medicine & Pathology':
         return l10n.oralMedicine;
       case 'Dental Ethics':
+      case 'dental ethics & professionalism':
+      case 'Dental Ethics & Professionalism':
         return l10n.dentalEthics;
       default:
         return name;
