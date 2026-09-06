@@ -1,5 +1,21 @@
 import 'package:equatable/equatable.dart';
 
+String cleanTextEncoding(String input) {
+  if (!input.contains('â') && !input.contains('Â')) return input;
+  return input
+      .replaceAll('â€“', ' - ')
+      .replaceAll('â€”', ' - ')
+      .replaceAll('â€™', "'")
+      .replaceAll('â€˜', "'")
+      .replaceAll('â€œ', '"')
+      .replaceAll('â€\x9d', '"')
+      .replaceAll('â€ ', '"')
+      .replaceAll('â€¢', '•')
+      .replaceAll('Â', '')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+}
+
 class QuestionModel extends Equatable {
   final int id;
   final String text;
@@ -28,7 +44,7 @@ class QuestionModel extends Equatable {
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
     return QuestionModel(
       id: json['id'],
-      text: json['text'] ?? '',
+      text: cleanTextEncoding(json['text'] ?? ''),
       difficulty: json['difficulty'] ?? 'easy',
       specialty: json['specialty']?['name'],
       topic: json['topic']?['name'] ?? json['subTopic'],
@@ -98,7 +114,7 @@ class OptionModel extends Equatable {
   factory OptionModel.fromJson(Map<String, dynamic> json) {
     return OptionModel(
       id: json['id'],
-      text: json['text'] ?? '',
+      text: cleanTextEncoding(json['text'] ?? ''),
       order: json['order']?.toString() ?? '0',
     );
   }
@@ -145,8 +161,10 @@ class AnswerResponseModel extends Equatable {
       isCorrect: json['isCorrect'] == true,
       correctOptionId: (json['correctOptionId'] as num?)?.toInt() ?? -1,
       explanation: json['explanation'] is String
-          ? json['explanation']
-          : (json['explanation'] is Map ? json['explanation']['text'] : null),
+          ? cleanTextEncoding(json['explanation'])
+          : (json['explanation'] is Map
+              ? cleanTextEncoding(json['explanation']['text']?.toString() ?? '')
+              : null),
       stats: json['stats'] is Map<String, dynamic>
           ? QuestionStatsModel.fromJson(json['stats'])
           : null,
