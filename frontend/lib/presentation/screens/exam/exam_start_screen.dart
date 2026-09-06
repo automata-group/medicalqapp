@@ -100,6 +100,8 @@ class _ExamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final user = context.watch<AuthProvider>().user;
+    final isPremium = user?.isPremium ?? false;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -130,38 +132,21 @@ class _ExamCard extends StatelessWidget {
                   ),
                 ),
               ),
-              if (exam.isPremium)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Text(
-                    'PRO',
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                )
-              else
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    l10n.free,
-                    style: const TextStyle(
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold,
-                    ),
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.blue.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  'PRO',
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
             ],
           ),
           const SizedBox(height: 8),
@@ -191,13 +176,10 @@ class _ExamCard extends StatelessWidget {
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: ElevatedButton.icon(
               onPressed: () {
-                final user = context.read<AuthProvider>().user;
-                final isPremium = user?.isPremium ?? false;
-
-                // Only lock if the exam is premium and the user is not
-                if (exam.isPremium && !isPremium) {
+                // Free accounts cannot take mock exams
+                if (!isPremium) {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -214,18 +196,22 @@ class _ExamCard extends StatelessWidget {
                   );
                 }
               },
+              icon: isPremium
+                  ? const SizedBox.shrink()
+                  : const Icon(Icons.lock, size: 18),
+              label: Text(
+                isPremium ? l10n.startExam : '${l10n.startExam} (PRO)',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor:
+                    isPremium ? AppColors.primary : Colors.orange,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
                 elevation: 0,
-              ),
-              child: Text(
-                l10n.startExam,
-                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ),

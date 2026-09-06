@@ -4,13 +4,13 @@ const { protect, subscription } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.post('/start', protect, subscription({ allowFreePreview: true }), startMockExam);
+router.post('/start', protect, subscription(), startMockExam);
 router.get('/', protect, subscription({ allowFreePreview: true }), getMockExams); // List all exams
 router.get('/history', protect, getMockExamHistory); // Must be before parameters
-router.get('/:id', protect, subscription({ allowFreePreview: true }), getMockExam);
+router.get('/:id', protect, subscription(), getMockExam);
 router.post('/:attemptId/complete', protect, completeMockExam);
-router.get('/:attemptId/sections/:sectionId', protect, getSectionQuestions);
-router.post('/:attemptId/answer', protect, submitAnswer);
-router.get('/:attemptId/review', protect, reviewMockExam);
+router.get('/:attemptId/sections/:sectionId', protect, subscription(), getSectionQuestions);
+router.post('/:attemptId/answer', protect, subscription(), submitAnswer);
+router.get('/:attemptId/review', protect, subscription(), reviewMockExam);
 
 module.exports = router;

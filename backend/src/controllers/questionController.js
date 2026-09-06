@@ -10,12 +10,60 @@ exports.getNextQuestion = async (req, res, next) => {
 
         const whereClause = { isActive: true };
 
+        let effectiveSpecialtyId = specialtyId ? parseInt(specialtyId) : null;
+
         if (specialtyId) {
             whereClause.specialtyId = specialtyId;
+        }
 
-            if (!req.isPremium) {
+        if (topicId) {
+            const topic = await Topic.findByPk(topicId);
+            // ─── Block free users from premium topics ───────────────
+            if (!req.isPremium && topic && topic.isPremium) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
+                    code: 'PREMIUM_TOPIC_LOCKED'
+                });
+            }
+            if (!effectiveSpecialtyId && topic && topic.specialtyId) {
+                effectiveSpecialtyId = topic.specialtyId;
+            }
+            whereClause.topicId = topicId;
+        } else if (subTopic) {
+            // Find topic by name first to support migrated relational models
+            const topic = await Topic.findOne({ where: { name: subTopic } });
+            if (topic) {
+                // Block free users from premium topics
+                if (!req.isPremium && topic.isPremium) {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
+                        code: 'PREMIUM_TOPIC_LOCKED'
+                    });
+                }
+                if (!effectiveSpecialtyId && topic.specialtyId) {
+                    effectiveSpecialtyId = topic.specialtyId;
+                }
+                whereClause[Op.or] = [
+                    { subTopic: subTopic },
+                    { topicId: topic.id }
+                ];
+            } else {
+                whereClause.subTopic = subTopic;
+            }
+        } else if (id && !effectiveSpecialtyId) {
+            const q = await Question.findByPk(id, { attributes: ['id', 'specialtyId'] });
+            if (q && q.specialtyId) {
+                effectiveSpecialtyId = q.specialtyId;
+            }
+        }
+
+        // ─── Free accounts: maximum 15 questions per specialty ────────
+        if (!req.isPremium) {
+            if (effectiveSpecialtyId) {
                 const specialtyQuestions = await Question.findAll({
-                    where: { specialtyId },
+                    where: { specialtyId: effectiveSpecialtyId },
                     attributes: ['id']
                 });
                 const sqIds = specialtyQuestions.map(q => q.id);
@@ -32,44 +80,39 @@ exports.getNextQuestion = async (req, res, next) => {
                 if (attemptedCount >= 15) {
                     return res.status(403).json({
                         success: false,
-                        message: 'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص.',
+                        message: 'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص. يرجى الترقية إلى باقة PRO للمتابعة.',
                         code: 'QUOTA_EXCEEDED'
                     });
                 }
-            }
-        }
-
-        if (topicId) {
-            // ─── Block free users from premium topics ───────────────
-            if (!req.isPremium) {
-                const topic = await Topic.findByPk(topicId);
-                if (topic && topic.isPremium) {
-                    return res.status(403).json({
-                        success: false,
-                        message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
-                        code: 'PREMIUM_TOPIC_LOCKED'
-                    });
-                }
-            }
-            whereClause.topicId = topicId;
-        } else if (subTopic) {
-            // Find topic by name first to support migrated relational models
-            const topic = await Topic.findOne({ where: { name: subTopic } });
-            if (topic) {
-                // Block free users from premium topics
-                if (!req.isPremium && topic.isPremium) {
-                    return res.status(403).json({
-                        success: false,
-                        message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
-                        code: 'PREMIUM_TOPIC_LOCKED'
-                    });
-                }
-                whereClause[Op.or] = [
-                    { subTopic: subTopic },
-                    { topicId: topic.id }
-                ];
             } else {
-                whereClause.subTopic = subTopic;
+                // General practice without specialty filter:
+                // Exclude any specialty where the user has already answered 15 or more questions
+                const userAttempts = await QuestionAttempt.findAll({
+                    where: { userId: req.user.id },
+                    attributes: ['questionId'],
+                    include: [{
+                        model: Question,
+                        as: 'question',
+                        attributes: ['specialtyId'],
+                        where: { specialtyId: { [Op.ne]: null } }
+                    }]
+                });
+
+                const countMap = {};
+                for (const att of userAttempts) {
+                    if (att.question && att.question.specialtyId) {
+                        const sid = att.question.specialtyId;
+                        countMap[sid] = (countMap[sid] || 0) + 1;
+                    }
+                }
+
+                const maxedSpecialties = Object.keys(countMap)
+                    .filter(sid => countMap[sid] >= 15)
+                    .map(sid => parseInt(sid));
+
+                if (maxedSpecialties.length > 0) {
+                    whereClause.specialtyId = { [Op.notIn]: maxedSpecialties };
+                }
             }
         }
 
@@ -272,18 +315,45 @@ exports.submitAnswer = async (req, res, next) => {
             return res.status(404).json({ success: false, message: 'Question not found' });
         }
 
-        // ─── Block free users from answering premium topic questions ───
-        if (question.topic && question.topic.isPremium) {
-            const { Subscription } = require('../models');
-            const activeSub = await Subscription.findOne({
-                where: { userId: req.user.id, status: 'active' }
-            });
-            if (!activeSub || !activeSub.isValid()) {
+        // ─── Free accounts: block premium topics and enforce 15 questions per specialty ───
+        if (!req.isPremium) {
+            if (question.topic && question.topic.isPremium) {
                 return res.status(403).json({
                     success: false,
                     message: 'هذا السؤال مخصص لمشتركي PRO فقط.',
                     code: 'PREMIUM_TOPIC_LOCKED'
                 });
+            }
+
+            if (question.specialtyId) {
+                const existingAttempt = await QuestionAttempt.findOne({
+                    where: { userId: req.user.id, questionId }
+                });
+
+                if (!existingAttempt) {
+                    const specialtyQuestions = await Question.findAll({
+                        where: { specialtyId: question.specialtyId },
+                        attributes: ['id']
+                    });
+                    const sqIds = specialtyQuestions.map(q => q.id);
+
+                    const attemptedCount = await QuestionAttempt.count({
+                        where: {
+                            userId: req.user.id,
+                            questionId: { [Op.in]: sqIds }
+                        },
+                        distinct: true,
+                        col: 'questionId'
+                    });
+
+                    if (attemptedCount >= 15) {
+                        return res.status(403).json({
+                            success: false,
+                            message: 'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص. يرجى الترقية إلى باقة PRO للمتابعة.',
+                            code: 'QUOTA_EXCEEDED'
+                        });
+                    }
+                }
             }
         }
 

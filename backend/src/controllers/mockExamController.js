@@ -28,10 +28,10 @@ exports.startMockExam = async (req, res, next) => {
             }
         }
 
-        if (mockExam.isPremium && !req.isPremium) {
+        if (!req.isPremium) {
             return res.status(403).json({
                 success: false,
-                message: 'هذا الامتحان مخصص لمشتركي PRO فقط.',
+                message: 'الامتحانات التجريبية مخصصة لمشتركي باقة PRO فقط.',
                 code: 'PREMIUM_REQUIRED'
             });
         }
@@ -107,7 +107,11 @@ exports.getMockExams = async (req, res, next) => {
         res.status(200).json({
             success: true,
             count: mockExams.length,
-            data: mockExams
+            data: mockExams.map(exam => {
+                const examJson = exam.toJSON ? exam.toJSON() : { ...exam };
+                examJson.isPremium = true;
+                return examJson;
+            })
         });
     } catch (error) {
         next(error);
@@ -119,6 +123,13 @@ exports.getMockExams = async (req, res, next) => {
 // @access  Private
 exports.getMockExam = async (req, res, next) => {
     try {
+        if (!req.isPremium) {
+            return res.status(403).json({
+                success: false,
+                message: 'الامتحانات التجريبية مخصصة لمشتركي باقة PRO فقط.',
+                code: 'PREMIUM_REQUIRED'
+            });
+        }
         const mockExam = await MockExam.findByPk(req.params.id, {
             attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId'],
             include: [{ model: MockExamSection, as: 'sections', attributes: ['id', 'title', 'timeLimit', 'questionCount', 'sortOrder'] }]

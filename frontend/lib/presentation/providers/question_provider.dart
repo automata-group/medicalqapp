@@ -479,6 +479,9 @@ class QuestionProvider with ChangeNotifier {
     } catch (e) {
       _answerStatus = AnswerStatus.error;
       _errorMessage = e.toString();
+      if (e.toString().contains('QUOTA_EXCEEDED')) {
+        _status = QuestionStatus.error;
+      }
     }
     notifyListeners();
     saveCurrentSession();

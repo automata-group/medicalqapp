@@ -312,6 +312,7 @@ class _ExamScreenState extends State<ExamScreen> {
     if (provider.status == QuestionStatus.error &&
         provider.errorMessage != null &&
         provider.errorMessage!.contains('QUOTA_EXCEEDED')) {
+      final isAr = Localizations.localeOf(context).languageCode == 'ar';
       return Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
@@ -327,16 +328,20 @@ class _ExamScreenState extends State<ExamScreen> {
               children: [
                 const Icon(Icons.lock, size: 80, color: Colors.orange),
                 const SizedBox(height: 24),
-                const Text(
-                  'You have reached your free limit of 15 questions for this specialty.',
+                Text(
+                  isAr
+                      ? 'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص'
+                      : 'You have reached your free limit of 15 questions for this specialty.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.',
+                Text(
+                  isAr
+                      ? 'قم بالترقية إلى باقة PRO لفتح جميع الأسئلة بلا حدود، والشروحات الذكية، والامتحانات التجريبية.'
+                      : 'Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
                 const SizedBox(height: 32),
                 SizedBox(
@@ -355,11 +360,13 @@ class _ExamScreenState extends State<ExamScreen> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: const Text('Upgrade to PRO',
-                        style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white)),
+                    child: Text(
+                      isAr ? 'الترقية إلى PRO' : 'Upgrade to PRO',
+                      style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
                   ),
                 )
               ],

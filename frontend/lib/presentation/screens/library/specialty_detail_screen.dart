@@ -8,6 +8,8 @@ import '../../../domain/entities/specialty.dart';
 
 import '../exam/exam_screen.dart';
 import '../exam/exam_start_screen.dart';
+import '../subscription/pricing_screen.dart';
+import '../../providers/auth_provider.dart';
 import '../../../core/theme/app_colors.dart';
 
 class SpecialtyDetailScreen extends StatefulWidget {
@@ -146,6 +148,16 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                     height: 56,
                     child: OutlinedButton(
                       onPressed: () {
+                        final user = context.read<AuthProvider>().user;
+                        final isPremium = user?.isPremium ?? false;
+                        if (!isPremium) {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => const PricingScreen(),
+                            ),
+                          );
+                          return;
+                        }
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (_) => ExamStartScreen(

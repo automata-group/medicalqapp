@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/practice/filters', protect, getPracticeFilters);
 router.get('/specialties/:id/topics', protect, subscription({ allowFreePreview: true }), getSpecialtyTopics);
 router.get('/practice/next', protect, subscription({ allowFreePreview: true }), getNextQuestion);
-router.post('/:id/answer', protect, submitAnswer);
+router.post('/:id/answer', protect, subscription({ allowFreePreview: true }), submitAnswer);
 router.post('/:id/bookmark', protect, bookmarkQuestion);
 router.post('/:id/report', protect, reportQuestion);
 

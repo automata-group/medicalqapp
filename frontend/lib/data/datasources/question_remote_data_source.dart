@@ -112,15 +112,23 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
       data['timeTaken'] = timeTaken;
     }
 
-    final response = await dioClient.post(
-      '/questions/$questionId/answer',
-      data: data,
-    );
+    try {
+      final response = await dioClient.post(
+        '/questions/$questionId/answer',
+        data: data,
+      );
 
-    if (response.data['success'] == true) {
-      return AnswerResponseModel.fromJson(response.data['data']);
-    } else {
-      throw Exception('Failed to submit answer');
+      if (response.data['success'] == true) {
+        return AnswerResponseModel.fromJson(response.data['data']);
+      } else {
+        throw Exception('Failed to submit answer');
+      }
+    } on DioException catch (e) {
+      if (e.response?.statusCode == 403 &&
+          e.response?.data['code'] == 'QUOTA_EXCEEDED') {
+        throw Exception('QUOTA_EXCEEDED');
+      }
+      rethrow;
     }
   }
 
