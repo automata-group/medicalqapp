@@ -10,8 +10,6 @@ import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import 'main_container_screen.dart';
 import 'admin/admin_scaffold.dart';
-import 'specialty_selection_screen.dart';
-import 'study_goal_screen.dart';
 
 
 class SplashScreen extends StatefulWidget {
@@ -84,23 +82,10 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (isAuthenticated) {
       final user = authProvider.user;
-      final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
-      final bool hasSelectedSpecialties = (user?.hasSpecialties ?? false) ||
-          (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
-      final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
-      final bool hasStudyPlan = (user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
 
       if (user?.role == 'admin') {
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const AdminScaffold()),
-        );
-      } else if (!hasSelectedSpecialties) {
-        navigator.pushReplacement(
-          MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
-        );
-      } else if (!hasStudyPlan) {
-        navigator.pushReplacement(
-          MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
         );
       } else {
         navigator.pushReplacement(

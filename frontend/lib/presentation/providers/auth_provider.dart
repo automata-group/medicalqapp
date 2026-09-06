@@ -138,10 +138,6 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     await prefs.remove('accessToken');
     await prefs.remove('cached_user');
-    await prefs.remove('cached_has_study_plan');
-    await prefs.remove('cached_exam_date');
-    await prefs.remove('cached_daily_hours');
-    await prefs.remove('cached_selected_specialty_ids');
     _isAuthenticated = false;
     _user = null;
     notifyListeners();

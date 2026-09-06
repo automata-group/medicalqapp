@@ -7,9 +7,7 @@ import '../../domain/entities/specialty.dart';
 
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/utils/toast_utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'main_container_screen.dart';
-import 'study_goal_screen.dart';
 import '../providers/auth_provider.dart';
 import 'subscription/pricing_screen.dart';
 import '../../core/utils/specialty_extension.dart';
@@ -27,7 +25,9 @@ class _SpecialtySelectionScreenState extends State<SpecialtySelectionScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<SpecialtyProvider>().loadSpecialties();
+      final provider = context.read<SpecialtyProvider>();
+      provider.loadSpecialties();
+      provider.loadUserSpecialties();
     });
   }
 
@@ -205,21 +205,14 @@ class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
                       if (!mounted) return;
                       if (success) {
                         auth.setHasSpecialties(true);
-                        final prefs = await SharedPreferences.getInstance();
-                        if (!mounted) return;
-                        final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
-                        final bool hasStudyPlan = (auth.user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
-                        if (hasStudyPlan) {
-                          navigator.pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (_) => const MainContainerScreen()),
-                            (route) => false,
-                          );
-                        } else {
-                          navigator.push(
-                            MaterialPageRoute(
-                                builder: (_) => const StudyGoalScreen()),
-                          );
+                        if (navigator.canPop()) {
+                          navigator.pop();
+                          return;
                         }
+                        navigator.pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+                          (route) => false,
+                        );
                       } else {
                         if (!context.mounted) return;
                         ToastUtils.showError(context,

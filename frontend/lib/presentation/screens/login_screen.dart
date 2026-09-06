@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/toast_utils.dart';
 import '../../presentation/providers/auth_provider.dart';
+import '../providers/dashboard_provider.dart';
+import '../providers/specialty_provider.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'register_screen.dart';
-import 'specialty_selection_screen.dart';
 import 'main_container_screen.dart';
-import 'study_goal_screen.dart';
 import 'forgot_password_screen.dart';
 import 'admin/admin_scaffold.dart';
 
@@ -58,31 +56,13 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (_) => const AdminScaffold()),
             );
           } else {
-            debugPrint('LOGIN DEBUG: Role is not admin, checking setup');
-            final prefs = await SharedPreferences.getInstance();
-            if (!mounted) return;
-            final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
-            final bool hasStudyPlan = (user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
-            final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
-            final bool hasSelectedSpecialties = (user?.hasSpecialties ?? false) ||
-                (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
+            debugPrint('LOGIN DEBUG: Role is not admin, navigating directly to MainContainerScreen');
+            context.read<DashboardProvider>().loadDashboardData();
+            context.read<SpecialtyProvider>().loadUserSpecialties();
 
-            if (!hasSelectedSpecialties) {
-              debugPrint('LOGIN DEBUG: Navigating to SpecialtySelectionScreen');
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
-              );
-            } else if (!hasStudyPlan) {
-              debugPrint('LOGIN DEBUG: Navigating to CreatePlanScreen');
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
-              );
-            } else {
-              debugPrint('LOGIN DEBUG: Navigating to MainContainerScreen');
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const MainContainerScreen()),
-              );
-            }
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+            );
           }
         }
       } catch (e) {
