@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../providers/question_provider.dart';
 import '../../providers/dashboard_provider.dart';
+import '../../providers/auth_provider.dart';
 import 'components/exam_header.dart';
 import 'components/exam_question_card.dart';
 import 'components/exam_answer_option.dart';
@@ -40,6 +41,7 @@ class _ExamScreenState extends State<ExamScreen> {
   bool _isAnswerChecked = false;
   Timer? _timer;
   int _secondsElapsed = 0;
+  bool _hasAutoShownPricing = false;
 
   @override
   void initState() {
@@ -191,6 +193,25 @@ class _ExamScreenState extends State<ExamScreen> {
 
   void _loadNextQuestion() {
     final provider = context.read<QuestionProvider>();
+    final user = context.read<AuthProvider>().user;
+    final isPremium = user?.isPremium ?? false;
+
+    // Check quota for free accounts before advancing to next question
+    if (!isPremium && !provider.hasNextInHistory) {
+      final isSpecialty = widget.specialtyId != null || widget.subTopic != null;
+      final maxAllowed = isSpecialty ? 15 : 30;
+
+      // When the user has answered the quota questions (15 for specialty, 30 for question bank)
+      // and clicks "Next" to go to the next question:
+      if (provider.sessionAttemptedIds.length >= maxAllowed || provider.currentQuestionIndex >= maxAllowed) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PricingScreen()),
+        );
+        return;
+      }
+    }
+
     if (provider.hasNextInHistory) {
       provider.loadNextQuestion(
         specialtyId: widget.specialtyId,
@@ -312,7 +333,24 @@ class _ExamScreenState extends State<ExamScreen> {
     if (provider.status == QuestionStatus.error &&
         provider.errorMessage != null &&
         provider.errorMessage!.contains('QUOTA_EXCEEDED')) {
-      final isAr = Localizations.localeOf(context).languageCode == 'ar';
+      if (!_hasAutoShownPricing) {
+        _hasAutoShownPricing = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const PricingScreen()),
+            );
+          }
+        });
+      }
+
+      final l10n = AppLocalizations.of(context)!;
+      final isSpecialty = widget.specialtyId != null || widget.subTopic != null;
+      final quotaTitle = isSpecialty
+          ? l10n.specialtyLimitReached
+          : l10n.questionBankLimitReached;
+
       return Scaffold(
         backgroundColor: const Color(0xFFF8FAFC),
         appBar: AppBar(
@@ -329,17 +367,13 @@ class _ExamScreenState extends State<ExamScreen> {
                 const Icon(Icons.lock, size: 80, color: Colors.orange),
                 const SizedBox(height: 24),
                 Text(
-                  isAr
-                      ? 'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص'
-                      : 'You have reached your free limit of 15 questions for this specialty.',
+                  quotaTitle,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  isAr
-                      ? 'قم بالترقية إلى باقة PRO لفتح جميع الأسئلة بلا حدود، والشروحات الذكية، والامتحانات التجريبية.'
-                      : 'Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.',
+                  l10n.upgradeToProPrompt,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
@@ -348,7 +382,7 @@ class _ExamScreenState extends State<ExamScreen> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushReplacement(
+                      Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (_) => const PricingScreen()));
@@ -361,7 +395,7 @@ class _ExamScreenState extends State<ExamScreen> {
                       ),
                     ),
                     child: Text(
-                      isAr ? 'الترقية إلى PRO' : 'Upgrade to PRO',
+                      l10n.upgradeToProBtn,
                       style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

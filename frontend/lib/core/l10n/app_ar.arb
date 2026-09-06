@@ -297,5 +297,41 @@
   "startNew": "بدء جديد",
   "exitExamTitle": "الخروج من الاختبار؟",
   "exitExamContent": "هل أنت متأكد من رغبتك في الخروج؟ قد تفقد تقدمك الحالي.",
-  "exit": "خروج"
+  "exit": "خروج",
+  "plan1Month": "شهر واحد",
+  "plan3Months": "3 أشهر",
+  "plan6Months": "6 أشهر",
+  "plan1Year": "سنة كاملة (12 شهر)",
+  "sarCurrency": "ر.س",
+  "perMonth": "شهرياً",
+  "sarPerMonth": "ر.س / شهرياً",
+  "sarPer3Months": "ر.س / 3 أشهر",
+  "sarPer6Months": "ر.س / 6 أشهر",
+  "sarPerYear": "ر.س / سنوياً",
+  "bestValueBadge": "الأكثر توفيراً 🔥",
+  "mostPopularBadge": "الأكثر طلباً ⭐",
+  "savePercentage": "وفر {percent}%",
+  "@savePercentage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "equivalentPerMonth": "يعادل {amount} ر.س / شهر فقط",
+  "@equivalentPerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelAnytime": "إلغاء الاشتراك متاح في أي وقت بنقرة واحدة",
+  "fullProAccessHeader": "جميع الباقات تشمل وصولاً كاملاً وغير محدود لجميع المزايا",
+  "secureCheckout": "دفع إلكتروني آمن ومشفّر 100%",
+  "moneyBackGuarantee": "مطابق لأحدث معايير اختبار الهيئة السعودية للتخصصات الصحية",
+  "questionBankLimitReached": "لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً)",
+  "specialtyLimitReached": "لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص",
+  "upgradeToProPrompt": "قم بالترقية إلى باقة PRO لفتح جميع الأسئلة بلا حدود، والشروحات الذكية، والامتحانات التجريبية.",
+  "upgradeToProBtn": "الترقية إلى باقة PRO 👑"
 }

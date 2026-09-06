@@ -85,7 +85,22 @@ exports.getNextQuestion = async (req, res, next) => {
                     });
                 }
             } else {
-                // General practice without specialty filter:
+                // General Question Bank practice without specialty filter:
+                // Free accounts are allowed to answer a maximum of 30 questions in the Question Bank!
+                const totalBankAttempts = await QuestionAttempt.count({
+                    where: { userId: req.user.id },
+                    distinct: true,
+                    col: 'questionId'
+                });
+
+                if (totalBankAttempts >= 30) {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً). يرجى الترقية إلى باقة PRO للمتابعة.',
+                        code: 'QUOTA_EXCEEDED'
+                    });
+                }
+
                 // Exclude any specialty where the user has already answered 15 or more questions
                 const userAttempts = await QuestionAttempt.findAll({
                     where: { userId: req.user.id },
@@ -325,12 +340,13 @@ exports.submitAnswer = async (req, res, next) => {
                 });
             }
 
-            if (question.specialtyId) {
-                const existingAttempt = await QuestionAttempt.findOne({
-                    where: { userId: req.user.id, questionId }
-                });
+            const existingAttempt = await QuestionAttempt.findOne({
+                where: { userId: req.user.id, questionId }
+            });
 
-                if (!existingAttempt) {
+            if (!existingAttempt) {
+                // Check 1: 15 questions per specialty limit
+                if (question.specialtyId) {
                     const specialtyQuestions = await Question.findAll({
                         where: { specialtyId: question.specialtyId },
                         attributes: ['id']
@@ -353,6 +369,21 @@ exports.submitAnswer = async (req, res, next) => {
                             code: 'QUOTA_EXCEEDED'
                         });
                     }
+                }
+
+                // Check 2: 30 questions limit for general Question Bank
+                const totalBankAttempts = await QuestionAttempt.count({
+                    where: { userId: req.user.id },
+                    distinct: true,
+                    col: 'questionId'
+                });
+
+                if (totalBankAttempts >= 30) {
+                    return res.status(403).json({
+                        success: false,
+                        message: 'لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً). يرجى الترقية إلى باقة PRO للمتابعة.',
+                        code: 'QUOTA_EXCEEDED'
+                    });
                 }
             }
         }

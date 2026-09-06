@@ -1483,6 +1483,138 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Exit'**
   String get exit;
+
+  /// No description provided for @plan1Month.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Month'**
+  String get plan1Month;
+
+  /// No description provided for @plan3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'3 Months'**
+  String get plan3Months;
+
+  /// No description provided for @plan6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'6 Months'**
+  String get plan6Months;
+
+  /// No description provided for @plan1Year.
+  ///
+  /// In en, this message translates to:
+  /// **'1 Year (12 Months)'**
+  String get plan1Year;
+
+  /// No description provided for @sarCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR'**
+  String get sarCurrency;
+
+  /// No description provided for @perMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'monthly'**
+  String get perMonth;
+
+  /// No description provided for @sarPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / month'**
+  String get sarPerMonth;
+
+  /// No description provided for @sarPer3Months.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / 3 months'**
+  String get sarPer3Months;
+
+  /// No description provided for @sarPer6Months.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / 6 months'**
+  String get sarPer6Months;
+
+  /// No description provided for @sarPerYear.
+  ///
+  /// In en, this message translates to:
+  /// **'SAR / year'**
+  String get sarPerYear;
+
+  /// No description provided for @bestValueBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'BEST VALUE 🔥'**
+  String get bestValueBadge;
+
+  /// No description provided for @mostPopularBadge.
+  ///
+  /// In en, this message translates to:
+  /// **'MOST POPULAR ⭐'**
+  String get mostPopularBadge;
+
+  /// No description provided for @savePercentage.
+  ///
+  /// In en, this message translates to:
+  /// **'Save {percent}%'**
+  String savePercentage(int percent);
+
+  /// No description provided for @equivalentPerMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {amount} SAR / mo equivalent'**
+  String equivalentPerMonth(String amount);
+
+  /// No description provided for @cancelAnytime.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel anytime with a single click'**
+  String get cancelAnytime;
+
+  /// No description provided for @fullProAccessHeader.
+  ///
+  /// In en, this message translates to:
+  /// **'All plans include full, unlimited access to all features'**
+  String get fullProAccessHeader;
+
+  /// No description provided for @secureCheckout.
+  ///
+  /// In en, this message translates to:
+  /// **'100% Secure & Encrypted Payment'**
+  String get secureCheckout;
+
+  /// No description provided for @moneyBackGuarantee.
+  ///
+  /// In en, this message translates to:
+  /// **'Aligned with latest SCFHS Saudi Medical Board standards'**
+  String get moneyBackGuarantee;
+
+  /// No description provided for @questionBankLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached the free limit for Question Bank (30 questions)'**
+  String get questionBankLimitReached;
+
+  /// No description provided for @specialtyLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'You have reached your free limit of 15 questions for this specialty'**
+  String get specialtyLimitReached;
+
+  /// No description provided for @upgradeToProPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.'**
+  String get upgradeToProPrompt;
+
+  /// No description provided for @upgradeToProBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Upgrade to PRO 👑'**
+  String get upgradeToProBtn;
 }
 
 class _AppLocalizationsDelegate

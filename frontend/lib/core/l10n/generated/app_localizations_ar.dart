@@ -758,4 +758,79 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get exit => 'خروج';
+
+  @override
+  String get plan1Month => 'شهر واحد';
+
+  @override
+  String get plan3Months => '3 أشهر';
+
+  @override
+  String get plan6Months => '6 أشهر';
+
+  @override
+  String get plan1Year => 'سنة كاملة (12 شهر)';
+
+  @override
+  String get sarCurrency => 'ر.س';
+
+  @override
+  String get perMonth => 'شهرياً';
+
+  @override
+  String get sarPerMonth => 'ر.س / شهرياً';
+
+  @override
+  String get sarPer3Months => 'ر.س / 3 أشهر';
+
+  @override
+  String get sarPer6Months => 'ر.س / 6 أشهر';
+
+  @override
+  String get sarPerYear => 'ر.س / سنوياً';
+
+  @override
+  String get bestValueBadge => 'الأكثر توفيراً 🔥';
+
+  @override
+  String get mostPopularBadge => 'الأكثر طلباً ⭐';
+
+  @override
+  String savePercentage(int percent) {
+    return 'وفر $percent%';
+  }
+
+  @override
+  String equivalentPerMonth(String amount) {
+    return 'يعادل $amount ر.س / شهر فقط';
+  }
+
+  @override
+  String get cancelAnytime => 'إلغاء الاشتراك متاح في أي وقت بنقرة واحدة';
+
+  @override
+  String get fullProAccessHeader =>
+      'جميع الباقات تشمل وصولاً كاملاً وغير محدود لجميع المزايا';
+
+  @override
+  String get secureCheckout => 'دفع إلكتروني آمن ومشفّر 100%';
+
+  @override
+  String get moneyBackGuarantee =>
+      'مطابق لأحدث معايير اختبار الهيئة السعودية للتخصصات الصحية';
+
+  @override
+  String get questionBankLimitReached =>
+      'لقد استنفذت الحد المجاني لبنك الأسئلة (30 سؤالاً)';
+
+  @override
+  String get specialtyLimitReached =>
+      'لقد استنفذت الـ 15 سؤالاً المجانية لهذا التخصص';
+
+  @override
+  String get upgradeToProPrompt =>
+      'قم بالترقية إلى باقة PRO لفتح جميع الأسئلة بلا حدود، والشروحات الذكية، والامتحانات التجريبية.';
+
+  @override
+  String get upgradeToProBtn => 'الترقية إلى باقة PRO 👑';
 }

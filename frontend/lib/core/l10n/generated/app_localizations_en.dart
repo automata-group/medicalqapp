@@ -764,4 +764,79 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get exit => 'Exit';
+
+  @override
+  String get plan1Month => '1 Month';
+
+  @override
+  String get plan3Months => '3 Months';
+
+  @override
+  String get plan6Months => '6 Months';
+
+  @override
+  String get plan1Year => '1 Year (12 Months)';
+
+  @override
+  String get sarCurrency => 'SAR';
+
+  @override
+  String get perMonth => 'monthly';
+
+  @override
+  String get sarPerMonth => 'SAR / month';
+
+  @override
+  String get sarPer3Months => 'SAR / 3 months';
+
+  @override
+  String get sarPer6Months => 'SAR / 6 months';
+
+  @override
+  String get sarPerYear => 'SAR / year';
+
+  @override
+  String get bestValueBadge => 'BEST VALUE 🔥';
+
+  @override
+  String get mostPopularBadge => 'MOST POPULAR ⭐';
+
+  @override
+  String savePercentage(int percent) {
+    return 'Save $percent%';
+  }
+
+  @override
+  String equivalentPerMonth(String amount) {
+    return 'Only $amount SAR / mo equivalent';
+  }
+
+  @override
+  String get cancelAnytime => 'Cancel anytime with a single click';
+
+  @override
+  String get fullProAccessHeader =>
+      'All plans include full, unlimited access to all features';
+
+  @override
+  String get secureCheckout => '100% Secure & Encrypted Payment';
+
+  @override
+  String get moneyBackGuarantee =>
+      'Aligned with latest SCFHS Saudi Medical Board standards';
+
+  @override
+  String get questionBankLimitReached =>
+      'You have reached the free limit for Question Bank (30 questions)';
+
+  @override
+  String get specialtyLimitReached =>
+      'You have reached your free limit of 15 questions for this specialty';
+
+  @override
+  String get upgradeToProPrompt =>
+      'Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.';
+
+  @override
+  String get upgradeToProBtn => 'Upgrade to PRO 👑';
 }

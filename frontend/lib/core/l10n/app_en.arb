@@ -332,5 +332,41 @@
   "startNew": "Start New",
   "exitExamTitle": "Exit Exam?",
   "exitExamContent": "Are you sure you want to exit? Your progress may be lost.",
-  "exit": "Exit"
+  "exit": "Exit",
+  "plan1Month": "1 Month",
+  "plan3Months": "3 Months",
+  "plan6Months": "6 Months",
+  "plan1Year": "1 Year (12 Months)",
+  "sarCurrency": "SAR",
+  "perMonth": "monthly",
+  "sarPerMonth": "SAR / month",
+  "sarPer3Months": "SAR / 3 months",
+  "sarPer6Months": "SAR / 6 months",
+  "sarPerYear": "SAR / year",
+  "bestValueBadge": "BEST VALUE 🔥",
+  "mostPopularBadge": "MOST POPULAR ⭐",
+  "savePercentage": "Save {percent}%",
+  "@savePercentage": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "equivalentPerMonth": "Only {amount} SAR / mo equivalent",
+  "@equivalentPerMonth": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "cancelAnytime": "Cancel anytime with a single click",
+  "fullProAccessHeader": "All plans include full, unlimited access to all features",
+  "secureCheckout": "100% Secure & Encrypted Payment",
+  "moneyBackGuarantee": "Aligned with latest SCFHS Saudi Medical Board standards",
+  "questionBankLimitReached": "You have reached the free limit for Question Bank (30 questions)",
+  "specialtyLimitReached": "You have reached your free limit of 15 questions for this specialty",
+  "upgradeToProPrompt": "Upgrade to PRO to unlock unlimited questions, AI explanations, and mock exams.",
+  "upgradeToProBtn": "Upgrade to PRO 👑"
 }
