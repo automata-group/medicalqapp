@@ -377,5 +377,41 @@
   "proMembership": "PRO MEMBERSHIP",
   "tagQuestionsCount": "🎯 4,700+ Questions",
   "tagSmartExplanations": "🤖 AI Explanations",
-  "tagExamSimulation": "⏱️ Board Exam Simulation"
+  "tagExamSimulation": "⏱️ Board Exam Simulation",
+  "onboardingSkip": "Skip",
+  "onboardingNext": "Next →",
+  "onboardingGetStarted": "Get Started 🚀",
+  "onboardingTitle1": "Learn Smarter,\nNot Harder",
+  "onboardingSubtitle1": "The Mastery Method adapts to how you think. Questions are prioritized based on what you need most — maximizing every minute of study.",
+  "onboardingTitle2": "Know, Somewhat,\nor Don't Know",
+  "onboardingSubtitle2": "After every question, rate your confidence. The system tracks what you truly know (🟢), what's shaky (🟡), and what needs work (🔴).",
+  "onboardingTitle3": "Master Every\nTopic",
+  "onboardingSubtitle3": "Track your mastery per specialty and sub-topic. Watch your weak areas turn green as you progress toward exam readiness.",
+  "forgotPasswordSubtitle": "No worries! Enter your email and we'll send you a reset link.",
+  "emailAddress": "Email Address",
+  "pleaseEnterEmail": "Please enter your email",
+  "sendResetLink": "Send Reset Link",
+  "backToLogin": "Back to Login",
+  "checkYourEmail": "Check Your Email!",
+  "weSentResetLink": "We sent a password reset link to\n{email}",
+  "@weSentResetLink": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "didntReceiveEmail": "Didn't receive it? Try again",
+  "setNewPassword": "Set New Password",
+  "newPasswordSubtitle": "Your new password must be different from your previous password.",
+  "newPassword": "New Password",
+  "confirmPassword": "Confirm Password",
+  "pleaseEnterPassword": "Please enter a password",
+  "passwordMinLength": "Password must be at least 8 characters",
+  "passwordUppercase": "Include at least one uppercase letter",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "resetPasswordBtn": "Reset Password",
+  "passwordResetSuccess": "Password Reset!",
+  "passwordResetSuccessSubtitle": "Your password has been successfully updated. You can now log in with your new password.",
+  "proceedToLogin": "Proceed to Login"
 }

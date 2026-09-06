@@ -252,19 +252,37 @@ exports.forgotPassword = async (req, res, next) => {
         await user.update({ resetPasswordToken, resetPasswordExpires });
 
         // Create reset url
-        const resetUrl = `http://localhost:3000/reset-password/${resetToken}`; // Start with localhost for now
+        const frontendUrl = process.env.FRONTEND_URL || 'https://healthlicenseprep.com';
+        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
 
-        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please open the link below to set a new password:\n\n${resetUrl}\n\nThis link will expire in 10 minutes.`;
+        const html = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;">
+                <h2 style="color: #2563EB; margin-top: 0;">إعادة تعيين كلمة المرور / Password Reset</h2>
+                <p style="font-size: 15px; color: #1e293b; line-height: 1.6;">تلقينا طلباً لإعادة تعيين كلمة المرور لحسابك في تطبيق SDLE.</p>
+                <p style="font-size: 15px; color: #1e293b; line-height: 1.6;">We received a request to reset your password. Click the button below to set a new password:</p>
+                <div style="margin: 32px 0; text-align: center;">
+                    <a href="${resetUrl}" style="background-color: #2563EB; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px; display: inline-block;">
+                        إعادة تعيين كلمة المرور / Reset Password
+                    </a>
+                </div>
+                <p style="font-size: 13px; color: #64748B; line-height: 1.5; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                    ينتهي هذا الرابط خلال 10 دقائق. إذا لم تطلب إعادة التعيين، يمكنك تجاهل هذا البريد بأمان.<br>
+                    This link expires in 10 minutes. If you didn't request this, you can safely ignore this email.
+                </p>
+            </div>
+        `;
 
         try {
             await sendEmail({
                 email: user.email,
-                subject: 'Password Reset Token',
-                message
+                subject: 'Password Reset / إعادة تعيين كلمة المرور',
+                message,
+                html
             });
         } catch (err) {
             // Email failed — don't crash, just log it
-            console.warn('⚠️  Email send failed (SMTP not configured). Reset token logged for dev use:', resetToken);
+            console.warn('⚠️  Email send failed. Reset token:', resetToken, err.message);
         }
 
         // In development, always return the token so the app can proceed without email

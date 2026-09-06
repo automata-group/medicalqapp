@@ -1669,6 +1669,180 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'⏱️ Board Exam Simulation'**
   String get tagExamSimulation;
+
+  /// No description provided for @onboardingSkip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get onboardingSkip;
+
+  /// No description provided for @onboardingNext.
+  ///
+  /// In en, this message translates to:
+  /// **'Next →'**
+  String get onboardingNext;
+
+  /// No description provided for @onboardingGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started 🚀'**
+  String get onboardingGetStarted;
+
+  /// No description provided for @onboardingTitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn Smarter,\nNot Harder'**
+  String get onboardingTitle1;
+
+  /// No description provided for @onboardingSubtitle1.
+  ///
+  /// In en, this message translates to:
+  /// **'The Mastery Method adapts to how you think. Questions are prioritized based on what you need most — maximizing every minute of study.'**
+  String get onboardingSubtitle1;
+
+  /// No description provided for @onboardingTitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'Know, Somewhat,\nor Don\'t Know'**
+  String get onboardingTitle2;
+
+  /// No description provided for @onboardingSubtitle2.
+  ///
+  /// In en, this message translates to:
+  /// **'After every question, rate your confidence. The system tracks what you truly know (🟢), what\'s shaky (🟡), and what needs work (🔴).'**
+  String get onboardingSubtitle2;
+
+  /// No description provided for @onboardingTitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Master Every\nTopic'**
+  String get onboardingTitle3;
+
+  /// No description provided for @onboardingSubtitle3.
+  ///
+  /// In en, this message translates to:
+  /// **'Track your mastery per specialty and sub-topic. Watch your weak areas turn green as you progress toward exam readiness.'**
+  String get onboardingSubtitle3;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No worries! Enter your email and we\'ll send you a reset link.'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @emailAddress.
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// No description provided for @pleaseEnterEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your email'**
+  String get pleaseEnterEmail;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Reset Link'**
+  String get sendResetLink;
+
+  /// No description provided for @backToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to Login'**
+  String get backToLogin;
+
+  /// No description provided for @checkYourEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Check Your Email!'**
+  String get checkYourEmail;
+
+  /// No description provided for @weSentResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a password reset link to\n{email}'**
+  String weSentResetLink(String email);
+
+  /// No description provided for @didntReceiveEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Didn\'t receive it? Try again'**
+  String get didntReceiveEmail;
+
+  /// No description provided for @setNewPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Set New Password'**
+  String get setNewPassword;
+
+  /// No description provided for @newPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your new password must be different from your previous password.'**
+  String get newPasswordSubtitle;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get confirmPassword;
+
+  /// No description provided for @pleaseEnterPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a password'**
+  String get pleaseEnterPassword;
+
+  /// No description provided for @passwordMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 8 characters'**
+  String get passwordMinLength;
+
+  /// No description provided for @passwordUppercase.
+  ///
+  /// In en, this message translates to:
+  /// **'Include at least one uppercase letter'**
+  String get passwordUppercase;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @resetPasswordBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Password'**
+  String get resetPasswordBtn;
+
+  /// No description provided for @passwordResetSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Reset!'**
+  String get passwordResetSuccess;
+
+  /// No description provided for @passwordResetSuccessSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your password has been successfully updated. You can now log in with your new password.'**
+  String get passwordResetSuccessSubtitle;
+
+  /// No description provided for @proceedToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Proceed to Login'**
+  String get proceedToLogin;
 }
 
 class _AppLocalizationsDelegate

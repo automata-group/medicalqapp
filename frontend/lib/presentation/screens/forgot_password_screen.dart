@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/di/service_locator.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
@@ -41,6 +42,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -55,13 +58,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: _emailSent ? _buildSuccessView() : _buildFormView(),
+          child: _emailSent ? _buildSuccessView(l10n) : _buildFormView(l10n),
         ),
       ),
     );
   }
 
-  Widget _buildFormView() {
+  Widget _buildFormView(AppLocalizations l10n) {
     return Form(
       key: _formKey,
       child: Column(
@@ -80,18 +83,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 color: AppColors.primary, size: 32),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Forgot Password?',
-            style: TextStyle(
+          Text(
+            l10n.forgotPassword,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: AppColors.textPrimaryLight,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'No worries! Enter your email and we\'ll send you a reset link.',
-            style: TextStyle(
+          Text(
+            l10n.forgotPasswordSubtitle,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
                 fontSize: 15, color: AppColors.textLight, height: 1.5),
           ),
           const SizedBox(height: 36),
@@ -101,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
-              labelText: 'Email Address',
+              labelText: l10n.emailAddress,
               prefixIcon:
                   const Icon(Icons.email_outlined, color: AppColors.primary),
               filled: true,
@@ -121,8 +126,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               ),
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Please enter your email';
-              if (!v.contains('@')) return 'Invalid email format';
+              if (v == null || v.isEmpty) return l10n.pleaseEnterEmail;
+              if (!v.contains('@')) return l10n.invalidEmail;
               return null;
             },
           ),
@@ -146,19 +151,20 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       width: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : const Text('Send Reset Link',
+                  : Text(l10n.sendResetLink,
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
 
           const SizedBox(height: 24),
           Center(
-            child: TextButton(
+            child: TextButton.icon(
               onPressed: () => Navigator.pop(context),
-              child: const Text(
-                '← Back to Login',
-                style: TextStyle(
+              icon: const Icon(Icons.arrow_back, size: 18, color: AppColors.primary),
+              label: Text(
+                l10n.backToLogin,
+                style: const TextStyle(
                     color: AppColors.primary, fontWeight: FontWeight.w600),
               ),
             ),
@@ -168,7 +174,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  Widget _buildSuccessView() {
+  Widget _buildSuccessView(AppLocalizations l10n) {
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -186,17 +192,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 color: AppColors.success, size: 48),
           ),
           const SizedBox(height: 28),
-          const Text(
-            'Check Your Email!',
-            style: TextStyle(
+          Text(
+            l10n.checkYourEmail,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimaryLight),
           ),
           const SizedBox(height: 12),
           Text(
-            'We sent a password reset link to\n${_emailController.text}',
+            l10n.weSentResetLink(_emailController.text),
             textAlign: TextAlign.center,
+            textDirection: Directionality.of(context),
             style: const TextStyle(
                 fontSize: 15, color: AppColors.textLight, height: 1.6),
           ),
@@ -206,7 +214,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           OutlinedButton.icon(
             onPressed: () => setState(() => _emailSent = false),
             icon: const Icon(Icons.refresh, size: 18),
-            label: const Text('Didn\'t receive it? Try again'),
+            label: Text(l10n.didntReceiveEmail),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: AppColors.primary),
               foregroundColor: AppColors.primary,
@@ -217,11 +225,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
           const SizedBox(height: 16),
 
-          TextButton(
+          TextButton.icon(
             onPressed: () => Navigator.pop(context),
-            child: const Text(
-              '← Back to Login',
-              style: TextStyle(
+            icon: const Icon(Icons.arrow_back, size: 18, color: AppColors.primary),
+            label: Text(
+              l10n.backToLogin,
+              style: const TextStyle(
                   color: AppColors.primary, fontWeight: FontWeight.w600),
             ),
           ),

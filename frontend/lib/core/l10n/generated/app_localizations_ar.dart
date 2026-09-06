@@ -861,4 +861,100 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get tagExamSimulation => '⏱️ محاكاة الهيئة';
+
+  @override
+  String get onboardingSkip => 'تخطي';
+
+  @override
+  String get onboardingNext => 'التالي ←';
+
+  @override
+  String get onboardingGetStarted => 'ابدأ الآن 🚀';
+
+  @override
+  String get onboardingTitle1 => 'تعلم بذكاء،\nوليس بمشقة';
+
+  @override
+  String get onboardingSubtitle1 =>
+      'طريقة الإتقان تتكيف مع طريقة تفكيرك. يتم ترتيب الأسئلة حسب أولوياتك واحتياجاتك لتحقيق أقصى استفادة من وقت دراستك.';
+
+  @override
+  String get onboardingTitle2 => 'أعلم، نوعاً ما،\nأو لا أعلم';
+
+  @override
+  String get onboardingSubtitle2 =>
+      'قيّم مستوى ثقتك بعد كل سؤال. يتتبع النظام ما تتقنه حقاً (🟢)، وما هو متذبذب (🟡)، وما يحتاج إلى تركيز أكبر (🔴).';
+
+  @override
+  String get onboardingTitle3 => 'أتقن كل\nموضوع وتخصص';
+
+  @override
+  String get onboardingSubtitle3 =>
+      'تابع نسبة إتقانك لكل تخصص وموضوع فرعي، وشاهد نقاط ضعفك تتحول إلى اللون الأخضر مع اقترابك من الجاهزية التامة للاختبار.';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'لا تقلق! أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.';
+
+  @override
+  String get emailAddress => 'البريد الإلكتروني';
+
+  @override
+  String get pleaseEnterEmail => 'يرجى إدخال البريد الإلكتروني';
+
+  @override
+  String get sendResetLink => 'إرسال رابط التعيين';
+
+  @override
+  String get backToLogin => 'العودة لتسجيل الدخول';
+
+  @override
+  String get checkYourEmail => 'تحقق من بريدك الإلكتروني!';
+
+  @override
+  String weSentResetLink(String email) {
+    return 'أرسلنا رابط إعادة تعيين كلمة المرور إلى\n$email';
+  }
+
+  @override
+  String get didntReceiveEmail => 'لم يصلك البريد؟ حاول مجدداً';
+
+  @override
+  String get setNewPassword => 'تعيين كلمة مرور جديدة';
+
+  @override
+  String get newPasswordSubtitle =>
+      'يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get pleaseEnterPassword => 'يرجى إدخال كلمة المرور';
+
+  @override
+  String get passwordMinLength =>
+      'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل';
+
+  @override
+  String get passwordUppercase => 'يجب تضمين حرف كبير واحد على الأقل';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get resetPasswordBtn => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get passwordResetSuccess => 'تمت إعادة تعيين كلمة المرور!';
+
+  @override
+  String get passwordResetSuccessSubtitle =>
+      'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.';
+
+  @override
+  String get proceedToLogin => 'المتابعة لتسجيل الدخول';
 }

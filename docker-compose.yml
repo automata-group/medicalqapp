@@ -50,6 +50,13 @@ services:
       - MOYASAR_API_KEY=${MOYASAR_API_KEY:-sk_test_9Ngqem2vMUdWE7LzqguX69AVGFoXAmhuLGV9dTYg}
       - MOYASAR_PUBLISHABLE_KEY=${MOYASAR_PUBLISHABLE_KEY:-pk_test_4E7S9Mb2SxsXXpf7PtiV7PwBLSiDki3KLACqoXYM}
       - MOYASAR_WEBHOOK_SECRET=${MOYASAR_WEBHOOK_SECRET:-538xyFFiejZUXYXNHRIoVbTKoUJBRYUbAKKBFbXQx9mWh8rWeQ5wA}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_EMAIL=${SMTP_EMAIL}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - FROM_EMAIL=${FROM_EMAIL:-noreply@healthlicenseprep.com}
+      - FROM_NAME=${FROM_NAME:-SDLE Prep}
+      - FRONTEND_URL=${FRONTEND_URL:-https://healthlicenseprep.com}
     depends_on:
       - db
     # Port 5000 is internal only now

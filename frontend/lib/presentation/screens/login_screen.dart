@@ -176,7 +176,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                 // Forgot Password
                 Align(
-                  alignment: Alignment.centerLeft,
+                  alignment: AlignmentDirectional.centerStart,
                   child: TextButton(
                     onPressed: () {
                       Navigator.push(

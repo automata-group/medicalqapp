@@ -867,4 +867,99 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get tagExamSimulation => '⏱️ Board Exam Simulation';
+
+  @override
+  String get onboardingSkip => 'Skip';
+
+  @override
+  String get onboardingNext => 'Next →';
+
+  @override
+  String get onboardingGetStarted => 'Get Started 🚀';
+
+  @override
+  String get onboardingTitle1 => 'Learn Smarter,\nNot Harder';
+
+  @override
+  String get onboardingSubtitle1 =>
+      'The Mastery Method adapts to how you think. Questions are prioritized based on what you need most — maximizing every minute of study.';
+
+  @override
+  String get onboardingTitle2 => 'Know, Somewhat,\nor Don\'t Know';
+
+  @override
+  String get onboardingSubtitle2 =>
+      'After every question, rate your confidence. The system tracks what you truly know (🟢), what\'s shaky (🟡), and what needs work (🔴).';
+
+  @override
+  String get onboardingTitle3 => 'Master Every\nTopic';
+
+  @override
+  String get onboardingSubtitle3 =>
+      'Track your mastery per specialty and sub-topic. Watch your weak areas turn green as you progress toward exam readiness.';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'No worries! Enter your email and we\'ll send you a reset link.';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter your email';
+
+  @override
+  String get sendResetLink => 'Send Reset Link';
+
+  @override
+  String get backToLogin => 'Back to Login';
+
+  @override
+  String get checkYourEmail => 'Check Your Email!';
+
+  @override
+  String weSentResetLink(String email) {
+    return 'We sent a password reset link to\n$email';
+  }
+
+  @override
+  String get didntReceiveEmail => 'Didn\'t receive it? Try again';
+
+  @override
+  String get setNewPassword => 'Set New Password';
+
+  @override
+  String get newPasswordSubtitle =>
+      'Your new password must be different from your previous password.';
+
+  @override
+  String get newPassword => 'New Password';
+
+  @override
+  String get confirmPassword => 'Confirm Password';
+
+  @override
+  String get pleaseEnterPassword => 'Please enter a password';
+
+  @override
+  String get passwordMinLength => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordUppercase => 'Include at least one uppercase letter';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get resetPasswordBtn => 'Reset Password';
+
+  @override
+  String get passwordResetSuccess => 'Password Reset!';
+
+  @override
+  String get passwordResetSuccessSubtitle =>
+      'Your password has been successfully updated. You can now log in with your new password.';
+
+  @override
+  String get proceedToLogin => 'Proceed to Login';
 }

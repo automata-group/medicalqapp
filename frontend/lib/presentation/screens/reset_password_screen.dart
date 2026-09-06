@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/toast_utils.dart';
 import 'login_screen.dart';
@@ -16,10 +17,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
   final _passwordController = TextEditingController();
   final _confirmController = TextEditingController();
-  bool _isLoading = false;
-  bool _success = false;
   bool _obscurePass = true;
   bool _obscureConfirm = true;
+  bool _isLoading = false;
+  bool _isSuccess = false;
 
   @override
   void dispose() {
@@ -33,12 +34,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     setState(() => _isLoading = true);
     try {
       // NOTE: Connect to auth repo resetPassword(widget.resetToken, _passwordController.text)
-      await Future.delayed(const Duration(seconds: 1));
-      setState(() => _success = true);
+      await Future.delayed(const Duration(seconds: 1)); // simulated
+      if (!mounted) return;
+      setState(() => _isSuccess = true);
     } catch (e) {
-      if (mounted) {
-        ToastUtils.showError(context, e.toString());
-      }
+      if (!mounted) return;
+      ToastUtils.showError(context, e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -46,6 +47,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       appBar: AppBar(
@@ -60,18 +63,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: _success ? _buildSuccessView() : _buildFormView(),
+          child: _isSuccess ? _buildSuccessView(l10n) : _buildFormView(l10n),
         ),
       ),
     );
   }
 
-  Widget _buildFormView() {
+  Widget _buildFormView(AppLocalizations l10n) {
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const SizedBox(height: 8),
           Container(
             width: 68,
             height: 68,
@@ -83,17 +87,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 color: AppColors.primary, size: 32),
           ),
           const SizedBox(height: 24),
-          const Text(
-            'Set New Password',
-            style: TextStyle(
+          Text(
+            l10n.setNewPassword,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimaryLight),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'Your new password must be different from your previous password.',
-            style: TextStyle(
+          Text(
+            l10n.newPasswordSubtitle,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
                 fontSize: 15, color: AppColors.textLight, height: 1.5),
           ),
           const SizedBox(height: 36),
@@ -103,7 +109,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             controller: _passwordController,
             obscureText: _obscurePass,
             decoration: InputDecoration(
-              labelText: 'New Password',
+              labelText: l10n.newPassword,
               prefixIcon:
                   const Icon(Icons.lock_outline, color: AppColors.primary),
               suffixIcon: IconButton(
@@ -126,10 +132,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   borderSide: const BorderSide(color: AppColors.primary)),
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Please enter a password';
-              if (v.length < 8) return 'Password must be at least 8 characters';
+              if (v == null || v.isEmpty) return l10n.pleaseEnterPassword;
+              if (v.length < 8) return l10n.passwordMinLength;
               if (!v.contains(RegExp(r'[A-Z]'))) {
-                return 'Include at least one uppercase letter';
+                return l10n.passwordUppercase;
               }
               return null;
             },
@@ -141,7 +147,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             controller: _confirmController,
             obscureText: _obscureConfirm,
             decoration: InputDecoration(
-              labelText: 'Confirm Password',
+              labelText: l10n.confirmPassword,
               prefixIcon:
                   const Icon(Icons.lock_outline, color: AppColors.primary),
               suffixIcon: IconButton(
@@ -165,9 +171,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   borderSide: const BorderSide(color: AppColors.primary)),
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Please confirm your password';
+              if (v == null || v.isEmpty) return l10n.pleaseEnterPassword;
               if (v != _passwordController.text) {
-                return 'Passwords do not match';
+                return l10n.passwordsDoNotMatch;
               }
               return null;
             },
@@ -175,7 +181,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           const SizedBox(height: 8),
 
           // Password hint
-          _buildPasswordHint(),
+          _buildPasswordHint(l10n),
           const SizedBox(height: 28),
 
           SizedBox(
@@ -195,9 +201,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                       width: 20,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                  : const Text('Reset Password',
+                  : Text(l10n.resetPasswordBtn,
                       style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -205,41 +211,46 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildPasswordHint() {
+  Widget _buildPasswordHint(AppLocalizations l10n) {
     final pass = _passwordController.text;
     return Column(
       children: [
-        _hintRow(Icons.check_circle, '8+ characters', pass.length >= 8),
-        _hintRow(Icons.check_circle, 'One uppercase letter',
+        _hintRow(Icons.check_circle, l10n.passwordMinLength, pass.length >= 8),
+        _hintRow(Icons.check_circle, l10n.passwordUppercase,
             pass.contains(RegExp(r'[A-Z]'))),
         _hintRow(
-            Icons.check_circle, 'One number', pass.contains(RegExp(r'[0-9]'))),
+            Icons.check_circle,
+            l10n.passwordsDoNotMatch,
+            pass.isNotEmpty && pass == _confirmController.text,
+            isMatchRule: true),
       ],
     );
   }
 
-  Widget _hintRow(IconData icon, String label, bool met) {
+  Widget _hintRow(IconData icon, String text, bool valid,
+      {bool isMatchRule = false}) {
+    final color = valid ? AppColors.success : Colors.grey.shade400;
     return ValueListenableBuilder(
       valueListenable: _passwordController,
       builder: (_, __, ___) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: 3),
         child: Row(
           children: [
-            Icon(icon,
-                size: 14,
-                color: met ? AppColors.success : Colors.grey.shade400),
-            const SizedBox(width: 6),
-            Text(label,
-                style: TextStyle(
-                    fontSize: 12,
-                    color: met ? AppColors.success : Colors.grey.shade400)),
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Text(
+              text,
+              textDirection: Directionality.of(context),
+              style: TextStyle(
+                  fontSize: 12, color: color, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSuccessView() {
+  Widget _buildSuccessView(AppLocalizations l10n) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -254,17 +265,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               color: AppColors.success, size: 52),
         ),
         const SizedBox(height: 28),
-        const Text('Password Reset!',
-            style: TextStyle(
+        Text(l10n.passwordResetSuccess,
+            textDirection: Directionality.of(context),
+            style: const TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimaryLight)),
         const SizedBox(height: 12),
-        const Text(
-          'Your password has been successfully updated. You can now log in with your new password.',
+        Text(
+          l10n.passwordResetSuccessSubtitle,
           textAlign: TextAlign.center,
+          textDirection: Directionality.of(context),
           style:
-              TextStyle(fontSize: 15, color: AppColors.textLight, height: 1.6),
+              const TextStyle(fontSize: 15, color: AppColors.textLight, height: 1.6),
         ),
         const SizedBox(height: 40),
         SizedBox(
@@ -282,8 +295,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   borderRadius: BorderRadius.circular(14)),
               elevation: 0,
             ),
-            child: const Text('Back to Login',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            child: Text(l10n.backToLogin,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           ),
         ),
       ],

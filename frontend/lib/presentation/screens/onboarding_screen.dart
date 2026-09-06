@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import 'login_screen.dart';
 
@@ -33,30 +34,27 @@ class _OnboardingScreenState extends State<OnboardingScreen>
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
-  static const _pages = [
+  List<OnboardingPage> _getPages(AppLocalizations l10n) => [
     OnboardingPage(
       emoji: '🧠',
-      title: 'Learn Smarter,\nNot Harder',
-      subtitle:
-          'The Mastery Method adapts to how YOU think. Questions are prioritized based on what you need most — maximizing every minute of study.',
-      color: Color(0xFFEFF6FF),
-      accentColor: Color(0xFF137FEC),
+      title: l10n.onboardingTitle1,
+      subtitle: l10n.onboardingSubtitle1,
+      color: const Color(0xFFEFF6FF),
+      accentColor: const Color(0xFF137FEC),
     ),
     OnboardingPage(
       emoji: '🟢',
-      title: 'Know, Somewhat,\nor Don\'t Know',
-      subtitle:
-          'After every question, rate your confidence. The system tracks what you truly know (🟢), what\'s shaky (🟡), and what needs work (🔴).',
-      color: Color(0xFFF0FDF4),
-      accentColor: Color(0xFF16A34A),
+      title: l10n.onboardingTitle2,
+      subtitle: l10n.onboardingSubtitle2,
+      color: const Color(0xFFF0FDF4),
+      accentColor: const Color(0xFF16A34A),
     ),
     OnboardingPage(
       emoji: '🏆',
-      title: 'Master Every\nDental Topic',
-      subtitle:
-          'Track your mastery per specialty and sub-topic. Watch your weak areas turn green as you progress toward exam readiness.',
-      color: Color(0xFFFFFBEB),
-      accentColor: Color(0xFFD97706),
+      title: l10n.onboardingTitle3,
+      subtitle: l10n.onboardingSubtitle3,
+      color: const Color(0xFFFFFBEB),
+      accentColor: const Color(0xFFD97706),
     ),
   ];
 
@@ -98,8 +96,10 @@ class _OnboardingScreenState extends State<OnboardingScreen>
 
   @override
   Widget build(BuildContext context) {
-    final page = _pages[_currentPage];
-    final isLastPage = _currentPage == _pages.length - 1;
+    final l10n = AppLocalizations.of(context)!;
+    final pages = _getPages(l10n);
+    final page = pages[_currentPage];
+    final isLastPage = _currentPage == pages.length - 1;
 
     return Scaffold(
       backgroundColor: page.color,
@@ -108,11 +108,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
           children: [
             // Skip button
             Align(
-              alignment: Alignment.topRight,
+              alignment: AlignmentDirectional.topEnd,
               child: TextButton(
                 onPressed: _finishOnboarding,
                 child: Text(
-                  'Skip',
+                  l10n.onboardingSkip,
                   style: TextStyle(
                     color: page.accentColor,
                     fontWeight: FontWeight.w600,
@@ -126,9 +126,9 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               child: PageView.builder(
                 controller: _controller,
                 onPageChanged: _onPageChanged,
-                itemCount: _pages.length,
+                itemCount: pages.length,
                 itemBuilder: (context, index) {
-                  return _buildPage(_pages[index]);
+                  return _buildPage(pages[index]);
                 },
               ),
             ),
@@ -138,11 +138,11 @@ class _OnboardingScreenState extends State<OnboardingScreen>
               padding: const EdgeInsets.fromLTRB(32, 0, 32, 40),
               child: Column(
                 children: [
-                  // Dots
+                  // Indicators
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
-                      _pages.length,
+                      pages.length,
                       (i) => AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         margin: const EdgeInsets.symmetric(horizontal: 4),
@@ -183,7 +183,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
                         elevation: 0,
                       ),
                       child: Text(
-                        isLastPage ? 'Get Started 🚀' : 'Next →',
+                        isLastPage ? l10n.onboardingGetStarted : l10n.onboardingNext,
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -229,7 +229,8 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             Text(
               page.title,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              textDirection: Directionality.of(context),
+              style: const TextStyle(
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
                 color: AppColors.textPrimaryLight,
@@ -242,6 +243,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
             Text(
               page.subtitle,
               textAlign: TextAlign.center,
+              textDirection: Directionality.of(context),
               style: const TextStyle(
                 fontSize: 16,
                 color: AppColors.textLight,

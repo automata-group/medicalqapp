@@ -342,5 +342,41 @@
   "proMembership": "عضوية PRO",
   "tagQuestionsCount": "🎯 +4,700 سؤال",
   "tagSmartExplanations": "🤖 شروحات ذكية",
-  "tagExamSimulation": "⏱️ محاكاة الهيئة"
+  "tagExamSimulation": "⏱️ محاكاة الهيئة",
+  "onboardingSkip": "تخطي",
+  "onboardingNext": "التالي ←",
+  "onboardingGetStarted": "ابدأ الآن 🚀",
+  "onboardingTitle1": "تعلم بذكاء،\nوليس بمشقة",
+  "onboardingSubtitle1": "طريقة الإتقان تتكيف مع طريقة تفكيرك. يتم ترتيب الأسئلة حسب أولوياتك واحتياجاتك لتحقيق أقصى استفادة من وقت دراستك.",
+  "onboardingTitle2": "أعلم، نوعاً ما،\nأو لا أعلم",
+  "onboardingSubtitle2": "قيّم مستوى ثقتك بعد كل سؤال. يتتبع النظام ما تتقنه حقاً (🟢)، وما هو متذبذب (🟡)، وما يحتاج إلى تركيز أكبر (🔴).",
+  "onboardingTitle3": "أتقن كل\nموضوع وتخصص",
+  "onboardingSubtitle3": "تابع نسبة إتقانك لكل تخصص وموضوع فرعي، وشاهد نقاط ضعفك تتحول إلى اللون الأخضر مع اقترابك من الجاهزية التامة للاختبار.",
+  "forgotPasswordSubtitle": "لا تقلق! أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.",
+  "emailAddress": "البريد الإلكتروني",
+  "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
+  "sendResetLink": "إرسال رابط التعيين",
+  "backToLogin": "العودة لتسجيل الدخول",
+  "checkYourEmail": "تحقق من بريدك الإلكتروني!",
+  "weSentResetLink": "أرسلنا رابط إعادة تعيين كلمة المرور إلى\n{email}",
+  "@weSentResetLink": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "didntReceiveEmail": "لم يصلك البريد؟ حاول مجدداً",
+  "setNewPassword": "تعيين كلمة مرور جديدة",
+  "newPasswordSubtitle": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.",
+  "newPassword": "كلمة المرور الجديدة",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "pleaseEnterPassword": "يرجى إدخال كلمة المرور",
+  "passwordMinLength": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
+  "passwordUppercase": "يجب تضمين حرف كبير واحد على الأقل",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "resetPasswordBtn": "إعادة تعيين كلمة المرور",
+  "passwordResetSuccess": "تمت إعادة تعيين كلمة المرور!",
+  "passwordResetSuccessSubtitle": "تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
+  "proceedToLogin": "المتابعة لتسجيل الدخول"
 }
