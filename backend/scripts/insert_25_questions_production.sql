@@ -5,11 +5,13 @@ DELIMITER $$
 DROP PROCEDURE IF EXISTS ImportLesionQuestions$$
 CREATE PROCEDURE ImportLesionQuestions()
 BEGIN
-    DECLARE existing_cnt INT DEFAULT 0;
-    SELECT COUNT(*) INTO existing_cnt FROM Questions WHERE source = 'What is this lesion Docx';
+    SET FOREIGN_KEY_CHECKS = 0;
 
-    IF existing_cnt = 0 THEN
-        SET FOREIGN_KEY_CHECKS = 0;
+    -- Clean up any prior import of this docx to avoid duplicates and ensure freshness
+    DELETE FROM Options WHERE questionId IN (SELECT id FROM Questions WHERE source = 'What is this lesion Docx');
+    DELETE FROM Explanations WHERE questionId IN (SELECT id FROM Questions WHERE source = 'What is this lesion Docx');
+    DELETE FROM Questions WHERE source = 'What is this lesion Docx';
+
 
 -- Question 1: What is this lesion?...
 INSERT INTO Questions (specialtyId, topicId, subTopic, text, image, difficulty, timeEstimate, isActive, isPremium, source, verifiedByAI, createdAt, updatedAt) VALUES (
@@ -513,9 +515,6 @@ INSERT INTO Explanations (questionId, text, whyWrong, `references`, aiGenerated,
 
         SET FOREIGN_KEY_CHECKS = 1;
         SELECT 'Imported 25 lesion questions successfully' AS status;
-    ELSE
-        SELECT 'Lesion questions already exist in database, skipping.' AS status;
-    END IF;
 END$$
 DELIMITER ;
 

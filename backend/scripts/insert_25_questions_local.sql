@@ -3,6 +3,12 @@
 -- ==========================================
 SET FOREIGN_KEY_CHECKS = 0;
 
+-- Clean up any prior import of this docx
+DELETE FROM question_options WHERE question_id IN (SELECT question_id FROM questions WHERE question_source = 'What is this lesion Docx');
+DELETE FROM question_explanations WHERE question_id IN (SELECT question_id FROM questions WHERE question_source = 'What is this lesion Docx');
+DELETE FROM question_tag_mapping WHERE question_id IN (SELECT question_id FROM questions WHERE question_source = 'What is this lesion Docx');
+DELETE FROM questions WHERE question_source = 'What is this lesion Docx';
+
 -- Question 1: What is this lesion?...
 INSERT INTO questions (specialty_id, question_text, question_number, difficulty_level, question_source, image_url, estimated_time_seconds, is_active, is_free, ai_verified, created_at, updated_at) VALUES (
   COALESCE((SELECT specialty_id FROM specialties WHERE specialty_name LIKE '%Oral Medicine & Pathology%' OR specialty_name LIKE '%Oral Medicine & Pathology%' LIMIT 1), 18),

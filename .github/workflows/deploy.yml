@@ -214,7 +214,7 @@ jobs:
                 echo "$SUDO_PW" | sudo -S docker cp $BACKEND_ID:/app/uploads/questions/. /opt/medical-qbank/uploads/questions/ || true
             fi
             if [ -d "/opt/medical-qbank/backend/uploads/questions" ]; then
-                echo "$SUDO_PW" | sudo -S cp -rn /opt/medical-qbank/backend/uploads/questions/* /opt/medical-qbank/uploads/questions/ || true
+                echo "$SUDO_PW" | sudo -S cp -rf /opt/medical-qbank/backend/uploads/questions/* /opt/medical-qbank/uploads/questions/ || true
             fi
             echo "$SUDO_PW" | sudo -S chmod -R 755 /opt/medical-qbank/uploads/
             echo "✅ Question images synchronized."
