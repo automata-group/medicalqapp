@@ -199,10 +199,12 @@ class _ExamScreenState extends State<ExamScreen> {
     if (!isPremium && !provider.hasNextInHistory) {
       final isSpecialty = widget.specialtyId != null || widget.subTopic != null;
       final maxAllowed = isSpecialty ? 15 : 30;
+      final currentQuestionNumber = provider.currentQuestionIndex + 1;
 
       // When the user has answered the quota questions (15 for specialty, 30 for question bank)
       // and clicks "Next" to go to the next question:
-      if (provider.sessionAttemptedIds.length >= maxAllowed || provider.currentQuestionIndex >= maxAllowed) {
+      // Question 16 (for specialty) or Question 31 (for question bank) must NEVER be shown!
+      if (currentQuestionNumber >= maxAllowed || provider.sessionAttemptedIds.length >= (maxAllowed - 1)) {
         provider.triggerQuotaExceeded();
         return;
       }

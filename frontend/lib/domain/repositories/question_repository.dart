@@ -13,7 +13,7 @@ abstract class QuestionRepository {
     bool shuffle = true,
   });
   Future<AnswerResponseModel> submitAnswer(int questionId, int optionId,
-      {String? confidenceLevel, int? timeTaken});
+      {String? confidenceLevel, int? timeTaken, String? sessionType, String? specialtyId});
   Future<SpecialtyTopicsResponse> getSpecialtyTopics(int specialtyId);
   Future<bool> toggleBookmark(int questionId);
   Future<void> reportQuestion(

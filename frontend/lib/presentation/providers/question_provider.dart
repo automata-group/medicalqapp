@@ -224,12 +224,12 @@ class QuestionProvider with ChangeNotifier {
     bool shuffle = true,
   }) async {
     _shuffle = shuffle;
-    _lastSpecialtyId = specialtyId ?? _lastSpecialtyId;
-    _lastSubTopic = subTopic ?? _lastSubTopic;
-    _lastFilter = filter ?? _lastFilter;
-    if (sessionType != null) _currentSessionType = sessionType;
-    
-    if (_currentSessionType == null) {
+    _lastSpecialtyId = specialtyId;
+    _lastSubTopic = subTopic;
+    _lastFilter = filter;
+    if (sessionType != null) {
+      _currentSessionType = sessionType;
+    } else {
       if (subTopic != null) {
         _currentSessionType = 'topic';
       } else if (specialtyId != null) {
@@ -462,6 +462,8 @@ class QuestionProvider with ChangeNotifier {
         _selectedOptionId!,
         confidenceLevel: confidenceLevel,
         timeTaken: timeTaken,
+        sessionType: _currentSessionType,
+        specialtyId: _lastSpecialtyId,
       );
       _answerResult = result;
       _answerStatus = AnswerStatus.submitted;

@@ -79,10 +79,10 @@ class QuestionRepositoryImpl implements QuestionRepository {
 
   @override
   Future<AnswerResponseModel> submitAnswer(int questionId, int optionId,
-      {String? confidenceLevel, int? timeTaken}) async {
+      {String? confidenceLevel, int? timeTaken, String? sessionType, String? specialtyId}) async {
     if (await _isOnline()) {
       return await remoteDataSource.submitAnswer(questionId, optionId,
-          confidenceLevel: confidenceLevel, timeTaken: timeTaken);
+          confidenceLevel: confidenceLevel, timeTaken: timeTaken, sessionType: sessionType, specialtyId: specialtyId);
     } else {
       return await localDataSource.submitAnswerOffline(
         questionId,

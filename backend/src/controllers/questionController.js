@@ -100,34 +100,6 @@ exports.getNextQuestion = async (req, res, next) => {
                         code: 'QUOTA_EXCEEDED'
                     });
                 }
-
-                // Exclude any specialty where the user has already answered 15 or more questions
-                const userAttempts = await QuestionAttempt.findAll({
-                    where: { userId: req.user.id },
-                    attributes: ['questionId'],
-                    include: [{
-                        model: Question,
-                        as: 'question',
-                        attributes: ['specialtyId'],
-                        where: { specialtyId: { [Op.ne]: null } }
-                    }]
-                });
-
-                const countMap = {};
-                for (const att of userAttempts) {
-                    if (att.question && att.question.specialtyId) {
-                        const sid = att.question.specialtyId;
-                        countMap[sid] = (countMap[sid] || 0) + 1;
-                    }
-                }
-
-                const maxedSpecialties = Object.keys(countMap)
-                    .filter(sid => countMap[sid] >= 15)
-                    .map(sid => parseInt(sid));
-
-                if (maxedSpecialties.length > 0) {
-                    whereClause.specialtyId = { [Op.notIn]: maxedSpecialties };
-                }
             }
         }
 
@@ -345,8 +317,11 @@ exports.submitAnswer = async (req, res, next) => {
             });
 
             if (!existingAttempt) {
-                // Check 1: 15 questions per specialty limit
-                if (question.specialtyId) {
+                const sessionType = req.body.sessionType;
+                const isSpecialtyPractice = sessionType === 'specialty' || sessionType === 'topic' || (req.body.specialtyId && sessionType !== 'general');
+
+                if (isSpecialtyPractice && question.specialtyId) {
+                    // Check 1: 15 questions per specialty limit for specialty / topic practice
                     const specialtyQuestions = await Question.findAll({
                         where: { specialtyId: question.specialtyId },
                         attributes: ['id']
@@ -370,7 +345,7 @@ exports.submitAnswer = async (req, res, next) => {
                         });
                     }
                 } else {
-                    // Check 2: 30 questions limit for general Question Bank (without specialty)
+                    // Check 2: 30 questions limit for general Question Bank
                     const totalBankAttempts = await QuestionAttempt.count({
                         where: { userId: req.user.id },
                         distinct: true,

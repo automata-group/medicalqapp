@@ -14,7 +14,7 @@ abstract class QuestionRemoteDataSource {
       int? questionId,
       bool shuffle = true});
   Future<AnswerResponseModel> submitAnswer(int questionId, int optionId,
-      {String? confidenceLevel, int? timeTaken});
+      {String? confidenceLevel, int? timeTaken, String? sessionType, String? specialtyId});
   Future<SpecialtyTopicsResponse> getSpecialtyTopics(int specialtyId);
   Future<bool> toggleBookmark(int questionId);
   Future<void> reportQuestion(
@@ -103,13 +103,19 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
 
   @override
   Future<AnswerResponseModel> submitAnswer(int questionId, int optionId,
-      {String? confidenceLevel, int? timeTaken}) async {
+      {String? confidenceLevel, int? timeTaken, String? sessionType, String? specialtyId}) async {
     final Map<String, dynamic> data = {'selectedOptionId': optionId};
     if (confidenceLevel != null) {
       data['confidenceLevel'] = confidenceLevel;
     }
     if (timeTaken != null) {
       data['timeTaken'] = timeTaken;
+    }
+    if (sessionType != null) {
+      data['sessionType'] = sessionType;
+    }
+    if (specialtyId != null) {
+      data['specialtyId'] = specialtyId;
     }
 
     try {
