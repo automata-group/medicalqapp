@@ -44,10 +44,10 @@ class _ExamScreenState extends State<ExamScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<QuestionProvider>().clearCurrentQuestion();
     _startTimer();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final provider = context.read<QuestionProvider>();
+      provider.clearCurrentQuestion();
       
       await provider.checkActiveSession(
         specialtyId: widget.specialtyId,

@@ -205,7 +205,9 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
         return SessionModel.fromJson(response.data['data']);
       }
     } catch (e) {
-      debugPrint('No active session or error: $e');
+      if (e is! DioException || e.response?.statusCode != 404) {
+        debugPrint('Active session fetch error: $e');
+      }
     }
     return null;
   }

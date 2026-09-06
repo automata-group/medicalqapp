@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../data/datasources/database_helper.dart';
@@ -106,6 +107,7 @@ class SyncProvider extends ChangeNotifier {
   }
 
   Future<void> clearLocalDatabase() async {
+    if (kIsWeb) return;
     await DatabaseHelper.instance.clearDatabase();
     _isDownloaded = false;
     _pendingAttempts = 0;

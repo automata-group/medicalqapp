@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:moyasar/moyasar.dart';
 
@@ -101,7 +102,7 @@ class _NativePaymentScreenState extends State<NativePaymentScreen> {
                 ),
                 const SizedBox(height: 40),
                 // Apple Pay widget (Only available on iOS)
-                if (Platform.isIOS)
+                if (!kIsWeb && Platform.isIOS)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: ApplePay(
