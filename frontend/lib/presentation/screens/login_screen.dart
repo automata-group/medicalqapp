@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
@@ -58,12 +59,20 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           } else {
             debugPrint('LOGIN DEBUG: Role is not admin, checking setup');
-            if (!(user?.hasSpecialties ?? false)) {
+            final prefs = await SharedPreferences.getInstance();
+            if (!mounted) return;
+            final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+            final bool hasStudyPlan = (user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
+            final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
+            final bool hasSelectedSpecialties = (user?.hasSpecialties ?? false) ||
+                (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
+
+            if (!hasSelectedSpecialties) {
               debugPrint('LOGIN DEBUG: Navigating to SpecialtySelectionScreen');
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
               );
-            } else if (!(user?.hasStudyPlan ?? false)) {
+            } else if (!hasStudyPlan) {
               debugPrint('LOGIN DEBUG: Navigating to CreatePlanScreen');
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const StudyGoalScreen()),

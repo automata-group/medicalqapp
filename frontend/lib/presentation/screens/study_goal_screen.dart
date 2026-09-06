@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -17,8 +18,24 @@ class StudyGoalScreen extends StatelessWidget {
   }
 }
 
-class _StudyGoalView extends StatelessWidget {
+class _StudyGoalView extends StatefulWidget {
   const _StudyGoalView();
+
+  @override
+  State<_StudyGoalView> createState() => _StudyGoalViewState();
+}
+
+class _StudyGoalViewState extends State<_StudyGoalView> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = context.read<StudyGoalProvider>();
+      if (provider.selectedDate == null) {
+        provider.loadGoal();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +56,20 @@ class _StudyGoalView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                l10n.setStudyGoal, // Add to ARB
+                l10n.setStudyGoal,
                 style:
                     const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                l10n.studyGoalSubtitle, // Add to ARB
+                l10n.studyGoalSubtitle,
                 style: TextStyle(color: Colors.grey[600], fontSize: 16),
               ),
               const SizedBox(height: 40),
 
               // Date Picker Section
               Text(
-                l10n.examDate, // Add to ARB
+                l10n.examDate,
                 style:
                     const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
@@ -74,10 +91,10 @@ class _StudyGoalView extends StatelessWidget {
                     builder: (context, child) {
                       return Theme(
                         data: Theme.of(context).copyWith(
-                          colorScheme: ColorScheme.light(
+                          colorScheme: const ColorScheme.light(
                             primary: AppColors.primary,
                             onPrimary: Colors.white,
-                            onSurface: const Color(0xFF1E293B),
+                            onSurface: Color(0xFF1E293B),
                           ),
                         ),
                         child: child!,
@@ -101,7 +118,7 @@ class _StudyGoalView extends StatelessWidget {
                     children: [
                       Text(
                         provider.selectedDate == null
-                            ? l10n.selectDate // Add to ARB
+                            ? l10n.selectDate
                             : '${provider.selectedDate!.day}/${provider.selectedDate!.month}/${provider.selectedDate!.year}',
                         style: TextStyle(
                             color: provider.selectedDate == null
@@ -123,12 +140,12 @@ class _StudyGoalView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    l10n.dailyStudyHours, // Add to ARB
+                    l10n.dailyStudyHours,
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${provider.dailyHours.toInt()} ${l10n.hours}', // Add to ARB
+                    '${provider.dailyHours.toInt()} ${l10n.hours}',
                     style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -164,18 +181,21 @@ class _StudyGoalView extends StatelessWidget {
                   onPressed: provider.isValid && !provider.isLoading
                       ? () async {
                           final success = await provider.saveGoal();
-                          // Navigate to Dashboard
                           if (context.mounted) {
                             if (success) {
-                              context.read<AuthProvider>().setHasStudyPlan(true);
-                              ToastUtils.showSuccess(context, l10n.studyPlanSaved);
-                              Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) =>
-                                        const MainContainerScreen()),
-                                (route) => false,
-                              );
+                              final prefs = await SharedPreferences.getInstance();
+                              await prefs.setBool('cached_has_study_plan', true);
+                              if (context.mounted) {
+                                context.read<AuthProvider>().setHasStudyPlan(true);
+                                ToastUtils.showSuccess(context, l10n.studyPlanSaved);
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const MainContainerScreen()),
+                                  (route) => false,
+                                );
+                              }
                             } else {
                               ToastUtils.showError(context, l10n.studyPlanSaveError);
                             }

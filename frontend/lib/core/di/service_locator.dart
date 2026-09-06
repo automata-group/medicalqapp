@@ -77,7 +77,9 @@ Future<void> init() async {
   sl.registerFactory(
     () => SpecialtyProvider(specialtyRepository: sl(), prefs: sl()),
   );
-  sl.registerFactory(() => StudyGoalProvider(specialtyRepository: sl()));
+  sl.registerFactory(
+    () => StudyGoalProvider(specialtyRepository: sl(), prefs: sl()),
+  );
 
   // Dashboard
   sl.registerLazySingleton<DashboardRemoteDataSource>(

@@ -7,6 +7,8 @@ import '../../domain/entities/specialty.dart';
 
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/utils/toast_utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'main_container_screen.dart';
 import 'study_goal_screen.dart';
 import '../providers/auth_provider.dart';
 import 'subscription/pricing_screen.dart';
@@ -197,19 +199,31 @@ class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () async {
+                      final auth = context.read<AuthProvider>();
+                      final navigator = Navigator.of(context);
                       final success = await provider.saveInterests();
-                      if (context.mounted) {
-                        if (success) {
-                          context.read<AuthProvider>().setHasSpecialties(true);
-                          Navigator.push(
-                            context,
+                      if (!mounted) return;
+                      if (success) {
+                        auth.setHasSpecialties(true);
+                        final prefs = await SharedPreferences.getInstance();
+                        if (!mounted) return;
+                        final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+                        final bool hasStudyPlan = (auth.user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
+                        if (hasStudyPlan) {
+                          navigator.pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+                            (route) => false,
+                          );
+                        } else {
+                          navigator.push(
                             MaterialPageRoute(
                                 builder: (_) => const StudyGoalScreen()),
                           );
-                        } else {
-                          ToastUtils.showError(context,
-                              'Failed to save selections. Please try again.');
                         }
+                      } else {
+                        if (!context.mounted) return;
+                        ToastUtils.showError(context,
+                            'Failed to save selections. Please try again.');
                       }
                     },
                     style: ElevatedButton.styleFrom(

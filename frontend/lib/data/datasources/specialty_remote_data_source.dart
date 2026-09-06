@@ -49,6 +49,7 @@ class SpecialtyRemoteDataSourceImpl implements SpecialtyRemoteDataSource {
     try {
       await dioClient.dio.put('/user/study-settings', data: {
         'examDate': date.toIso8601String(),
+        'dailyHours': hours,
         'dailyStudyHours': hours,
       });
     } on DioException catch (e) {

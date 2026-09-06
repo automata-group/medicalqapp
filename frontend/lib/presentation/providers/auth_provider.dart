@@ -26,7 +26,19 @@ class AuthProvider extends ChangeNotifier {
     final cachedUserJson = prefs.getString('cached_user');
     if (cachedUserJson != null) {
       try {
-        _user = UserModel.fromJson(json.decode(cachedUserJson));
+        var userModel = UserModel.fromJson(json.decode(cachedUserJson));
+        final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+        final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
+        final bool cachedHasSpecialties = (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
+
+        if (cachedHasStudyPlan && !userModel.hasStudyPlan) {
+          userModel = userModel.copyWith(hasStudyPlan: true);
+        }
+        if (cachedHasSpecialties && !userModel.hasSpecialties) {
+          userModel = userModel.copyWith(hasSpecialties: true);
+        }
+
+        _user = userModel;
         _isAuthenticated = true;
         // Notify in next microtask to avoid "setState() during build" errors
         Future.microtask(() => notifyListeners());
@@ -41,7 +53,13 @@ class AuthProvider extends ChangeNotifier {
 
     try {
       final updatedUser = await authRepository.getProfile();
-      _user = updatedUser;
+      final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+      if (cachedHasStudyPlan || updatedUser.hasStudyPlan) {
+        _user = updatedUser.copyWith(hasStudyPlan: true);
+        await prefs.setBool('cached_has_study_plan', true);
+      } else {
+        _user = updatedUser;
+      }
       _isAuthenticated = true;
       await prefs.setString('cached_user', json.encode(_user!.toJson()));
       notifyListeners();
@@ -54,7 +72,13 @@ class AuthProvider extends ChangeNotifier {
   Future<void> refreshProfile() async {
     try {
       final updatedUser = await authRepository.getProfile();
-      _user = updatedUser;
+      final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+      if (cachedHasStudyPlan || updatedUser.hasStudyPlan) {
+        _user = updatedUser.copyWith(hasStudyPlan: true);
+        await prefs.setBool('cached_has_study_plan', true);
+      } else {
+        _user = updatedUser;
+      }
       await prefs.setString('cached_user', json.encode(_user!.toJson()));
       notifyListeners();
     } catch (e) {
@@ -82,7 +106,17 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> login(String email, String password) async {
-    _user = await authRepository.login(email, password);
+    final loggedInUser = await authRepository.login(email, password);
+    final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+    if (loggedInUser.hasStudyPlan) {
+      await prefs.setBool('cached_has_study_plan', true);
+      _user = loggedInUser;
+    } else if (cachedHasStudyPlan) {
+      _user = loggedInUser.copyWith(hasStudyPlan: true);
+    } else {
+      _user = loggedInUser;
+    }
+
     _isAuthenticated = true;
     await prefs.setString('cached_user', json.encode(_user!.toJson()));
     notifyListeners();
@@ -104,6 +138,10 @@ class AuthProvider extends ChangeNotifier {
   Future<void> logout() async {
     await prefs.remove('accessToken');
     await prefs.remove('cached_user');
+    await prefs.remove('cached_has_study_plan');
+    await prefs.remove('cached_exam_date');
+    await prefs.remove('cached_daily_hours');
+    await prefs.remove('cached_selected_specialty_ids');
     _isAuthenticated = false;
     _user = null;
     notifyListeners();
@@ -131,6 +169,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void setHasStudyPlan(bool val) {
+    prefs.setBool('cached_has_study_plan', val);
     if (_user != null) {
       _user = _user!.copyWith(hasStudyPlan: val);
       prefs.setString('cached_user', json.encode(_user!.toJson()));

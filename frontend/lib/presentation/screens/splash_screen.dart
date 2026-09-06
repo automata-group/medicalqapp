@@ -87,6 +87,8 @@ class _SplashScreenState extends State<SplashScreen>
       final selectedIdsJson = prefs.getString('cached_selected_specialty_ids');
       final bool hasSelectedSpecialties = (user?.hasSpecialties ?? false) ||
           (selectedIdsJson != null && selectedIdsJson.isNotEmpty && selectedIdsJson != '[]');
+      final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+      final bool hasStudyPlan = (user?.hasStudyPlan ?? false) || cachedHasStudyPlan;
 
       if (user?.role == 'admin') {
         navigator.pushReplacement(
@@ -96,7 +98,7 @@ class _SplashScreenState extends State<SplashScreen>
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
         );
-      } else if (!(user?.hasStudyPlan ?? false)) {
+      } else if (!hasStudyPlan) {
         navigator.pushReplacement(
           MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
         );

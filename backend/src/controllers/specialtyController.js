@@ -141,37 +141,39 @@ exports.getUserSpecialties = async (req, res, next) => {
 // @access  Private
 exports.updateStudySettings = async (req, res, next) => {
     try {
-        const { examDate, dailyHours, targetScore, notificationEnabled, notificationTime, studyDays } = req.body;
+        const { examDate, dailyHours, dailyStudyHours, targetScore, notificationEnabled, notificationTime, studyDays } = req.body;
+
+        const effectiveHours = (dailyHours !== undefined && dailyHours !== null)
+            ? Number(dailyHours)
+            : ((dailyStudyHours !== undefined && dailyStudyHours !== null) ? Number(dailyStudyHours) : 2.0);
 
         let studyPlan = await StudyPlan.findOne({ where: { userId: req.user.id } });
 
+        const planData = {
+            userId: req.user.id,
+            examDate: examDate || undefined,
+            dailyHours: isNaN(effectiveHours) ? 2.0 : effectiveHours,
+            targetScore: targetScore !== undefined ? targetScore : 80,
+            notificationEnabled: notificationEnabled !== undefined ? notificationEnabled : true,
+            notificationTime: notificationTime || '09:00:00',
+            studyDays: studyDays || ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        };
+
         if (!studyPlan) {
             // Create if not exists
-            studyPlan = await StudyPlan.create({
-                userId: req.user.id,
-                examDate,
-                dailyHours,
-                targetScore,
-                notificationEnabled,
-                notificationTime,
-                studyDays
-            });
+            studyPlan = await StudyPlan.create(planData);
         } else {
             // Update
-            await studyPlan.update({
-                examDate,
-                dailyHours,
-                targetScore,
-                notificationEnabled,
-                notificationTime,
-                studyDays
-            });
+            await studyPlan.update(planData);
         }
+
+        const dataResponse = studyPlan.get ? studyPlan.get({ plain: true }) : studyPlan;
+        dataResponse.dailyStudyHours = dataResponse.dailyHours;
 
         res.status(200).json({
             success: true,
             message: 'Study settings updated',
-            data: studyPlan
+            data: dataResponse
         });
     } catch (error) {
         next(error);
@@ -185,9 +187,15 @@ exports.getStudySettings = async (req, res, next) => {
     try {
         const studyPlan = await StudyPlan.findOne({ where: { userId: req.user.id } });
 
+        let dataResponse = null;
+        if (studyPlan) {
+            dataResponse = studyPlan.get ? studyPlan.get({ plain: true }) : studyPlan;
+            dataResponse.dailyStudyHours = dataResponse.dailyHours;
+        }
+
         res.status(200).json({
             success: true,
-            data: studyPlan || {} // Return empty object if no plan set yet
+            data: dataResponse || {} // Return empty object if no plan set yet
         });
     } catch (error) {
         next(error);
