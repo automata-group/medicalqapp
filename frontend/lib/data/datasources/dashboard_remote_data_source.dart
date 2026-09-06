@@ -24,7 +24,6 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       final response = await dioClient.dio.get('/dashboard/overview');
 
       if (response.statusCode == 200 && response.data['success'] == true) {
-        debugPrint('Dashboard Data: ${response.data['data']}');
         return DashboardOverviewModel.fromJson(response.data['data']);
       } else {
         throw Exception('Failed to load dashboard overview');

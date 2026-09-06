@@ -15,9 +15,6 @@ class DioClient {
         ),
       ) {
     _dio.interceptors.add(
-      LogInterceptor(responseBody: true, requestBody: true),
-    );
-    _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
           final token = sharedPreferences.getString('accessToken');
