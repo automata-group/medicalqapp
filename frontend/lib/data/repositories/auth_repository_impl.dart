@@ -18,6 +18,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserModel> verifyEmail(String email, String otp) async {
+    return await remoteDataSource.verifyEmail(email, otp);
+  }
+
+  @override
+  Future<void> resendVerificationCode(String email) async {
+    return await remoteDataSource.resendVerificationCode(email);
+  }
+
+  @override
   Future<void> logout() async {
     // Implementation is handled in AuthProvider by clearing SharedPreferences
   }

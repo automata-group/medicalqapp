@@ -962,4 +962,45 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get proceedToLogin => 'Proceed to Login';
+
+  @override
+  String get verificationCode => 'Verification Code (OTP)';
+
+  @override
+  String get enterVerificationCode => 'Enter the 6-digit verification code';
+
+  @override
+  String get otpMustBe6Digits => 'Verification code must be 6 digits';
+
+  @override
+  String get resendCode => 'Resend Code';
+
+  @override
+  String resendCodeIn(int seconds) {
+    return 'Resend in ${seconds}s';
+  }
+
+  @override
+  String get codeResentSuccess =>
+      'A new verification code has been sent to your email';
+
+  @override
+  String enterEmailAndOtp(String email) {
+    return 'Enter the verification code sent to $email and your new password.';
+  }
+
+  @override
+  String get verifyAccountTitle => 'Activate Medical Account';
+
+  @override
+  String verifyAccountSubtitle(String email) {
+    return 'Welcome, Doctor! A verification code has been sent to activate your account:\n$email';
+  }
+
+  @override
+  String get verifyAndActivate => 'Activate Account & Continue';
+
+  @override
+  String get accountActivatedSuccess =>
+      'Medical account activated successfully!';
 }

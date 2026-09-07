@@ -1843,6 +1843,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Proceed to Login'**
   String get proceedToLogin;
+
+  /// No description provided for @verificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification Code (OTP)'**
+  String get verificationCode;
+
+  /// No description provided for @enterVerificationCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the 6-digit verification code'**
+  String get enterVerificationCode;
+
+  /// No description provided for @otpMustBe6Digits.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code must be 6 digits'**
+  String get otpMustBe6Digits;
+
+  /// No description provided for @resendCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend Code'**
+  String get resendCode;
+
+  /// No description provided for @resendCodeIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {seconds}s'**
+  String resendCodeIn(int seconds);
+
+  /// No description provided for @codeResentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'A new verification code has been sent to your email'**
+  String get codeResentSuccess;
+
+  /// No description provided for @enterEmailAndOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the verification code sent to {email} and your new password.'**
+  String enterEmailAndOtp(String email);
+
+  /// No description provided for @verifyAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Medical Account'**
+  String get verifyAccountTitle;
+
+  /// No description provided for @verifyAccountSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome, Doctor! A verification code has been sent to activate your account:\n{email}'**
+  String verifyAccountSubtitle(String email);
+
+  /// No description provided for @verifyAndActivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Activate Account & Continue'**
+  String get verifyAndActivate;
+
+  /// No description provided for @accountActivatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical account activated successfully!'**
+  String get accountActivatedSuccess;
 }
 
 class _AppLocalizationsDelegate

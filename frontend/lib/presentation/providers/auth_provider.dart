@@ -135,6 +135,18 @@ class AuthProvider extends ChangeNotifier {
     await authRepository.register(data);
   }
 
+  Future<void> verifyEmail(String email, String otp) async {
+    final verifiedUser = await authRepository.verifyEmail(email, otp);
+    _user = verifiedUser;
+    _isAuthenticated = true;
+    await prefs.setString('cached_user', json.encode(_user!.toJson()));
+    notifyListeners();
+  }
+
+  Future<void> resendVerificationCode(String email) async {
+    await authRepository.resendVerificationCode(email);
+  }
+
   Future<void> logout() async {
     await prefs.remove('accessToken');
     await prefs.remove('cached_user');

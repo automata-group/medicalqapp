@@ -352,13 +352,13 @@
   "onboardingSubtitle2": "قيّم مستوى ثقتك بعد كل سؤال. يتتبع النظام ما تتقنه حقاً (🟢)، وما هو متذبذب (🟡)، وما يحتاج إلى تركيز أكبر (🔴).",
   "onboardingTitle3": "أتقن كل\nموضوع وتخصص",
   "onboardingSubtitle3": "تابع نسبة إتقانك لكل تخصص وموضوع فرعي، وشاهد نقاط ضعفك تتحول إلى اللون الأخضر مع اقترابك من الجاهزية التامة للاختبار.",
-  "forgotPasswordSubtitle": "لا تقلق! أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.",
+  "forgotPasswordSubtitle": "أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق لتغيير كلمة المرور.",
   "emailAddress": "البريد الإلكتروني",
   "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
-  "sendResetLink": "إرسال رابط التعيين",
+  "sendResetLink": "إرسال رمز التحقق",
   "backToLogin": "العودة لتسجيل الدخول",
   "checkYourEmail": "تحقق من بريدك الإلكتروني!",
-  "weSentResetLink": "أرسلنا رابط إعادة تعيين كلمة المرور إلى\n{email}",
+  "weSentResetLink": "أرسلنا رمز التحقق لتغيير كلمة المرور إلى\n{email}",
   "@weSentResetLink": {
     "placeholders": {
       "email": {
@@ -367,7 +367,7 @@
     }
   },
   "didntReceiveEmail": "لم يصلك البريد؟ حاول مجدداً",
-  "setNewPassword": "تعيين كلمة مرور جديدة",
+  "setNewPassword": "تغيير كلمة المرور",
   "newPasswordSubtitle": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.",
   "newPassword": "كلمة المرور الجديدة",
   "confirmPassword": "تأكيد كلمة المرور",
@@ -375,8 +375,40 @@
   "passwordMinLength": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل",
   "passwordUppercase": "يجب تضمين حرف كبير واحد على الأقل",
   "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
-  "resetPasswordBtn": "إعادة تعيين كلمة المرور",
-  "passwordResetSuccess": "تمت إعادة تعيين كلمة المرور!",
+  "resetPasswordBtn": "تغيير كلمة المرور",
+  "passwordResetSuccess": "تم تغيير كلمة المرور بنجاح!",
   "passwordResetSuccessSubtitle": "تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول بكلمة المرور الجديدة.",
-  "proceedToLogin": "المتابعة لتسجيل الدخول"
+  "proceedToLogin": "المتابعة لتسجيل الدخول",
+  "verificationCode": "رمز التحقق (OTP)",
+  "enterVerificationCode": "أدخل رمز التحقق المكون من 6 أرقام",
+  "otpMustBe6Digits": "يجب أن يتكون رمز التحقق من 6 أرقام",
+  "resendCode": "إعادة إرسال الرمز",
+  "resendCodeIn": "إعادة الإرسال خلال {seconds} ثانية",
+  "@resendCodeIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "codeResentSuccess": "تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني",
+  "enterEmailAndOtp": "أدخل رمز التحقق المرسل إلى {email} لتغيير كلمة المرور.",
+  "@enterEmailAndOtp": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAccountTitle": "تفعيل الحساب الطبي",
+  "verifyAccountSubtitle": "سعادة الدكتور، تم إرسال رمز التحقق لتفعيل حسابك إلى:\n{email}",
+  "@verifyAccountSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAndActivate": "تفعيل الحساب والمتابعة",
+  "accountActivatedSuccess": "تم تفعيل حسابكم الطبي بنجاح!"
 }

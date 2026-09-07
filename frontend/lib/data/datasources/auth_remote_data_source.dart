@@ -7,8 +7,11 @@ import '../models/user_model.dart';
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
   Future<void> register(Map<String, dynamic> data);
+  Future<UserModel> verifyEmail(String email, String otp);
+  Future<void> resendVerificationCode(String email);
   Future<void> forgotPassword(String email);
   Future<void> resetPassword(String token, String newPassword);
+  Future<void> resetPasswordWithOtp(String email, String otp, String newPassword);
   Future<UserModel> getProfile();
   Future<UserModel> updateProfile(String fullName);
 }
@@ -49,7 +52,19 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> register(Map<String, dynamic> data) async {
     try {
-      final response = await dioClient.dio.post('/auth/register', data: data);
+      await dioClient.dio.post('/auth/register', data: data);
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Registration failed');
+    }
+  }
+
+  @override
+  Future<UserModel> verifyEmail(String email, String otp) async {
+    try {
+      final response = await dioClient.dio.post('/auth/verify-email', data: {
+        'email': email,
+        'otp': otp,
+      });
 
       final responseData = response.data;
       if (responseData != null &&
@@ -60,9 +75,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         if (accessToken != null) {
           await sharedPreferences.setString('accessToken', accessToken);
         }
+        return UserModel.fromJson(userData);
+      } else {
+        throw Exception(responseData?['message'] ?? 'Failed to verify email');
       }
     } on DioException catch (e) {
-      throw Exception(e.response?.data['message'] ?? 'Registration failed');
+      throw Exception(
+          e.response?.data['message'] ?? 'Verification failed');
+    }
+  }
+
+  @override
+  Future<void> resendVerificationCode(String email) async {
+    try {
+      await dioClient.dio.post('/auth/resend-verification', data: {'email': email});
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Failed to resend verification code');
     }
   }
 
@@ -81,6 +110,20 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       await dioClient.dio
           .put('/auth/reset-password/$token', data: {'password': newPassword});
+    } on DioException catch (e) {
+      throw Exception(
+          e.response?.data['message'] ?? 'Failed to reset password');
+    }
+  }
+
+  @override
+  Future<void> resetPasswordWithOtp(String email, String otp, String newPassword) async {
+    try {
+      await dioClient.dio.post('/auth/reset-password-otp', data: {
+        'email': email,
+        'otp': otp,
+        'password': newPassword,
+      });
     } on DioException catch (e) {
       throw Exception(
           e.response?.data['message'] ?? 'Failed to reset password');

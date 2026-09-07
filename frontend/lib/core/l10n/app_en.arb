@@ -413,5 +413,37 @@
   "resetPasswordBtn": "Reset Password",
   "passwordResetSuccess": "Password Reset!",
   "passwordResetSuccessSubtitle": "Your password has been successfully updated. You can now log in with your new password.",
-  "proceedToLogin": "Proceed to Login"
+  "proceedToLogin": "Proceed to Login",
+  "verificationCode": "Verification Code (OTP)",
+  "enterVerificationCode": "Enter the 6-digit verification code",
+  "otpMustBe6Digits": "Verification code must be 6 digits",
+  "resendCode": "Resend Code",
+  "resendCodeIn": "Resend in {seconds}s",
+  "@resendCodeIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "codeResentSuccess": "A new verification code has been sent to your email",
+  "enterEmailAndOtp": "Enter the verification code sent to {email} and your new password.",
+  "@enterEmailAndOtp": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAccountTitle": "Activate Medical Account",
+  "verifyAccountSubtitle": "Welcome, Doctor! A verification code has been sent to activate your account:\n{email}",
+  "@verifyAccountSubtitle": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyAndActivate": "Activate Account & Continue",
+  "accountActivatedSuccess": "Medical account activated successfully!"
 }

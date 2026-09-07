@@ -7,6 +7,7 @@ import '../providers/auth_provider.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'specialty_selection_screen.dart';
+import 'email_verification_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -39,19 +40,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() => _isLoading = true);
       try {
         final auth = Provider.of<AuthProvider>(context, listen: false);
+        final email = _emailController.text.trim();
         await auth.register(
           _nameController.text.trim(),
-          _emailController.text.trim(),
+          email,
           _passwordController.text,
           referralCode: _referralCodeController.text.trim(),
         );
-        // Automatically login after successful registration
-        await auth.login(_emailController.text.trim(), _passwordController.text);
+
         if (mounted) {
-          ToastUtils.showSuccess(context, 'Account created successfully!');
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
-            (route) => false,
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => EmailVerificationScreen(email: email),
+            ),
           );
         }
       } catch (e) {

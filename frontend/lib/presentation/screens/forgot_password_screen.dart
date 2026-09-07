@@ -4,6 +4,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/di/service_locator.dart';
 import '../../data/datasources/auth_remote_data_source.dart';
 import '../../core/utils/toast_utils.dart';
+import 'reset_password_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -27,14 +28,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _isLoading = true);
+    final email = _emailController.text.trim();
     try {
       final authDataSource = sl<AuthRemoteDataSource>();
-      await authDataSource.forgotPassword(_emailController.text.trim());
+      await authDataSource.forgotPassword(email);
       if (!mounted) return;
       setState(() => _emailSent = true);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => ResetPasswordScreen(email: email),
+        ),
+      );
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.showError(context, e.toString());
+      ToastUtils.showError(context, e.toString().replaceAll('Exception: ', ''));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -208,7 +216,31 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             style: const TextStyle(
                 fontSize: 15, color: AppColors.textLight, height: 1.6),
           ),
-          const SizedBox(height: 40),
+          const SizedBox(height: 32),
+
+          // Go to Enter Code Screen
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ResetPasswordScreen(email: _emailController.text.trim()),
+                ),
+              ),
+              icon: const Icon(Icons.pin_outlined, size: 20),
+              label: Text(l10n.enterVerificationCode,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
+                elevation: 0,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
 
           // Resend
           OutlinedButton.icon(

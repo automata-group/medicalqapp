@@ -19,10 +19,16 @@ exports.register = async (req, res, next) => {
     try {
         const { fullName, email, password, phone, referralCode } = req.body;
 
+        if (!email || !password || !fullName) {
+            return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+
         // Check if user exists
-        const userExists = await User.findOne({ where: { email } });
-        if (userExists) {
-            return res.status(400).json({ success: false, message: 'User already exists' });
+        let user = await User.findOne({ where: { email: normalizedEmail } });
+        if (user && user.isVerified) {
+            return res.status(400).json({ success: false, message: 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.' });
         }
 
         let referredById = null;
@@ -33,7 +39,7 @@ exports.register = async (req, res, next) => {
             }
         }
 
-        // Generate unique code
+        // Generate unique referral code
         let newReferralCode;
         let isUnique = false;
         while (!isUnique) {
@@ -44,31 +50,60 @@ exports.register = async (req, res, next) => {
             }
         }
 
-        // Create user
-        const user = await User.create({
-            fullName,
-            email,
-            password,
-            phone,
-            referralCode: newReferralCode,
-            referredById
-        });
+        // Generate 6-digit verification OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationToken = crypto.createHash('sha256').update(otp).digest('hex');
+        const resetPasswordExpires = Date.now() + 15 * 60 * 1000; // 15 mins
 
-        // Generate tokens
-        const accessToken = generateAccessToken(user.id);
-        const refreshToken = await RefreshToken.createToken(user, req.ip, req.headers['user-agent']);
+        if (user && !user.isVerified) {
+            // Update unverified user with new password and new OTP
+            user.fullName = fullName;
+            user.password = password; // Hook hashes it
+            user.phone = phone || user.phone;
+            user.verificationToken = verificationToken;
+            user.resetPasswordExpires = resetPasswordExpires;
+            await user.save();
+        } else {
+            user = await User.create({
+                fullName,
+                email: normalizedEmail,
+                password,
+                phone,
+                referralCode: newReferralCode,
+                referredById,
+                isVerified: false,
+                verificationToken,
+                resetPasswordExpires
+            });
+        }
+
+        // Send activation email
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'رمز تفعيل حسابكم الطبي - SDLE | Account Activation Code',
+                message: `سعادة الدكتور، نرحب بكم في منصة SDLE. رمز التحقق الخاص بكم لتفعيل حسابكم الطبي هو: ${otp} (صالح لمدة 15 دقيقة).`,
+                otp: otp,
+                isRegistration: true
+            });
+        } catch (err) {
+            console.warn('⚠️ Verification email send failed. OTP:', otp, err.message);
+        }
+
+        const responseData = {
+            message: 'تم إنشاء الحساب بنجاح. تم إرسال رمز التحقق إلى بريدك الإلكتروني.',
+            requireVerification: true,
+            email: user.email
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+            responseData.otp = otp;
+        }
 
         res.status(201).json({
             success: true,
-            data: {
-                id: user.id,
-                fullName: user.fullName,
-                email: user.email,
-                role: user.role,
-                referralCode: user.referralCode,
-                accessToken,
-                refreshToken
-            }
+            message: 'تم إنشاء الحساب بنجاح. يرجى إدخال رمز التحقق لتفعيل الحساب.',
+            data: responseData
         });
     } catch (error) {
         next(error);
@@ -229,66 +264,57 @@ exports.logout = async (req, res, next) => {
     }
 };
 
-// @desc    Forgot Password
+// @desc    Forgot Password - Send 6-digit OTP
 // @route   POST /api/v1/auth/forgot-password
 // @access  Public
 exports.forgotPassword = async (req, res, next) => {
     try {
-        const user = await User.findOne({ where: { email: req.body.email } });
-
-        if (!user) {
-            return res.status(200).json({ success: true, message: 'Email sent' }); // Security: don't reveal user existence
+        const { email } = req.body;
+        if (!email) {
+            return res.status(400).json({ success: false, message: 'Please provide an email address' });
         }
 
-        // Get reset token
-        const resetToken = crypto.randomBytes(20).toString('hex');
+        const normalizedEmail = email.trim().toLowerCase();
+        const user = await User.findOne({ where: { email: normalizedEmail } });
 
-        // Hash token and set to resetPasswordToken field
-        const resetPasswordToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+        // If user not found, notify immediately
+        if (!user) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى التأكد من البريد أو إنشاء حساب جديد.' 
+            });
+        }
 
-        // Set expire
-        const resetPasswordExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+        // Generate 6-digit numeric OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // Hash OTP and store in resetPasswordToken
+        const resetPasswordToken = crypto.createHash('sha256').update(otp).digest('hex');
+
+        // Set expiry to 15 minutes
+        const resetPasswordExpires = Date.now() + 15 * 60 * 1000;
 
         await user.update({ resetPasswordToken, resetPasswordExpires });
 
-        // Create reset url
-        const frontendUrl = process.env.FRONTEND_URL || 'https://healthlicenseprep.com';
-        const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
-
-        const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please open the link below to set a new password:\n\n${resetUrl}\n\nThis link will expire in 10 minutes.`;
-        const html = `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 16px; background-color: #ffffff;">
-                <h2 style="color: #2563EB; margin-top: 0;">إعادة تعيين كلمة المرور / Password Reset</h2>
-                <p style="font-size: 15px; color: #1e293b; line-height: 1.6;">تلقينا طلباً لإعادة تعيين كلمة المرور لحسابك في تطبيق SDLE.</p>
-                <p style="font-size: 15px; color: #1e293b; line-height: 1.6;">We received a request to reset your password. Click the button below to set a new password:</p>
-                <div style="margin: 32px 0; text-align: center;">
-                    <a href="${resetUrl}" style="background-color: #2563EB; color: #ffffff; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; font-size: 16px; display: inline-block;">
-                        إعادة تعيين كلمة المرور / Reset Password
-                    </a>
-                </div>
-                <p style="font-size: 13px; color: #64748B; line-height: 1.5; border-top: 1px solid #f1f5f9; padding-top: 16px;">
-                    ينتهي هذا الرابط خلال 10 دقائق. إذا لم تطلب إعادة التعيين، يمكنك تجاهل هذا البريد بأمان.<br>
-                    This link expires in 10 minutes. If you didn't request this, you can safely ignore this email.
-                </p>
-            </div>
-        `;
-
+        // Attempt to send email
         try {
             await sendEmail({
                 email: user.email,
-                subject: 'Password Reset / إعادة تعيين كلمة المرور',
-                message,
-                html
+                subject: 'رمز التحقق لتغيير كلمة المرور - SDLE | Password Change Code',
+                message: `سعادة الدكتور، رمز التحقق الخاص بكم لتغيير كلمة المرور في تطبيق SDLE هو: ${otp} (صالح لمدة 15 دقيقة).`,
+                otp: otp
             });
         } catch (err) {
-            // Email failed — don't crash, just log it
-            console.warn('⚠️  Email send failed. Reset token:', resetToken, err.message);
+            console.warn('⚠️ Email send failed. OTP:', otp, err.message);
         }
 
-        // In development, always return the token so the app can proceed without email
-        const responseData = { message: 'If that email address is in our system, a reset link was sent.' };
+        const responseData = { 
+            message: 'تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.' 
+        };
+
+        // In development or if explicitly enabled, return OTP for easy testing
         if (process.env.NODE_ENV === 'development') {
-            responseData.resetToken = resetToken; // Frontend can use this directly
+            responseData.otp = otp;
         }
 
         res.status(200).json({ success: true, data: responseData });
@@ -297,13 +323,78 @@ exports.forgotPassword = async (req, res, next) => {
     }
 };
 
-// @desc    Reset Password
+// @desc    Reset Password with 6-digit OTP
+// @route   POST /api/v1/auth/reset-password-otp
+// @access  Public
+exports.resetPasswordWithOtp = async (req, res, next) => {
+    try {
+        const { email, otp, password } = req.body;
+
+        if (!email || !otp || !password) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يرجى إدخال البريد الإلكتروني ورمز التحقق وكلمة المرور الجديدة' 
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يجب أن تتكون كلمة المرور من 6 خانات على الأقل' 
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+        const hashedOtp = crypto.createHash('sha256').update(String(otp).trim()).digest('hex');
+
+        const { Op } = require('sequelize');
+        const user = await User.findOne({
+            where: {
+                email: normalizedEmail,
+                resetPasswordToken: hashedOtp,
+                resetPasswordExpires: { [Op.gt]: Date.now() }
+            }
+        });
+
+        if (!user) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'رمز التحقق غير صحيح أو انتهت صلاحيته' 
+            });
+        }
+
+        // Set new password (model hook will hash with bcrypt)
+        user.password = password;
+        user.resetPasswordToken = null;
+        user.resetPasswordExpires = null;
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.'
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Reset Password via URL Token (Legacy / Web fallback)
 // @route   PUT /api/v1/auth/reset-password/:resettoken
 // @access  Public
 exports.resetPassword = async (req, res, next) => {
     try {
+        // If request body contains otp and email, delegate to OTP logic
+        if (req.body.otp && req.body.email) {
+            return exports.resetPasswordWithOtp(req, res, next);
+        }
+
+        const token = req.params.resettoken || req.body.token;
+        if (!token) {
+            return res.status(400).json({ success: false, message: 'Invalid or missing token' });
+        }
+
         // Get hashed token
-        const resetPasswordToken = crypto.createHash('sha256').update(req.params.resettoken).digest('hex');
+        const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
         const user = await User.findOne({
             where: {
@@ -313,28 +404,164 @@ exports.resetPassword = async (req, res, next) => {
         });
 
         if (!user) {
-            return res.status(400).json({ success: false, message: 'Invalid token' });
+            return res.status(400).json({ success: false, message: 'Invalid or expired token' });
         }
 
         // Set new password
-        user.password = req.body.password; // Hook will hash it
+        user.password = req.body.password;
         user.resetPasswordToken = null;
         user.resetPasswordExpires = null;
         await user.save();
 
         res.status(200).json({
             success: true,
-            data: 'Password updated'
+            message: 'Password updated successfully'
         });
     } catch (error) {
         next(error);
     }
 };
 
-// @desc    Verify Email
+// @desc    Verify Email with 6-digit OTP
 // @route   POST /api/v1/auth/verify-email
 // @access  Public
 exports.verifyEmail = async (req, res, next) => {
-    // Stub for now
-    res.status(200).json({ success: true, message: 'Email verified' });
+    try {
+        const { email, otp } = req.body;
+
+        if (!email || !otp) {
+            return res.status(400).json({
+                success: false,
+                message: 'يرجى إدخال البريد الإلكتروني ورمز التحقق'
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+        const hashedOtp = crypto.createHash('sha256').update(String(otp).trim()).digest('hex');
+
+        const { Op } = require('sequelize');
+        const user = await User.findOne({
+            where: {
+                email: normalizedEmail,
+                verificationToken: hashedOtp,
+                resetPasswordExpires: { [Op.gt]: Date.now() }
+            },
+            include: [
+                { model: require('../models').Specialty, as: 'specialties', attributes: ['id'] },
+                { model: require('../models').StudyPlan, as: 'studyPlan', attributes: ['id'] },
+                {
+                    model: require('../models').Subscription,
+                    as: 'subscriptions',
+                    where: { status: 'active' },
+                    required: false,
+                    limit: 1,
+                    order: [['endDate', 'DESC']]
+                }
+            ]
+        });
+
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: 'رمز التحقق غير صحيح أو انتهت صلاحيته'
+            });
+        }
+
+        user.isVerified = true;
+        user.verificationToken = null;
+        user.resetPasswordExpires = null;
+        await user.save();
+
+        const accessToken = generateAccessToken(user.id);
+        const refreshToken = await RefreshToken.createToken(user, req.ip, req.headers['user-agent']);
+
+        const activeSubscription = user.subscriptions && user.subscriptions.length > 0 ? user.subscriptions[0] : null;
+        const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+
+        res.status(200).json({
+            success: true,
+            message: 'تم تفعيل الحساب الطبي بنجاح!',
+            data: {
+                id: user.id,
+                fullName: user.fullName,
+                email: user.email,
+                role: user.role,
+                isVerified: true,
+                hasSpecialties: user.specialties && user.specialties.length > 0,
+                hasStudyPlan: !!user.studyPlan,
+                isPremium: !!isPremium,
+                accessToken,
+                refreshToken
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// @desc    Resend Verification OTP
+// @route   POST /api/v1/auth/resend-verification
+// @access  Public
+exports.resendVerificationCode = async (req, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: 'يرجى إدخال البريد الإلكتروني'
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+        const user = await User.findOne({ where: { email: normalizedEmail } });
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'هذا البريد الإلكتروني غير مسجل في المنصة.'
+            });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({
+                success: false,
+                message: 'هذا الحساب مفعل بالفعل، يمكنك تسجيل الدخول مباشرة.'
+            });
+        }
+
+        // Generate new 6-digit OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const verificationToken = crypto.createHash('sha256').update(otp).digest('hex');
+        const resetPasswordExpires = Date.now() + 15 * 60 * 1000;
+
+        await user.update({ verificationToken, resetPasswordExpires });
+
+        try {
+            await sendEmail({
+                email: user.email,
+                subject: 'رمز تفعيل حسابكم الطبي - SDLE | Account Activation Code',
+                message: `سعادة الدكتور، رمز التحقق الجديد الخاص بكم لتفعيل حسابكم الطبي في منصة SDLE هو: ${otp} (صالح لمدة 15 دقيقة).`,
+                otp: otp,
+                isRegistration: true
+            });
+        } catch (err) {
+            console.warn('⚠️ Verification email resend failed. OTP:', otp, err.message);
+        }
+
+        const responseData = {
+            message: 'تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.'
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+            responseData.otp = otp;
+        }
+
+        res.status(200).json({
+            success: true,
+            data: responseData
+        });
+    } catch (error) {
+        next(error);
+    }
 };

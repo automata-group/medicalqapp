@@ -894,7 +894,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get forgotPasswordSubtitle =>
-      'لا تقلق! أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور.';
+      'أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق لتغيير كلمة المرور.';
 
   @override
   String get emailAddress => 'البريد الإلكتروني';
@@ -903,7 +903,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pleaseEnterEmail => 'يرجى إدخال البريد الإلكتروني';
 
   @override
-  String get sendResetLink => 'إرسال رابط التعيين';
+  String get sendResetLink => 'إرسال رمز التحقق';
 
   @override
   String get backToLogin => 'العودة لتسجيل الدخول';
@@ -913,14 +913,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String weSentResetLink(String email) {
-    return 'أرسلنا رابط إعادة تعيين كلمة المرور إلى\n$email';
+    return 'أرسلنا رمز التحقق لتغيير كلمة المرور إلى\n$email';
   }
 
   @override
   String get didntReceiveEmail => 'لم يصلك البريد؟ حاول مجدداً';
 
   @override
-  String get setNewPassword => 'تعيين كلمة مرور جديدة';
+  String get setNewPassword => 'تغيير كلمة المرور';
 
   @override
   String get newPasswordSubtitle =>
@@ -946,10 +946,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
 
   @override
-  String get resetPasswordBtn => 'إعادة تعيين كلمة المرور';
+  String get resetPasswordBtn => 'تغيير كلمة المرور';
 
   @override
-  String get passwordResetSuccess => 'تمت إعادة تعيين كلمة المرور!';
+  String get passwordResetSuccess => 'تم تغيير كلمة المرور بنجاح!';
 
   @override
   String get passwordResetSuccessSubtitle =>
@@ -957,4 +957,43 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get proceedToLogin => 'المتابعة لتسجيل الدخول';
+
+  @override
+  String get verificationCode => 'رمز التحقق (OTP)';
+
+  @override
+  String get enterVerificationCode => 'أدخل رمز التحقق المكون من 6 أرقام';
+
+  @override
+  String get otpMustBe6Digits => 'يجب أن يتكون رمز التحقق من 6 أرقام';
+
+  @override
+  String get resendCode => 'إعادة إرسال الرمز';
+
+  @override
+  String resendCodeIn(int seconds) {
+    return 'إعادة الإرسال خلال $seconds ثانية';
+  }
+
+  @override
+  String get codeResentSuccess => 'تم إرسال رمز تحقق جديد إلى بريدك الإلكتروني';
+
+  @override
+  String enterEmailAndOtp(String email) {
+    return 'أدخل رمز التحقق المرسل إلى $email لتغيير كلمة المرور.';
+  }
+
+  @override
+  String get verifyAccountTitle => 'تفعيل الحساب الطبي';
+
+  @override
+  String verifyAccountSubtitle(String email) {
+    return 'سعادة الدكتور، تم إرسال رمز التحقق لتفعيل حسابك إلى:\n$email';
+  }
+
+  @override
+  String get verifyAndActivate => 'تفعيل الحساب والمتابعة';
+
+  @override
+  String get accountActivatedSuccess => 'تم تفعيل حسابكم الطبي بنجاح!';
 }
