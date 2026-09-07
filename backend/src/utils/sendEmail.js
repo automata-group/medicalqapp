@@ -160,24 +160,10 @@ const generateOtpEmailTemplate = (otp, expireMinutes = 15, isRegistration = fals
 };
 
 const sendEmail = async (options) => {
-    // Check if SMTP variables are set, otherwise fallback to console
-    const host = process.env.SMTP_HOST;
-    const emailUser = process.env.SMTP_EMAIL;
-    const emailPass = process.env.SMTP_PASSWORD;
-
-    if (!host && !process.env.SMTP_SERVICE) {
-        console.log('========================================');
-        console.log('⚠️ SMTP Config Missing - Email logged to console');
-        console.log(`📧 EMAIL SENT TO: ${options.email}`);
-        console.log(`Subject: ${options.subject}`);
-        if (options.otp) {
-            console.log(`🔑 OTP CODE: ${options.otp}`);
-        }
-        console.log(`Message: ${options.message}`);
-        console.log('========================================');
-        return;
-    }
-
+    // Robust fallbacks for Spaceship Spacemail
+    const host = (process.env.SMTP_HOST && process.env.SMTP_HOST.trim()) || 'mail.spacemail.com';
+    const emailUser = (process.env.SMTP_EMAIL && process.env.SMTP_EMAIL.trim()) || 'noreply@healthlicenseprep.com';
+    const emailPass = (process.env.SMTP_PASSWORD && process.env.SMTP_PASSWORD.trim()) || 'Saadshabib.12';
     const port = Number(process.env.SMTP_PORT) || 465;
     const transportConfig = process.env.SMTP_SERVICE
         ? {

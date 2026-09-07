@@ -156,11 +156,16 @@ jobs:
             echo "$SUDO_PW" | sudo -S systemctl stop nginx || true
             echo "$SUDO_PW" | sudo -S systemctl disable nginx || true
             
-            echo "4. Restarting services with Caddy and Secure Network..."
             export OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
             export MOYASAR_API_KEY="${{ secrets.MOYASAR_API_KEY }}"
             export MOYASAR_PUBLISHABLE_KEY="${{ secrets.MOYASAR_PUBLISHABLE_KEY }}"
             export MOYASAR_WEBHOOK_SECRET="${{ secrets.MOYASAR_WEBHOOK_SECRET }}"
+            export SMTP_HOST="mail.spacemail.com"
+            export SMTP_PORT="465"
+            export SMTP_EMAIL="noreply@healthlicenseprep.com"
+            export SMTP_PASSWORD="Saadshabib.12"
+            export FROM_EMAIL="noreply@healthlicenseprep.com"
+            export FROM_NAME="SDLE"
             echo "$SUDO_PW" | sudo -E -S docker compose up -d --force-recreate
             
             echo "4. Checking for early crashes..."
