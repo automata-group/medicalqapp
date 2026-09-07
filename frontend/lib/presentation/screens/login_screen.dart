@@ -10,6 +10,8 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'register_screen.dart';
 import 'main_container_screen.dart';
+import 'specialty_selection_screen.dart';
+import 'study_goal_screen.dart';
 import 'forgot_password_screen.dart';
 import 'admin/admin_scaffold.dart';
 
@@ -56,13 +58,22 @@ class _LoginScreenState extends State<LoginScreen> {
               MaterialPageRoute(builder: (_) => const AdminScaffold()),
             );
           } else {
-            debugPrint('LOGIN DEBUG: Role is not admin, navigating directly to MainContainerScreen');
             context.read<DashboardProvider>().loadDashboardData();
             context.read<SpecialtyProvider>().loadUserSpecialties();
 
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (_) => const MainContainerScreen()),
-            );
+            if (user?.hasSpecialties == false) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
+              );
+            } else if (user?.hasStudyPlan == false) {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
+              );
+            } else {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+              );
+            }
           }
         }
       } catch (e) {

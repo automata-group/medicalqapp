@@ -9,6 +9,8 @@ import '../../presentation/providers/specialty_provider.dart';
 import 'onboarding_screen.dart';
 import 'login_screen.dart';
 import 'main_container_screen.dart';
+import 'specialty_selection_screen.dart';
+import 'study_goal_screen.dart';
 import 'admin/admin_scaffold.dart';
 
 
@@ -88,9 +90,19 @@ class _SplashScreenState extends State<SplashScreen>
           MaterialPageRoute(builder: (_) => const AdminScaffold()),
         );
       } else {
-        navigator.pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainContainerScreen()),
-        );
+        if (user?.hasSpecialties == false) {
+          navigator.pushReplacement(
+            MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
+          );
+        } else if (user?.hasStudyPlan == false) {
+          navigator.pushReplacement(
+            MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
+          );
+        } else {
+          navigator.pushReplacement(
+            MaterialPageRoute(builder: (_) => const MainContainerScreen()),
+          );
+        }
       }
     } else {
       navigator.pushReplacement(

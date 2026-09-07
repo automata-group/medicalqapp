@@ -8,6 +8,7 @@ import '../../domain/entities/specialty.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/utils/toast_utils.dart';
 import 'main_container_screen.dart';
+import 'study_goal_screen.dart';
 import '../providers/auth_provider.dart';
 import 'subscription/pricing_screen.dart';
 import '../../core/utils/specialty_extension.dart';
@@ -205,6 +206,14 @@ class _SpecialtySelectionViewState extends State<_SpecialtySelectionView> {
                       if (!mounted) return;
                       if (success) {
                         auth.setHasSpecialties(true);
+                        final hasStudyPlan = auth.user?.hasStudyPlan ?? false;
+                        if (!hasStudyPlan) {
+                          navigator.pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
+                            (route) => false,
+                          );
+                          return;
+                        }
                         if (navigator.canPop()) {
                           navigator.pop();
                           return;
