@@ -1003,4 +1003,48 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountActivatedSuccess =>
       'Medical account activated successfully!';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get fullNameHint => 'Dr. Ahmed Mohamed';
+
+  @override
+  String get nameTooShort => 'Name must be at least 3 characters';
+
+  @override
+  String get passwordNumber => 'Include at least one number (0-9)';
+
+  @override
+  String get referralCodeOptional => 'Referral Code (Optional)';
+
+  @override
+  String get referralCodeHint => 'Enter friend\'s referral code';
+
+  @override
+  String get accountAlreadyExistsTitle => 'Account Already Exists';
+
+  @override
+  String get accountAlreadyExistsMessage =>
+      'This email is already registered. You can log in directly or reset your password.';
+
+  @override
+  String get goToLogin => 'Log In';
+
+  @override
+  String get goToForgotPassword => 'Change Password';
+
+  @override
+  String get accountNotVerifiedTitle => 'Account Not Verified';
+
+  @override
+  String get accountNotVerifiedMessage =>
+      'Your account is pending verification. Would you like to enter the code now?';
+
+  @override
+  String get verifyNow => 'Verify Now';
+
+  @override
+  String get passwordRequirements => 'Password Security Requirements:';
 }

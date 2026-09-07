@@ -13,6 +13,7 @@ import 'main_container_screen.dart';
 import 'specialty_selection_screen.dart';
 import 'study_goal_screen.dart';
 import 'forgot_password_screen.dart';
+import 'email_verification_screen.dart';
 import 'admin/admin_scaffold.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -27,6 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -35,22 +37,66 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _showUnverifiedAccountDialog(String email) {
+    final l10n = AppLocalizations.of(context)!;
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        title: Row(
+          children: [
+            const Icon(Icons.mark_email_unread_outlined, color: Color(0xFFF59E0B), size: 28),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                l10n.accountNotVerifiedTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          l10n.accountNotVerifiedMessage,
+          style: const TextStyle(fontSize: 14, height: 1.5),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: Text(l10n.cancel, style: const TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => EmailVerificationScreen(email: email),
+                ),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            ),
+            child: Text(l10n.verifyNow, style: const TextStyle(fontWeight: FontWeight.bold)),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
         await Provider.of<AuthProvider>(context, listen: false).login(
-          _emailController.text,
+          _emailController.text.trim(),
           _passwordController.text,
         );
 
         if (mounted) {
           final user = Provider.of<AuthProvider>(context, listen: false).user;
           debugPrint('LOGIN DEBUG: User ID: ${user?.id}');
-          debugPrint('LOGIN DEBUG: Has Specialties: ${user?.hasSpecialties}');
-          debugPrint('LOGIN DEBUG: Has Study Plan: ${user?.hasStudyPlan}');
-
-          // Removed Debug SnackBar
 
           if (user?.role == 'admin') {
             debugPrint('LOGIN DEBUG: Navigating to AdminScaffold');
@@ -78,7 +124,12 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         if (mounted) {
-          ToastUtils.showError(context, e.toString().replaceAll('Exception: ', ''));
+          final errorMsg = e.toString().replaceAll('Exception: ', '');
+          if (errorMsg.contains('غير مفعّل') || errorMsg.contains('NOT_VERIFIED') || errorMsg.contains('verification')) {
+            _showUnverifiedAccountDialog(_emailController.text.trim());
+          } else {
+            ToastUtils.showError(context, errorMsg);
+          }
         }
       } finally {
         if (mounted) {
@@ -173,10 +224,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 // Password Field
                 CustomTextField(
                   label: l10n.password,
-                  hint: '********',
-                  isPassword: true,
+                  hint: '••••••••',
+                  isPassword: _obscurePassword,
                   controller: _passwordController,
                   prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      color: Colors.grey,
+                    ),
+                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                  ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return l10n.fieldRequired;

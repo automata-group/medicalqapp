@@ -996,4 +996,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountActivatedSuccess => 'تم تفعيل حسابكم الطبي بنجاح!';
+
+  @override
+  String get fullName => 'الاسم الكامل';
+
+  @override
+  String get fullNameHint => 'د. أحمد محمد';
+
+  @override
+  String get nameTooShort => 'يجب أن يتكون الاسم من 3 أحرف على الأقل';
+
+  @override
+  String get passwordNumber => 'يجب تضمين رقم واحد على الأقل (0-9)';
+
+  @override
+  String get referralCodeOptional => 'كود الدعوة (اختياري)';
+
+  @override
+  String get referralCodeHint => 'أدخل كود زميلك إن وجد';
+
+  @override
+  String get accountAlreadyExistsTitle => 'الحساب مسجل مسبقاً';
+
+  @override
+  String get accountAlreadyExistsMessage =>
+      'هذا البريد الإلكتروني مسجل مسبقاً في المنصة. يمكنك تسجيل الدخول مباشرة أو تغيير كلمة المرور في حال نسيتها.';
+
+  @override
+  String get goToLogin => 'تسجيل الدخول';
+
+  @override
+  String get goToForgotPassword => 'تغيير كلمة المرور';
+
+  @override
+  String get accountNotVerifiedTitle => 'الحساب غير مفعّل';
+
+  @override
+  String get accountNotVerifiedMessage =>
+      'حسابكم الطبي بحاجة إلى إدخال رمز التحقق لإتمام التفعيل. هل تود إدخال الرمز الآن؟';
+
+  @override
+  String get verifyNow => 'تفعيل الحساب الآن';
+
+  @override
+  String get passwordRequirements => 'شروط أمان كلمة المرور:';
 }

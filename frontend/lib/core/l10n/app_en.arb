@@ -445,5 +445,19 @@
     }
   },
   "verifyAndActivate": "Activate Account & Continue",
-  "accountActivatedSuccess": "Medical account activated successfully!"
+  "accountActivatedSuccess": "Medical account activated successfully!",
+  "fullName": "Full Name",
+  "fullNameHint": "Dr. Ahmed Mohamed",
+  "nameTooShort": "Name must be at least 3 characters",
+  "passwordNumber": "Include at least one number (0-9)",
+  "referralCodeOptional": "Referral Code (Optional)",
+  "referralCodeHint": "Enter friend's referral code",
+  "accountAlreadyExistsTitle": "Account Already Exists",
+  "accountAlreadyExistsMessage": "This email is already registered. You can log in directly or reset your password.",
+  "goToLogin": "Log In",
+  "goToForgotPassword": "Change Password",
+  "accountNotVerifiedTitle": "Account Not Verified",
+  "accountNotVerifiedMessage": "Your account is pending verification. Would you like to enter the code now?",
+  "verifyNow": "Verify Now",
+  "passwordRequirements": "Password Security Requirements:"
 }

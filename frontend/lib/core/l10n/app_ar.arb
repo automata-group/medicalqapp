@@ -410,5 +410,19 @@
     }
   },
   "verifyAndActivate": "تفعيل الحساب والمتابعة",
-  "accountActivatedSuccess": "تم تفعيل حسابكم الطبي بنجاح!"
+  "accountActivatedSuccess": "تم تفعيل حسابكم الطبي بنجاح!",
+  "fullName": "الاسم الكامل",
+  "fullNameHint": "د. أحمد محمد",
+  "nameTooShort": "يجب أن يتكون الاسم من 3 أحرف على الأقل",
+  "passwordNumber": "يجب تضمين رقم واحد على الأقل (0-9)",
+  "referralCodeOptional": "كود الدعوة (اختياري)",
+  "referralCodeHint": "أدخل كود زميلك إن وجد",
+  "accountAlreadyExistsTitle": "الحساب مسجل مسبقاً",
+  "accountAlreadyExistsMessage": "هذا البريد الإلكتروني مسجل مسبقاً في المنصة. يمكنك تسجيل الدخول مباشرة أو تغيير كلمة المرور في حال نسيتها.",
+  "goToLogin": "تسجيل الدخول",
+  "goToForgotPassword": "تغيير كلمة المرور",
+  "accountNotVerifiedTitle": "الحساب غير مفعّل",
+  "accountNotVerifiedMessage": "حسابكم الطبي بحاجة إلى إدخال رمز التحقق لإتمام التفعيل. هل تود إدخال الرمز الآن؟",
+  "verifyNow": "تفعيل الحساب الآن",
+  "passwordRequirements": "شروط أمان كلمة المرور:"
 }

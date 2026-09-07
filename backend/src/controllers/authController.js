@@ -20,7 +20,38 @@ exports.register = async (req, res, next) => {
         const { fullName, email, password, phone, referralCode } = req.body;
 
         if (!email || !password || !fullName) {
-            return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يرجى إدخال الاسم الكامل والبريد الإلكتروني وكلمة المرور.' 
+            });
+        }
+
+        if (fullName.trim().length < 3) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يجب أن يتكون الاسم الكامل من 3 أحرف على الأقل.' 
+            });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.' 
+            });
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).' 
+            });
+        }
+
+        if (!/[0-9]/.test(password)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).' 
+            });
         }
 
         const normalizedEmail = email.trim().toLowerCase();
@@ -28,7 +59,11 @@ exports.register = async (req, res, next) => {
         // Check if user exists
         let user = await User.findOne({ where: { email: normalizedEmail } });
         if (user && user.isVerified) {
-            return res.status(400).json({ success: false, message: 'هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول.' });
+            return res.status(400).json({ 
+                success: false, 
+                code: 'EMAIL_ALREADY_EXISTS',
+                message: 'هذا البريد الإلكتروني مسجل بالفعل في المنصة. يمكنك تسجيل الدخول مباشرة أو تغيير كلمة المرور.' 
+            });
         }
 
         let referredById = null;
@@ -115,11 +150,16 @@ exports.login = async (req, res, next) => {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(400).json({ success: false, message: 'Please provide email and password' });
+            return res.status(400).json({ 
+                success: false, 
+                message: 'يرجى إدخال البريد الإلكتروني وكلمة المرور.' 
+            });
         }
 
+        const normalizedEmail = email.trim().toLowerCase();
+
         const user = await User.findOne({
-            where: { email },
+            where: { email: normalizedEmail },
             include: [
                 { model: require('../models').Specialty, as: 'specialties', attributes: ['id'] },
                 { model: require('../models').StudyPlan, as: 'studyPlan', attributes: ['id'] },
@@ -134,12 +174,30 @@ exports.login = async (req, res, next) => {
             ]
         });
         if (!user) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return res.status(401).json({ 
+                success: false, 
+                code: 'USER_NOT_FOUND',
+                message: 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى إنشاء حساب جديد.' 
+            });
+        }
+
+        if (!user.isVerified) {
+            return res.status(403).json({
+                success: false,
+                code: 'ACCOUNT_NOT_VERIFIED',
+                requireVerification: true,
+                email: user.email,
+                message: 'حسابكم الطبي غير مفعّل بعد. يرجى إدخال رمز التحقق لتفعيل الحساب.'
+            });
         }
 
         const isMatch = await user.matchPassword(password);
         if (!isMatch) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return res.status(401).json({ 
+                success: false, 
+                code: 'INVALID_PASSWORD',
+                message: 'كلمة المرور غير صحيحة. يرجى التأكد من كتابتها أو استخدام خيار تغيير كلمة المرور.' 
+            });
         }
 
         const accessToken = generateAccessToken(user.id);

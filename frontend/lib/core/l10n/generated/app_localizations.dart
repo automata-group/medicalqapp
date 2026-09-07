@@ -1909,6 +1909,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Medical account activated successfully!'**
   String get accountActivatedSuccess;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @fullNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Dr. Ahmed Mohamed'**
+  String get fullNameHint;
+
+  /// No description provided for @nameTooShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 3 characters'**
+  String get nameTooShort;
+
+  /// No description provided for @passwordNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Include at least one number (0-9)'**
+  String get passwordNumber;
+
+  /// No description provided for @referralCodeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Referral Code (Optional)'**
+  String get referralCodeOptional;
+
+  /// No description provided for @referralCodeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter friend\'s referral code'**
+  String get referralCodeHint;
+
+  /// No description provided for @accountAlreadyExistsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Already Exists'**
+  String get accountAlreadyExistsTitle;
+
+  /// No description provided for @accountAlreadyExistsMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already registered. You can log in directly or reset your password.'**
+  String get accountAlreadyExistsMessage;
+
+  /// No description provided for @goToLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Log In'**
+  String get goToLogin;
+
+  /// No description provided for @goToForgotPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get goToForgotPassword;
+
+  /// No description provided for @accountNotVerifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Not Verified'**
+  String get accountNotVerifiedTitle;
+
+  /// No description provided for @accountNotVerifiedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is pending verification. Would you like to enter the code now?'**
+  String get accountNotVerifiedMessage;
+
+  /// No description provided for @verifyNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify Now'**
+  String get verifyNow;
+
+  /// No description provided for @passwordRequirements.
+  ///
+  /// In en, this message translates to:
+  /// **'Password Security Requirements:'**
+  String get passwordRequirements;
 }
 
 class _AppLocalizationsDelegate
