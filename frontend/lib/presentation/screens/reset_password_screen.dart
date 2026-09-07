@@ -106,7 +106,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       setState(() => _isSuccess = true);
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.showError(context, e.toString().replaceAll('Exception: ', ''));
+      final l10n = AppLocalizations.of(context)!;
+      final raw = e.toString().replaceAll('Exception: ', '');
+      String msg = raw;
+      if (raw.contains('SAME_AS_OLD_PASSWORD') || raw.contains('السابقة') || raw.contains('previous password')) {
+        msg = l10n.sameAsOldPassword;
+      } else if (raw.contains('INVALID_OTP') || raw.contains('رمز التحقق غير صحيح') || raw.contains('expired')) {
+        msg = l10n.invalidOrExpiredOtp;
+      } else if (raw.contains('USER_NOT_FOUND') || raw.contains('غير مسجل') || raw.contains('not registered')) {
+        msg = l10n.emailNotFound;
+      }
+      ToastUtils.showError(context, msg);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

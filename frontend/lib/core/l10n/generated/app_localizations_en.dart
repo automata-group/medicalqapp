@@ -1047,4 +1047,26 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordRequirements => 'Password Security Requirements:';
+
+  @override
+  String get sameAsOldPassword =>
+      'Cannot reuse the previous password. Please choose a new and different password.';
+
+  @override
+  String get invalidOrExpiredOtp => 'Invalid or expired verification code.';
+
+  @override
+  String get emailNotFound => 'This email is not registered on the platform.';
+
+  @override
+  String get invalidPassword =>
+      'Incorrect password. Please verify your credentials or change password.';
+
+  @override
+  String get networkError =>
+      'Could not connect to server. Please check your internet connection.';
+
+  @override
+  String get otpSentSuccess =>
+      'Verification code has been sent to your email successfully.';
 }

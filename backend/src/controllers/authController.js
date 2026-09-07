@@ -11,9 +11,11 @@ const generateAccessToken = (id) => {
     });
 };
 
-// ... (register, login, getMe, refreshToken, logout methods - keeping them as is, just appending or replacing file if easier)
-// ACTUALLY, replace_file_content is best if I just append. But I need to handle imports at top.
-// I will replace the whole file to be safe and clean.
+// Helper for localized response messages (supports AR and EN)
+const getMsg = (req, ar, en) => {
+    const lang = (req.headers['accept-language'] || req.headers['Accept-Language'] || 'ar').toLowerCase();
+    return lang.startsWith('en') ? en : ar;
+};
 
 exports.register = async (req, res, next) => {
     try {
@@ -22,35 +24,35 @@ exports.register = async (req, res, next) => {
         if (!email || !password || !fullName) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يرجى إدخال الاسم الكامل والبريد الإلكتروني وكلمة المرور.' 
+                message: getMsg(req, 'يرجى إدخال الاسم الكامل والبريد الإلكتروني وكلمة المرور.', 'Please provide full name, email, and password.')
             });
         }
 
         if (fullName.trim().length < 3) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن يتكون الاسم الكامل من 3 أحرف على الأقل.' 
+                message: getMsg(req, 'يجب أن يتكون الاسم الكامل من 3 أحرف على الأقل.', 'Full name must be at least 3 characters long.')
             });
         }
 
         if (password.length < 8) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.' 
+                message: getMsg(req, 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.', 'Password must be at least 8 characters long.')
             });
         }
 
         if (!/[A-Z]/.test(password)) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).' 
+                message: getMsg(req, 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).', 'Password must contain at least one uppercase letter (A-Z).')
             });
         }
 
         if (!/[0-9]/.test(password)) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).' 
+                message: getMsg(req, 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).', 'Password must contain at least one number (0-9).')
             });
         }
 
@@ -62,7 +64,7 @@ exports.register = async (req, res, next) => {
             return res.status(400).json({ 
                 success: false, 
                 code: 'EMAIL_ALREADY_EXISTS',
-                message: 'هذا البريد الإلكتروني مسجل بالفعل في المنصة. يمكنك تسجيل الدخول مباشرة أو تغيير كلمة المرور.' 
+                message: getMsg(req, 'هذا البريد الإلكتروني مسجل بالفعل في المنصة. يمكنك تسجيل الدخول مباشرة أو تغيير كلمة المرور.', 'This email is already registered. You can log in directly or change your password.')
             });
         }
 
@@ -126,7 +128,7 @@ exports.register = async (req, res, next) => {
         }
 
         const responseData = {
-            message: 'تم إنشاء الحساب بنجاح. تم إرسال رمز التحقق إلى بريدك الإلكتروني.',
+            message: getMsg(req, 'تم إنشاء الحساب بنجاح. تم إرسال رمز التحقق إلى بريدك الإلكتروني.', 'Account created successfully. Verification code sent to your email.'),
             requireVerification: true,
             email: user.email
         };
@@ -137,7 +139,7 @@ exports.register = async (req, res, next) => {
 
         res.status(201).json({
             success: true,
-            message: 'تم إنشاء الحساب بنجاح. يرجى إدخال رمز التحقق لتفعيل الحساب.',
+            message: getMsg(req, 'تم إنشاء الحساب بنجاح. يرجى إدخال رمز التحقق لتفعيل الحساب.', 'Account created successfully. Please enter the verification code to activate your account.'),
             data: responseData
         });
     } catch (error) {
@@ -152,7 +154,7 @@ exports.login = async (req, res, next) => {
         if (!email || !password) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يرجى إدخال البريد الإلكتروني وكلمة المرور.' 
+                message: getMsg(req, 'يرجى إدخال البريد الإلكتروني وكلمة المرور.', 'Please enter email and password.')
             });
         }
 
@@ -177,7 +179,7 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ 
                 success: false, 
                 code: 'USER_NOT_FOUND',
-                message: 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى إنشاء حساب جديد.' 
+                message: getMsg(req, 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى إنشاء حساب جديد.', 'This email is not registered on the platform. Please create a new account.')
             });
         }
 
@@ -187,7 +189,7 @@ exports.login = async (req, res, next) => {
                 code: 'ACCOUNT_NOT_VERIFIED',
                 requireVerification: true,
                 email: user.email,
-                message: 'حسابكم الطبي غير مفعّل بعد. يرجى إدخال رمز التحقق لتفعيل الحساب.'
+                message: getMsg(req, 'حسابكم الطبي غير مفعّل بعد. يرجى إدخال رمز التحقق لتفعيل الحساب.', 'Your medical account is not verified yet. Please enter the verification code.')
             });
         }
 
@@ -196,7 +198,7 @@ exports.login = async (req, res, next) => {
             return res.status(401).json({ 
                 success: false, 
                 code: 'INVALID_PASSWORD',
-                message: 'كلمة المرور غير صحيحة. يرجى التأكد من كتابتها أو استخدام خيار تغيير كلمة المرور.' 
+                message: getMsg(req, 'كلمة المرور غير صحيحة. يرجى التأكد من كتابتها أو استخدام خيار تغيير كلمة المرور.', 'Incorrect password. Please verify your credentials or change your password.')
             });
         }
 
@@ -329,7 +331,10 @@ exports.forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body;
         if (!email) {
-            return res.status(400).json({ success: false, message: 'Please provide an email address' });
+            return res.status(400).json({ 
+                success: false, 
+                message: getMsg(req, 'يرجى إدخال البريد الإلكتروني.', 'Please provide an email address.') 
+            });
         }
 
         const normalizedEmail = email.trim().toLowerCase();
@@ -339,7 +344,8 @@ exports.forgotPassword = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({ 
                 success: false, 
-                message: 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى التأكد من البريد أو إنشاء حساب جديد.' 
+                code: 'USER_NOT_FOUND',
+                message: getMsg(req, 'هذا البريد الإلكتروني غير مسجل في المنصة. يرجى التأكد من البريد أو إنشاء حساب جديد.', 'This email is not registered on the platform. Please check the email or create a new account.') 
             });
         }
 
@@ -367,7 +373,7 @@ exports.forgotPassword = async (req, res, next) => {
         }
 
         const responseData = { 
-            message: 'تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.' 
+            message: getMsg(req, 'تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.', 'Verification code has been sent to your email successfully.') 
         };
 
         // In development or if explicitly enabled, return OTP for easy testing
@@ -391,28 +397,28 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
         if (!email || !otp || !password) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يرجى إدخال البريد الإلكتروني ورمز التحقق وكلمة المرور الجديدة' 
+                message: getMsg(req, 'يرجى إدخال البريد الإلكتروني ورمز التحقق وكلمة المرور الجديدة', 'Please provide email, verification code, and new password.') 
             });
         }
 
         if (password.length < 8) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.' 
+                message: getMsg(req, 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.', 'Password must be at least 8 characters long.') 
             });
         }
 
         if (!/[A-Z]/.test(password)) {
             return res.status(400).json({
                 success: false,
-                message: 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).'
+                message: getMsg(req, 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).', 'Password must contain at least one uppercase letter (A-Z).')
             });
         }
 
         if (!/[0-9]/.test(password)) {
             return res.status(400).json({
                 success: false,
-                message: 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).'
+                message: getMsg(req, 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).', 'Password must contain at least one number (0-9).')
             });
         }
 
@@ -431,7 +437,8 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'رمز التحقق غير صحيح أو انتهت صلاحيته' 
+                code: 'INVALID_OTP',
+                message: getMsg(req, 'رمز التحقق غير صحيح أو انتهت صلاحيته', 'Invalid or expired verification code.') 
             });
         }
 
@@ -441,7 +448,7 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 code: 'SAME_AS_OLD_PASSWORD',
-                message: 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة لضمان أمان حسابكم الطبي.'
+                message: getMsg(req, 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة لضمان أمان حسابكم الطبي.', 'Cannot reuse the previous password. Please choose a new and different password.')
             });
         }
 
@@ -453,7 +460,7 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.'
+            message: getMsg(req, 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.', 'Password updated successfully. You can now log in.')
         });
     } catch (error) {
         next(error);
@@ -472,14 +479,17 @@ exports.resetPassword = async (req, res, next) => {
 
         const token = req.params.resettoken || req.body.token;
         if (!token) {
-            return res.status(400).json({ success: false, message: 'Invalid or missing token' });
+            return res.status(400).json({ 
+                success: false, 
+                message: getMsg(req, 'الرمز غير صحيح أو مفقود', 'Invalid or missing token') 
+            });
         }
 
         const password = req.body.password;
         if (!password || password.length < 8) {
             return res.status(400).json({
                 success: false,
-                message: 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.'
+                message: getMsg(req, 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.', 'Password must be at least 8 characters long.')
             });
         }
 
@@ -494,7 +504,10 @@ exports.resetPassword = async (req, res, next) => {
         });
 
         if (!user) {
-            return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+            return res.status(400).json({ 
+                success: false, 
+                message: getMsg(req, 'الرمز غير صحيح أو انتهت صلاحيته', 'Invalid or expired token') 
+            });
         }
 
         // Check if new password is same as old
@@ -503,7 +516,7 @@ exports.resetPassword = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 code: 'SAME_AS_OLD_PASSWORD',
-                message: 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة.'
+                message: getMsg(req, 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة.', 'Cannot reuse the previous password. Please choose a new and different password.')
             });
         }
 
@@ -515,7 +528,7 @@ exports.resetPassword = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.'
+            message: getMsg(req, 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.', 'Password updated successfully. You can now log in.')
         });
     } catch (error) {
         next(error);
@@ -532,7 +545,7 @@ exports.verifyEmail = async (req, res, next) => {
         if (!email || !otp) {
             return res.status(400).json({
                 success: false,
-                message: 'يرجى إدخال البريد الإلكتروني ورمز التحقق'
+                message: getMsg(req, 'يرجى إدخال البريد الإلكتروني ورمز التحقق', 'Please enter email and verification code.')
             });
         }
 
@@ -563,7 +576,8 @@ exports.verifyEmail = async (req, res, next) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: 'رمز التحقق غير صحيح أو انتهت صلاحيته'
+                code: 'INVALID_OTP',
+                message: getMsg(req, 'رمز التحقق غير صحيح أو انتهت صلاحيته', 'Invalid or expired verification code.')
             });
         }
 
@@ -580,7 +594,7 @@ exports.verifyEmail = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: 'تم تفعيل الحساب الطبي بنجاح!',
+            message: getMsg(req, 'تم تفعيل الحساب الطبي بنجاح!', 'Medical account activated successfully!'),
             data: {
                 id: user.id,
                 fullName: user.fullName,
@@ -609,7 +623,7 @@ exports.resendVerificationCode = async (req, res, next) => {
         if (!email) {
             return res.status(400).json({
                 success: false,
-                message: 'يرجى إدخال البريد الإلكتروني'
+                message: getMsg(req, 'يرجى إدخال البريد الإلكتروني', 'Please provide an email address.')
             });
         }
 
@@ -619,14 +633,15 @@ exports.resendVerificationCode = async (req, res, next) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: 'هذا البريد الإلكتروني غير مسجل في المنصة.'
+                code: 'USER_NOT_FOUND',
+                message: getMsg(req, 'هذا البريد الإلكتروني غير مسجل في المنصة.', 'This email is not registered on the platform.')
             });
         }
 
         if (user.isVerified) {
             return res.status(400).json({
                 success: false,
-                message: 'هذا الحساب مفعل بالفعل، يمكنك تسجيل الدخول مباشرة.'
+                message: getMsg(req, 'هذا الحساب مفعل بالفعل، يمكنك تسجيل الدخول مباشرة.', 'This account is already verified. You can log in directly.')
             });
         }
 
@@ -650,7 +665,7 @@ exports.resendVerificationCode = async (req, res, next) => {
         }
 
         const responseData = {
-            message: 'تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.'
+            message: getMsg(req, 'تم إعادة إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.', 'A new verification code has been sent to your email successfully.')
         };
 
         if (process.env.NODE_ENV === 'development') {

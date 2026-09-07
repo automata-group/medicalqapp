@@ -124,9 +124,16 @@ class _LoginScreenState extends State<LoginScreen> {
         }
       } catch (e) {
         if (mounted) {
+          final l10n = AppLocalizations.of(context)!;
           final errorMsg = e.toString().replaceAll('Exception: ', '');
           if (errorMsg.contains('غير مفعّل') || errorMsg.contains('NOT_VERIFIED') || errorMsg.contains('verification')) {
             _showUnverifiedAccountDialog(_emailController.text.trim());
+          } else if (errorMsg.contains('USER_NOT_FOUND') || errorMsg.contains('غير مسجل') || errorMsg.contains('not registered')) {
+            ToastUtils.showError(context, l10n.emailNotFound);
+          } else if (errorMsg.contains('INVALID_PASSWORD') || errorMsg.contains('كلمة المرور غير صحيحة') || errorMsg.contains('Incorrect password')) {
+            ToastUtils.showError(context, l10n.invalidPassword);
+          } else if (errorMsg.contains('SocketException') || errorMsg.contains('Failed host lookup') || errorMsg.contains('connection')) {
+            ToastUtils.showError(context, l10n.networkError);
           } else {
             ToastUtils.showError(context, errorMsg);
           }

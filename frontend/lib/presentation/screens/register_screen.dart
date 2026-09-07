@@ -155,9 +155,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     } catch (e) {
       if (mounted) {
+        final l10n = AppLocalizations.of(context)!;
         final errorMsg = e.toString().replaceAll('Exception: ', '');
         if (errorMsg.contains('مسجل') || errorMsg.contains('already') || errorMsg.contains('EXIST')) {
           _showAccountAlreadyExistsDialog(email);
+        } else if (errorMsg.contains('SocketException') || errorMsg.contains('Failed host lookup') || errorMsg.contains('connection')) {
+          ToastUtils.showError(context, l10n.networkError);
         } else {
           ToastUtils.showError(context, errorMsg);
         }

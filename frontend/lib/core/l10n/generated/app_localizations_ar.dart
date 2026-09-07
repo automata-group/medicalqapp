@@ -1040,4 +1040,26 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordRequirements => 'شروط أمان كلمة المرور:';
+
+  @override
+  String get sameAsOldPassword =>
+      'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة.';
+
+  @override
+  String get invalidOrExpiredOtp => 'رمز التحقق غير صحيح أو انتهت صلاحيته.';
+
+  @override
+  String get emailNotFound => 'هذا البريد الإلكتروني غير مسجل في المنصة.';
+
+  @override
+  String get invalidPassword =>
+      'كلمة المرور غير صحيحة. يرجى التأكد من كتابتها أو استخدام خيار تغيير كلمة المرور.';
+
+  @override
+  String get networkError =>
+      'تعذر الاتصال بالخادم. يرجى التحقق من اتصال الإنترنت.';
+
+  @override
+  String get otpSentSuccess =>
+      'تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.';
 }

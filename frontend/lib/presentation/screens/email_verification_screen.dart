@@ -93,7 +93,15 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.showError(context, e.toString().replaceAll('Exception: ', ''));
+      final l10n = AppLocalizations.of(context)!;
+      final err = e.toString().replaceAll('Exception: ', '');
+      String msg = err;
+      if (err.contains('INVALID_OTP') || err.contains('رمز التحقق') || err.contains('expired') || err.contains('invalid')) {
+        msg = l10n.invalidOrExpiredOtp;
+      } else if (err.contains('SocketException') || err.contains('Failed host lookup') || err.contains('connection')) {
+        msg = l10n.networkError;
+      }
+      ToastUtils.showError(context, msg);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }

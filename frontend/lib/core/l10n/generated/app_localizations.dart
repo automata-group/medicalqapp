@@ -1993,6 +1993,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password Security Requirements:'**
   String get passwordRequirements;
+
+  /// No description provided for @sameAsOldPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot reuse the previous password. Please choose a new and different password.'**
+  String get sameAsOldPassword;
+
+  /// No description provided for @invalidOrExpiredOtp.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or expired verification code.'**
+  String get invalidOrExpiredOtp;
+
+  /// No description provided for @emailNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is not registered on the platform.'**
+  String get emailNotFound;
+
+  /// No description provided for @invalidPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password. Please verify your credentials or change password.'**
+  String get invalidPassword;
+
+  /// No description provided for @networkError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect to server. Please check your internet connection.'**
+  String get networkError;
+
+  /// No description provided for @otpSentSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification code has been sent to your email successfully.'**
+  String get otpSentSuccess;
 }
 
 class _AppLocalizationsDelegate

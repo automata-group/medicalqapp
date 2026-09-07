@@ -21,6 +21,8 @@ class DioClient {
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
+          final lang = sharedPreferences.getString('app_language_code') ?? 'ar';
+          options.headers['Accept-Language'] = lang;
           return handler.next(options);
         },
         onError: (DioException e, handler) {

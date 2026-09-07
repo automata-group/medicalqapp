@@ -49,7 +49,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
     } catch (e) {
       if (!mounted) return;
-      ToastUtils.showError(context, e.toString().replaceAll('Exception: ', ''));
+      final l10n = AppLocalizations.of(context)!;
+      final raw = e.toString().replaceAll('Exception: ', '');
+      String msg = raw;
+      if (raw.contains('USER_NOT_FOUND') || raw.contains('غير مسجل') || raw.contains('not registered')) {
+        msg = l10n.emailNotFound;
+      } else if (raw.contains('SocketException') || raw.contains('Failed host lookup') || raw.contains('connection')) {
+        msg = l10n.networkError;
+      }
+      ToastUtils.showError(context, msg);
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
