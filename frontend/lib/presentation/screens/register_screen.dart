@@ -93,7 +93,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
             onPressed: () {
               Navigator.of(ctx).pop();
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (_) => const ForgotPasswordScreen()),
+                MaterialPageRoute(
+                  builder: (_) => ForgotPasswordScreen(
+                    initialEmail: _emailController.text.trim(),
+                  ),
+                ),
               );
             },
             style: OutlinedButton.styleFrom(

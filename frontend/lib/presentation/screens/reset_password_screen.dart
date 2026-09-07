@@ -249,6 +249,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               if (!v.contains(RegExp(r'[A-Z]'))) {
                 return l10n.passwordUppercase;
               }
+              if (!v.contains(RegExp(r'[0-9]'))) {
+                return l10n.passwordNumber;
+              }
               return null;
             },
           ),
@@ -290,10 +293,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               return null;
             },
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
 
-          // Password hint
-          _buildPasswordHint(l10n),
+          // Live Password Checklist
+          _buildPasswordChecklist(l10n),
           const SizedBox(height: 24),
 
           // Resend Code Row
@@ -354,41 +357,70 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildPasswordHint(AppLocalizations l10n) {
-    final pass = _passwordController.text;
-    return Column(
-      children: [
-        _hintRow(Icons.check_circle, l10n.passwordMinLength, pass.length >= 8),
-        _hintRow(Icons.check_circle, l10n.passwordUppercase,
-            pass.contains(RegExp(r'[A-Z]'))),
-        _hintRow(
-            Icons.check_circle,
-            l10n.passwordsDoNotMatch,
-            pass.isNotEmpty && pass == _confirmController.text,
-            isMatchRule: true),
-      ],
+  Widget _buildPasswordChecklist(AppLocalizations l10n) {
+    return AnimatedBuilder(
+      animation: Listenable.merge([_passwordController, _confirmController]),
+      builder: (context, _) {
+        final pass = _passwordController.text;
+        final confirm = _confirmController.text;
+        final isLengthValid = pass.length >= 8;
+        final isUppercaseValid = pass.contains(RegExp(r'[A-Z]'));
+        final isNumberValid = pass.contains(RegExp(r'[0-9]'));
+        final isMatchValid = pass.isNotEmpty && pass == confirm;
+
+        return Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade200),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.passwordRequirements,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+              const SizedBox(height: 6),
+              _buildChecklistRule(l10n.passwordMinLength, isLengthValid),
+              _buildChecklistRule(l10n.passwordUppercase, isUppercaseValid),
+              _buildChecklistRule(l10n.passwordNumber, isNumberValid),
+              _buildChecklistRule(l10n.passwordsDoNotMatch, isMatchValid),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _hintRow(IconData icon, String text, bool valid,
-      {bool isMatchRule = false}) {
-    final color = valid ? AppColors.success : Colors.grey.shade400;
-    return ValueListenableBuilder(
-      valueListenable: _passwordController,
-      builder: (_, __, ___) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 3),
-        child: Row(
-          children: [
-            Icon(icon, size: 16, color: color),
-            const SizedBox(width: 8),
-            Text(
+  Widget _buildChecklistRule(String text, bool isValid) {
+    final color = isValid ? AppColors.success : Colors.grey.shade400;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 2.5),
+      child: Row(
+        children: [
+          Icon(
+            isValid ? Icons.check_circle_rounded : Icons.radio_button_unchecked_rounded,
+            size: 16,
+            color: color,
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
               text,
-              textDirection: Directionality.of(context),
               style: TextStyle(
-                  fontSize: 12, color: color, fontWeight: FontWeight.w500),
+                fontSize: 12,
+                color: isValid ? Colors.green.shade800 : Colors.grey.shade600,
+                fontWeight: isValid ? FontWeight.w600 : FontWeight.normal,
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

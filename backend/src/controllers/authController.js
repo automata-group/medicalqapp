@@ -395,10 +395,24 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
             });
         }
 
-        if (password.length < 6) {
+        if (password.length < 8) {
             return res.status(400).json({ 
                 success: false, 
-                message: 'يجب أن تتكون كلمة المرور من 6 خانات على الأقل' 
+                message: 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.' 
+            });
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل (A-Z).'
+            });
+        }
+
+        if (!/[0-9]/.test(password)) {
+            return res.status(400).json({
+                success: false,
+                message: 'يجب أن تحتوي كلمة المرور على رقم واحد على الأقل (0-9).'
             });
         }
 
@@ -418,6 +432,16 @@ exports.resetPasswordWithOtp = async (req, res, next) => {
             return res.status(400).json({ 
                 success: false, 
                 message: 'رمز التحقق غير صحيح أو انتهت صلاحيته' 
+            });
+        }
+
+        // Check if new password is same as current password
+        const isSamePassword = await user.matchPassword(password);
+        if (isSamePassword) {
+            return res.status(400).json({
+                success: false,
+                code: 'SAME_AS_OLD_PASSWORD',
+                message: 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة لضمان أمان حسابكم الطبي.'
             });
         }
 
@@ -451,6 +475,14 @@ exports.resetPassword = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Invalid or missing token' });
         }
 
+        const password = req.body.password;
+        if (!password || password.length < 8) {
+            return res.status(400).json({
+                success: false,
+                message: 'يجب أن تتكون كلمة المرور من 8 خانات على الأقل.'
+            });
+        }
+
         // Get hashed token
         const resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
 
@@ -465,15 +497,25 @@ exports.resetPassword = async (req, res, next) => {
             return res.status(400).json({ success: false, message: 'Invalid or expired token' });
         }
 
+        // Check if new password is same as old
+        const isSame = await user.matchPassword(password);
+        if (isSame) {
+            return res.status(400).json({
+                success: false,
+                code: 'SAME_AS_OLD_PASSWORD',
+                message: 'لا يمكن استخدام كلمة المرور السابقة. يرجى اختيار كلمة مرور جديدة ومختلفة.'
+            });
+        }
+
         // Set new password
-        user.password = req.body.password;
+        user.password = password;
         user.resetPasswordToken = null;
         user.resetPasswordExpires = null;
         await user.save();
 
         res.status(200).json({
             success: true,
-            message: 'Password updated successfully'
+            message: 'تم تحديث كلمة المرور بنجاح. يمكنك الآن تسجيل الدخول.'
         });
     } catch (error) {
         next(error);
