@@ -1,5 +1,6 @@
 const { 
     User, 
+    Question,
     Subscription, 
     SubscriptionPlan, 
     UserMockExam, 
@@ -211,15 +212,49 @@ exports.getUserActivity = async (req, res, next) => {
 exports.getUserStatistics = async (req, res, next) => {
     try {
         const totalUsers = await User.count();
-        const activeUsers = await User.count({ where: { isVerified: true } }); // or isActive
+        const activeUsers = await User.count({ where: { isVerified: true } });
         const premiumUsers = await Subscription.count({ where: { status: 'active' }, distinct: true, col: 'userId' });
+        const totalQuestions = await Question.count();
+
+        // Calculate today and this month revenue
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+
+        const monthStart = new Date();
+        monthStart.setDate(1);
+        monthStart.setHours(0, 0, 0, 0);
+
+        const todayRevenue = await Payment.sum('amount', {
+            where: {
+                status: 'completed',
+                createdAt: { [Op.gte]: todayStart }
+            }
+        }) || 0;
+
+        const monthRevenue = await Payment.sum('amount', {
+            where: {
+                status: 'completed',
+                createdAt: { [Op.gte]: monthStart }
+            }
+        }) || 0;
+
+        const totalRevenue = await Payment.sum('amount', {
+            where: { status: 'completed' }
+        }) || 0;
 
         res.status(200).json({
             success: true,
             data: {
                 total: totalUsers,
                 active: activeUsers,
-                premium: premiumUsers
+                premium: premiumUsers,
+                totalUsers,
+                activeUsers,
+                premiumUsers,
+                totalQuestions,
+                todayRevenue: Number(todayRevenue).toFixed(2),
+                monthRevenue: Number(monthRevenue).toFixed(2),
+                totalRevenue: Number(totalRevenue).toFixed(2)
             }
         });
     } catch (error) {

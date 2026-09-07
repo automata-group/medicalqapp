@@ -23,8 +23,10 @@ export default function Dashboard() {
     useEffect(() => {
         Promise.all([getUserStats(), getBusinessAnalytics()])
             .then(([statsRes, businessRes]) => {
-                setStats(statsRes.data);
-                setBusinessStats(businessRes.data?.data);
+                const sData = statsRes.data?.data || statsRes.data;
+                setStats(sData);
+                const bData = businessRes.data?.data || businessRes.data;
+                setBusinessStats(bData);
             })
             .catch(() => setError('Could not load statistics'));
     }, []);
@@ -36,11 +38,11 @@ export default function Dashboard() {
             <h2 className={styles.pageTitle}>📊 Dashboard Overview</h2>
             {error && <div className={styles.error}>{error}</div>}
             <div className={styles.grid}>
-                <StatCard label="Total Users" value={stats?.totalUsers} icon="👤" color="#3b82f6" />
-                <StatCard label="Premium Users" value={stats?.premiumUsers} icon="⭐" color="#f59e0b" />
+                <StatCard label="Total Users" value={stats?.totalUsers ?? stats?.total} icon="👤" color="#3b82f6" />
+                <StatCard label="Premium Users" value={stats?.premiumUsers ?? stats?.premium} icon="⭐" color="#f59e0b" />
                 <StatCard label="Total Questions" value={stats?.totalQuestions} icon="📚" color="#10b981" />
-                <StatCard label="Today Revenue" value={stats?.todayRevenue !== undefined ? `SAR ${stats.todayRevenue}` : null} icon="💰" color="#8b5cf6" />
-                <StatCard label="This Month" value={stats?.monthRevenue !== undefined ? `SAR ${stats.monthRevenue}` : null} icon="📈" color="#ec4899" />
+                <StatCard label="Today Revenue" value={stats?.todayRevenue !== undefined && stats?.todayRevenue !== null ? `SAR ${stats.todayRevenue}` : 'SAR 0.00'} icon="💰" color="#8b5cf6" />
+                <StatCard label="This Month" value={stats?.monthRevenue !== undefined && stats?.monthRevenue !== null ? `SAR ${stats.monthRevenue}` : 'SAR 0.00'} icon="📈" color="#ec4899" />
                 <StatCard label="Conversion Rate (Free to Pro)" value={businessStats ? `${businessStats.conversionRate}%` : null} icon="🚀" color="#34d399" />
                 <StatCard label="Churn Rate" value={businessStats ? `${businessStats.churnRate}%` : null} icon="📉" color="#fbbf24" />
             </div>
