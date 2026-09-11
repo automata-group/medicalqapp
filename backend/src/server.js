@@ -41,6 +41,14 @@ const startServer = async () => {
         await sequelize.sync({ alter: false });
         console.log('✅ All models synchronized successfully.');
 
+        // Safely auto-migrate any new columns (googleId, appleId, mock breaks, etc.)
+        try {
+            const { autoMigrate } = require('./utils/autoMigrate');
+            await autoMigrate();
+        } catch (mErr) {
+            console.warn('Auto-migrate warning:', mErr.message);
+        }
+
         // Ensure official subscription plans exist
         try {
             const { seedOfficialPlans } = require('./utils/seedPlans');
