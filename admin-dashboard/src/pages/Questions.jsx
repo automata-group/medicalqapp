@@ -1197,8 +1197,8 @@ export default function Questions() {
                                             value={opt.text}
                                             onChange={(e) => handleOptionChange(idx, e.target.value)}
                                             style={{
-                                                flex: 1,
-                                                minWidth: 0,
+                                                flex: '1 1 auto',
+                                                minWidth: '150px',
                                                 width: '100%',
                                                 boxSizing: 'border-box',
                                                 background: '#1e293b',
@@ -1219,8 +1219,9 @@ export default function Questions() {
                                             type="button"
                                             onClick={() => setCorrectOption(idx)}
                                             style={{
-                                                display: 'flex',
+                                                display: 'inline-flex',
                                                 alignItems: 'center',
+                                                justifyContent: 'center',
                                                 gap: '6px',
                                                 padding: '7px 14px',
                                                 borderRadius: '20px',
@@ -1230,7 +1231,12 @@ export default function Questions() {
                                                 fontSize: '12px',
                                                 fontWeight: 700,
                                                 cursor: 'pointer',
-                                                flexShrink: 0,
+                                                flex: '0 0 auto',
+                                                width: 'auto',
+                                                minWidth: '95px',
+                                                maxWidth: '120px',
+                                                margin: 0,
+                                                marginTop: 0,
                                                 transition: 'all 0.2s'
                                             }}
                                             title="Click to set as correct answer"
