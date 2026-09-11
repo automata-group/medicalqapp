@@ -14,6 +14,7 @@ class DashboardHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final user = context.watch<AuthProvider>().user;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 48, 24, 24),
@@ -26,7 +27,10 @@ class DashboardHeader extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 4),
+                    border: Border.all(
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                      width: 4,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.1),
@@ -76,7 +80,10 @@ class DashboardHeader extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: Colors.green,
                             shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2.5),
+                            border: Border.all(
+                              color: isDark ? const Color(0xFF0B1120) : Colors.white,
+                              width: 2.5,
+                            ),
                           ),
                         ),
                       ),
@@ -93,10 +100,10 @@ class DashboardHeader extends StatelessWidget {
                           Flexible(
                             child: Text(
                               l10n.welcomeBack(user?.name ?? 'User'),
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
-                                color: Color(0xFF1E293B),
+                                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                               ),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
@@ -104,7 +111,7 @@ class DashboardHeader extends StatelessWidget {
                           ),
                           if (user?.isPremium ?? false)
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsetsDirectional.only(start: 14.0),
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 6, vertical: 2),
@@ -124,7 +131,7 @@ class DashboardHeader extends StatelessWidget {
                             )
                           else
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsetsDirectional.only(start: 14.0),
                               child: InkWell(
                                 onTap: () {
                                   Navigator.push(
@@ -173,9 +180,9 @@ class DashboardHeader extends StatelessWidget {
                       ),
                       Text(
                         l10n.readyForChallenge,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 14,
-                          color: Color(0xFF64748B),
+                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                         ),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -194,12 +201,14 @@ class DashboardHeader extends StatelessWidget {
                 children: [
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFF1F5F9)),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                      ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
+                          color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                           blurRadius: 2,
                           offset: const Offset(0, 1),
                         ),
@@ -212,7 +221,7 @@ class DashboardHeader extends StatelessWidget {
                             : Icons.notifications_outlined,
                         color: count > 0
                             ? AppColors.primary
-                            : const Color(0xFF3B82F6),
+                            : (isDark ? const Color(0xFF60A5FA) : const Color(0xFF3B82F6)),
                       ),
                       onPressed: () {
                         notifProv.loadNotifications();

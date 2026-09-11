@@ -79,7 +79,7 @@ class QuestionBankCard extends StatelessWidget {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              const Icon(Icons.shuffle, color: Colors.white, size: 16),
+                              const Icon(Icons.auto_stories_rounded, color: Colors.white, size: 16),
                               const SizedBox(width: 6),
                               Text(
                                 l10n.shuffleQuestions,

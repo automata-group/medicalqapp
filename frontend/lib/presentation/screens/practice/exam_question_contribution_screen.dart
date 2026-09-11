@@ -209,16 +209,18 @@ class _ExamQuestionContributionScreenState
       _selectedSpecialtyId = specialties.first.id;
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           l10n?.examContributionTitle ?? 'شارك بسؤال من اختبارك',
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF1E293B),
+        backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
+        foregroundColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
         elevation: 0.5,
       ),
       body: SafeArea(

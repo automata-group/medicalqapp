@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import '../../data/models/user_model.dart';
 import '../../domain/repositories/auth_repository.dart';
 
@@ -120,6 +122,81 @@ class AuthProvider extends ChangeNotifier {
     _isAuthenticated = true;
     await prefs.setString('cached_user', json.encode(_user!.toJson()));
     notifyListeners();
+  }
+
+  Future<UserModel?> signInWithGoogle() async {
+    final GoogleSignIn googleSignIn = GoogleSignIn(
+      scopes: ['email', 'profile'],
+    );
+    final GoogleSignInAccount? account = await googleSignIn.signIn();
+    if (account == null) {
+      return null;
+    }
+    final GoogleSignInAuthentication auth = await account.authentication;
+    final String idToken = auth.idToken ?? '';
+
+    final loggedInUser = await authRepository.signInWithGoogle(
+      idToken: idToken,
+      email: account.email,
+      fullName: account.displayName,
+      googleId: account.id,
+      avatar: account.photoUrl,
+    );
+
+    final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+    if (loggedInUser.hasStudyPlan) {
+      await prefs.setBool('cached_has_study_plan', true);
+      _user = loggedInUser;
+    } else if (cachedHasStudyPlan) {
+      _user = loggedInUser.copyWith(hasStudyPlan: true);
+    } else {
+      _user = loggedInUser;
+    }
+
+    _isAuthenticated = true;
+    await prefs.setString('cached_user', json.encode(_user!.toJson()));
+    notifyListeners();
+    return _user;
+  }
+
+  Future<UserModel?> signInWithApple() async {
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final String identityToken = credential.identityToken ?? '';
+    final String appleId = credential.userIdentifier ?? '';
+    final String? email = credential.email;
+    String? fullName;
+    if (credential.givenName != null || credential.familyName != null) {
+      fullName = '${credential.givenName ?? ''} ${credential.familyName ?? ''}'.trim();
+      if (fullName.isEmpty) fullName = null;
+    }
+
+    final loggedInUser = await authRepository.signInWithApple(
+      identityToken: identityToken,
+      appleId: appleId,
+      email: email,
+      fullName: fullName,
+    );
+
+    final bool cachedHasStudyPlan = prefs.getBool('cached_has_study_plan') ?? false;
+    if (loggedInUser.hasStudyPlan) {
+      await prefs.setBool('cached_has_study_plan', true);
+      _user = loggedInUser;
+    } else if (cachedHasStudyPlan) {
+      _user = loggedInUser.copyWith(hasStudyPlan: true);
+    } else {
+      _user = loggedInUser;
+    }
+
+    _isAuthenticated = true;
+    await prefs.setString('cached_user', json.encode(_user!.toJson()));
+    notifyListeners();
+    return _user;
   }
 
   Future<void> register(String name, String email, String password,

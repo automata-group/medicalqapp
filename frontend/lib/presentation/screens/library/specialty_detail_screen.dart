@@ -36,6 +36,8 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
         builder: (context) => ExamScreen(
           specialtyId: widget.specialty.id.toString(),
           subTopic: subTopic,
+          shuffle: false,
+          autoResume: true,
         ),
       ),
     );
@@ -45,14 +47,15 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final questionProvider = context.watch<QuestionProvider>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(widget.specialty.getLocalizedName(l10n)),
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
         elevation: 0,
-        foregroundColor: Colors.black,
+        foregroundColor: isDark ? const Color(0xFFF8FAFC) : Colors.black,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -62,9 +65,9 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                color: isDark ? Theme.of(context).cardColor : Colors.white,
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
                   bottomRight: Radius.circular(32),
                 ),
@@ -111,7 +114,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                     ),
                   const SizedBox(height: 24),
 
-                  // Primary Action: Random Practice
+                  // Primary Action: Continue Revision
                   SizedBox(
                     width: double.infinity,
                     height: 56,
@@ -128,10 +131,10 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.shuffle),
+                          const Icon(Icons.history_rounded),
                           const SizedBox(width: 12),
                           Text(
-                            'Start Random Practice',
+                            l10n.continueRevision,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -252,27 +255,30 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
   }
 
   Widget _buildTopicCard(BuildContext context, dynamic topic) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: () => _startPractice(context, subTopic: topic.name),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? Theme.of(context).cardColor : Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
+          border: Border.all(
+            color: isDark ? const Color(0xFF334155) : Colors.grey.shade200,
+          ),
         ),
         child: Row(
           children: [
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.grey.shade50,
+                color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade50,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 Icons.book_outlined,
-                color: Colors.grey.shade600,
+                color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600,
                 size: 24,
               ),
             ),
@@ -283,16 +289,17 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                 children: [
                   Text(
                     topic.name,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 15,
+                      color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     '${topic.totalQuestions} Questions',
                     style: TextStyle(
-                      color: Colors.grey.shade500,
+                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade500,
                       fontSize: 13,
                     ),
                   ),
@@ -301,7 +308,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
             ),
             Icon(
               Icons.chevron_right,
-              color: Colors.grey.shade400,
+              color: isDark ? const Color(0xFF64748B) : Colors.grey.shade400,
             ),
           ],
         ),

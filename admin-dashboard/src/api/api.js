@@ -124,6 +124,7 @@ export const aiGenerateMockQuestions = (id, data) => api.post(`/admin/mock-exams
 export const getMockExamQuestions = (id) => api.get(`/admin/mock-exams/${id}/questions`);
 export const addMockQuestionsFromBank = (id, data) => api.post(`/admin/mock-exams/${id}/add-from-bank`, data);
 export const addCustomMockQuestion = (id, data) => api.post(`/admin/mock-exams/${id}/add-custom-question`, data);
+export const createStandardSdleMockExam = (data) => api.post('/admin/mock-exams/create-standard-simulation', data);
 export const deleteMockQuestion = (id, questionId) => api.delete(`/admin/mock-exams/${id}/questions/${questionId}`);
 
 

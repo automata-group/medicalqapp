@@ -25,40 +25,31 @@ class ExamOptionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color backgroundColor = Colors.white;
-    Color borderColor = Colors.transparent;
-    Color labelBgColor = Colors.grey.shade50;
-    Color labelTextColor = Colors.grey.shade400;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    Color backgroundColor = isDark ? Theme.of(context).cardColor : Colors.white;
+    Color borderColor = isDark ? const Color(0xFF334155) : Colors.transparent;
+    Color labelBgColor = isDark ? const Color(0xFF0F172A) : Colors.grey.shade50;
+    Color labelTextColor = isDark ? const Color(0xFF94A3B8) : Colors.grey.shade400;
 
     if (isSubmitted) {
       if (isCorrect) {
-        backgroundColor = AppColors.primary.withValues(
-            alpha:
-                0.05); // Using primary as success/correct in this theme context? Or green? Design uses primary/blue for correct in one state, but usually green is success.
-        // The design says: "bg-primary/5 ... border-primary ... text-white ... bg-primary" for correct. The primary is blue (#368ce2).
-        // Let's stick to the design.
-        backgroundColor = AppColors.primary.withValues(alpha: 0.05);
+        backgroundColor = AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.05);
         borderColor = AppColors.primary;
         labelBgColor = AppColors.primary;
         labelTextColor = Colors.white;
       } else if (isWrong && isSelected) {
-        // Design doesn't explicitly show wrong state but usually red.
-        // For now, I'll use standard red for wrong to be clear, or stick to design guidelines if they exist.
-        // studymod.html only shows "Correct State Simulation".
-        // I'll use red for consistency with QuickExam.
-        backgroundColor = Colors.red.withValues(alpha: 0.05);
+        backgroundColor = Colors.red.withValues(alpha: isDark ? 0.2 : 0.05);
         borderColor = Colors.red;
-        labelBgColor = Colors.red.withValues(alpha: 0.1);
+        labelBgColor = Colors.red.withValues(alpha: isDark ? 0.3 : 0.1);
         labelTextColor = Colors.red;
       } else {
         // Unselected options during result
-        borderColor = Colors.transparent;
+        borderColor = isDark ? const Color(0xFF334155) : Colors.transparent;
       }
     } else {
       if (isSelected) {
         borderColor = AppColors.primary;
-        backgroundColor = AppColors.primary.withValues(alpha: 0.05);
-        // Label could change color too if needed
+        backgroundColor = AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.05);
         labelTextColor = AppColors.primary;
       }
     }
@@ -117,7 +108,7 @@ class ExamOptionCard extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                     color: isSelected && !isSubmitted
                         ? AppColors.primary
-                        : Colors.black87,
+                        : (isDark ? const Color(0xFFF1F5F9) : Colors.black87),
                   ),
                 ),
               ),
@@ -140,7 +131,7 @@ class ExamOptionCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: Colors.grey.shade300,
+                      color: isDark ? const Color(0xFF64748B) : Colors.grey.shade300,
                       width: 2,
                     ),
                   ),

@@ -27,6 +27,9 @@ class QuestionModel extends Equatable {
   final bool isBookmarked;
   final bool isPremium;
   final int totalInCategory;
+  final String? explanation;
+  final String? references;
+  final dynamic whyWrong;
 
   const QuestionModel({
     required this.id,
@@ -39,9 +42,25 @@ class QuestionModel extends Equatable {
     this.isBookmarked = false,
     this.isPremium = false,
     this.totalInCategory = 0,
+    this.explanation,
+    this.references,
+    this.whyWrong,
   });
 
   factory QuestionModel.fromJson(Map<String, dynamic> json) {
+    String? parsedExplanation;
+    String? parsedReferences;
+    dynamic parsedWhyWrong;
+    if (json['explanation'] != null) {
+      if (json['explanation'] is String) {
+        parsedExplanation = cleanTextEncoding(json['explanation']);
+      } else if (json['explanation'] is Map) {
+        parsedExplanation = cleanTextEncoding(json['explanation']['text']?.toString() ?? json['explanation']['aiExplanation']?.toString() ?? '');
+        parsedReferences = cleanTextEncoding(json['explanation']['references']?.toString() ?? '');
+        parsedWhyWrong = json['explanation']['whyWrong'];
+      }
+    }
+
     return QuestionModel(
       id: json['id'],
       text: cleanTextEncoding(json['text'] ?? ''),
@@ -56,6 +75,9 @@ class QuestionModel extends Equatable {
       isBookmarked: json['isBookmarked'] ?? false,
       isPremium: json['isPremium'] ?? false,
       totalInCategory: json['totalInCategory'] ?? 0,
+      explanation: parsedExplanation,
+      references: parsedReferences,
+      whyWrong: parsedWhyWrong,
     );
   }
 
@@ -70,6 +92,9 @@ class QuestionModel extends Equatable {
     bool? isBookmarked,
     bool? isPremium,
     int? totalInCategory,
+    String? explanation,
+    String? references,
+    dynamic whyWrong,
   }) {
     return QuestionModel(
       id: id ?? this.id,
@@ -82,6 +107,9 @@ class QuestionModel extends Equatable {
       isBookmarked: isBookmarked ?? this.isBookmarked,
       isPremium: isPremium ?? this.isPremium,
       totalInCategory: totalInCategory ?? this.totalInCategory,
+      explanation: explanation ?? this.explanation,
+      references: references ?? this.references,
+      whyWrong: whyWrong ?? this.whyWrong,
     );
   }
 
@@ -96,7 +124,10 @@ class QuestionModel extends Equatable {
         options,
         isBookmarked,
         isPremium,
-        totalInCategory
+        totalInCategory,
+        explanation,
+        references,
+        whyWrong,
       ];
 }
 
@@ -104,11 +135,13 @@ class OptionModel extends Equatable {
   final int id;
   final String text;
   final String order;
+  final bool isCorrect;
 
   const OptionModel({
     required this.id,
     required this.text,
     required this.order,
+    this.isCorrect = false,
   });
 
   factory OptionModel.fromJson(Map<String, dynamic> json) {
@@ -116,11 +149,12 @@ class OptionModel extends Equatable {
       id: json['id'],
       text: cleanTextEncoding(json['text'] ?? ''),
       order: json['order']?.toString() ?? '0',
+      isCorrect: json['isCorrect'] == true || json['is_correct'] == true,
     );
   }
 
   @override
-  List<Object?> get props => [id, text, order];
+  List<Object?> get props => [id, text, order, isCorrect];
 }
 
 class QuestionStatsModel extends Equatable {

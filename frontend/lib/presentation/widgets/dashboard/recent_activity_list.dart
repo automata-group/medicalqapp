@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../providers/specialty_provider.dart';
-import '../../screens/practice/specialty_topics_screen.dart';
+import '../../screens/exam/exam_screen.dart';
 import '../../../data/models/dashboard_model.dart';
 import '../../../core/utils/toast_utils.dart';
 
@@ -103,9 +103,10 @@ class RecentActivityList extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => SpecialtyTopicsScreen(
-                specialtyId: resolvedId!,
-                specialtyName: activity.specialtyName,
+              builder: (_) => ExamScreen(
+                specialtyId: resolvedId!.toString(),
+                shuffle: false,
+                autoResume: true,
               ),
             ),
           );

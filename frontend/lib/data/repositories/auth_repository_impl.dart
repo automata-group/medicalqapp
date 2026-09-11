@@ -13,6 +13,38 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<UserModel> signInWithGoogle({
+    required String idToken,
+    String? email,
+    String? fullName,
+    String? googleId,
+    String? avatar,
+  }) async {
+    return await remoteDataSource.signInWithGoogle(
+      idToken: idToken,
+      email: email,
+      fullName: fullName,
+      googleId: googleId,
+      avatar: avatar,
+    );
+  }
+
+  @override
+  Future<UserModel> signInWithApple({
+    required String identityToken,
+    required String appleId,
+    String? email,
+    String? fullName,
+  }) async {
+    return await remoteDataSource.signInWithApple(
+      identityToken: identityToken,
+      appleId: appleId,
+      email: email,
+      fullName: fullName,
+    );
+  }
+
+  @override
   Future<void> register(Map<String, dynamic> data) async {
     return await remoteDataSource.register(data);
   }

@@ -29,20 +29,22 @@ class _ExamStartScreenState extends State<ExamStartScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final provider = context.watch<MockExamProvider>();
     final exams = widget.specialtyId != null 
         ? provider.getExamsBySpecialty(widget.specialtyId!)
         : provider.availableExams;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(
           l10n.mockExams,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
+        foregroundColor: isDark ? const Color(0xFFF8FAFC) : Colors.black,
         elevation: 0,
       ),
       body: provider.isLoading
@@ -68,7 +70,7 @@ class _ExamStartScreenState extends State<ExamStartScreen> {
                               );
                             },
                             icon: const Icon(Icons.flash_on),
-                            label: const Text('Start Quick Practice'),
+                            label: Text(l10n.startQuickPractice),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
@@ -100,17 +102,19 @@ class _ExamCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final user = context.watch<AuthProvider>().user;
     final isPremium = user?.isPremium ?? false;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -125,10 +129,10 @@ class _ExamCard extends StatelessWidget {
               Expanded(
                 child: Text(
                   exam.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                   ),
                 ),
               ),
@@ -152,8 +156,8 @@ class _ExamCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             exam.description ?? '',
-            style: const TextStyle(
-              color: Color(0xFF64748B),
+            style: TextStyle(
+              color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
               fontSize: 14,
             ),
           ),

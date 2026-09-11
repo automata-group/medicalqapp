@@ -22,7 +22,19 @@ const User = sequelize.define('User', {
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
+    },
+    googleId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    appleId: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    authProvider: {
+        type: DataTypes.STRING,
+        defaultValue: 'local'
     },
     phone: {
         type: DataTypes.STRING,

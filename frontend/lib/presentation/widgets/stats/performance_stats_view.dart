@@ -39,38 +39,44 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Container(
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(25.0),
-            ),
-            child: TabBar(
-              controller: _tabController,
-              padding: const EdgeInsets.all(4),
-              indicator: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
-                    blurRadius: 4,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: Container(
+                height: 40,
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+                child: TabBar(
+                  controller: _tabController,
+                  padding: const EdgeInsets.all(4),
+                  indicator: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.0),
+                    color: isDark ? const Color(0xFF334155) : Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 4,
+                      ),
+                    ],
                   ),
-                ],
+                  labelColor: AppColors.primary,
+                  unselectedLabelColor: isDark ? const Color(0xFF94A3B8) : Colors.grey,
+                  dividerColor: Colors.transparent,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  tabs: [
+                    Tab(text: l10n.weekly),
+                    Tab(text: l10n.monthly),
+                  ],
+                ),
               ),
-              labelColor: AppColors.primary,
-              unselectedLabelColor: Colors.grey,
-              dividerColor: Colors.transparent,
-              indicatorSize: TabBarIndicatorSize.tab,
-              tabs: [
-                Tab(text: l10n.weekly),
-                Tab(text: l10n.monthly),
-              ],
             ),
           ),
         ),
@@ -97,144 +103,156 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
 
   Widget _buildStatsContent(
       List<dynamic> stats, bool isMonthly, AppLocalizations l10n) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardBg = isDark ? Theme.of(context).cardColor : Colors.white;
+    final border = isDark ? Border.all(color: const Color(0xFF334155)) : null;
+
     return Consumer<DashboardProvider>(
       builder: (context, provider, child) {
         final overview = provider.overview;
 
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(vertical: 20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Accuracy Gauge Section
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      RadialAccuracyGauge(
-                        accuracy: (overview?.accuracy ?? 0).toDouble(),
-                        size: 130,
-                        progressColor: AppColors.primary,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildMiniStat(
-                            label: l10n.total,
-                            value: '${overview?.totalSolved ?? 0}',
-                            icon: Icons.assignment_rounded,
-                            color: const Color(0xFF6366F1),
-                          ),
-                          const SizedBox(height: 16),
-                          _buildMiniStat(
-                            label: l10n.studyStreak,
-                            value: '${overview?.currentStreak ?? 0}',
-                            icon: Icons.local_fire_department_rounded,
-                            color: const Color(0xFFF59E0B),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 900),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Accuracy Gauge Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        border: border,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
                         ],
                       ),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Theme Header: Performance Trend
-              _buildSectionHeader(
-                  l10n.performanceTrend, Icons.insights_rounded),
-
-              // Main Chart Card
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      if (stats.isEmpty)
-                        SizedBox(
-                          height: 200,
-                          child: Center(
-                            child: Text(
-                              l10n.noResultData,
-                              style: const TextStyle(color: Color(0xFF64748B)),
-                            ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          RadialAccuracyGauge(
+                            accuracy: (overview?.accuracy ?? 0).toDouble(),
+                            size: 130,
+                            progressColor: AppColors.primary,
                           ),
-                        )
-                      else
-                        PerformanceChartWidget(
-                            stats: stats.cast(), isMonthly: isMonthly),
-                    ],
-                  ),
-                ),
-              ),
-
-              const SizedBox(height: 24),
-
-              // Subject Performance Bar Chart
-              _buildSectionHeader(
-                  'Performance by Category', Icons.bar_chart_rounded),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.04),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildMiniStat(
+                                label: l10n.total,
+                                value: '${overview?.totalSolved ?? 0}',
+                                icon: Icons.assignment_rounded,
+                                color: const Color(0xFF6366F1),
+                              ),
+                              const SizedBox(height: 16),
+                              _buildMiniStat(
+                                label: l10n.studyStreak,
+                                value: '${overview?.currentStreak ?? 0}',
+                                icon: Icons.local_fire_department_rounded,
+                                color: const Color(0xFFF59E0B),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
-                  child: SubjectPerformanceChart(
-                    stats: overview?.specialtyStats ?? [],
-                  ),
-                ),
-              ),
 
-              if (isMonthly) ...[
-                const SizedBox(height: 24),
-                _buildSectionHeader(
-                    l10n.studyStreak, Icons.event_available_rounded),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: StreaksCalendarWidget(
-                    monthlyStats: stats.cast(),
+                  const SizedBox(height: 24),
+
+                  // Theme Header: Performance Trend
+                  _buildSectionHeader(
+                      l10n.performanceTrend, Icons.insights_rounded),
+
+                  // Main Chart Card
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        border: border,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        children: [
+                          if (stats.isEmpty)
+                            SizedBox(
+                              height: 200,
+                              child: Center(
+                                child: Text(
+                                  l10n.noResultData,
+                                  style: const TextStyle(color: Color(0xFF64748B)),
+                                ),
+                              ),
+                            )
+                          else
+                            PerformanceChartWidget(
+                                stats: stats.cast(), isMonthly: isMonthly),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              ],
-              const SizedBox(height: 100),
-            ],
+
+                  const SizedBox(height: 24),
+
+                  // Subject Performance Bar Chart
+                  _buildSectionHeader(
+                      'Performance by Category', Icons.bar_chart_rounded),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: cardBg,
+                        border: border,
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: SubjectPerformanceChart(
+                        stats: overview?.specialtyStats ?? [],
+                      ),
+                    ),
+                  ),
+
+                  if (isMonthly) ...[
+                    const SizedBox(height: 24),
+                    _buildSectionHeader(
+                        l10n.studyStreak, Icons.event_available_rounded),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: StreaksCalendarWidget(
+                        monthlyStats: stats.cast(),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 100),
+                ],
+              ),
+            ),
           ),
         );
       },

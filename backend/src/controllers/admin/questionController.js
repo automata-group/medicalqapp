@@ -243,28 +243,36 @@ exports.updateQuestion = async (req, res, next) => {
 
         await question.update(updateData, { transaction: t });
 
-        // Update Options (Smart In-Place Strategy: PRESERVES Option IDs, foreign keys & student attempts)
+        // Update Options (Smart In-Place Strategy: PRESERVES Option IDs, previous options & foreign keys)
         if (options && Array.isArray(options) && options.length > 0) {
             const existingOptions = question.options || [];
-            const existingById = new Map(existingOptions.map(o => [o.id, o]));
+            const existingById = new Map(existingOptions.map(o => [Number(o.id), o]));
             const retainedIds = new Set();
 
             for (let index = 0; index < options.length; index++) {
                 const opt = options[index];
-                const orderChar = String.fromCharCode(65 + index); // 'A', 'B', 'C', 'D'
+                const orderChar = opt.order || String.fromCharCode(65 + index); // 'A', 'B', 'C', 'D'
                 const optText = typeof opt.text === 'string' ? opt.text.trim() : (opt.text || '');
                 const optIsCorrect = Boolean(opt.isCorrect);
 
                 let existingOpt = null;
-                if (opt.id && existingById.has(parseInt(opt.id))) {
-                    existingOpt = existingById.get(parseInt(opt.id));
-                } else if (!opt.id && existingOptions[index] && !retainedIds.has(existingOptions[index].id)) {
-                    // Fallback match by index if ID was not supplied by caller
-                    existingOpt = existingOptions[index];
+                // 1. Primary match by exact ID
+                if (opt.id && existingById.has(Number(opt.id))) {
+                    existingOpt = existingById.get(Number(opt.id));
+                }
+                
+                // 2. Secondary fallback: Match by same order letter if not yet retained
+                if (!existingOpt) {
+                    existingOpt = existingOptions.find(o => !retainedIds.has(o.id) && String(o.order).toUpperCase() === String(orderChar).toUpperCase());
+                }
+
+                // 3. Tertiary fallback: Reuse any available un-retained existing option to preserve records
+                if (!existingOpt) {
+                    existingOpt = existingOptions.find(o => !retainedIds.has(o.id));
                 }
 
                 if (existingOpt) {
-                    // Update existing option in place! Preserves option.id so user answers never break
+                    // Update existing option in place! Preserves option.id so previous option data & attempts never break
                     await existingOpt.update({
                         text: optText,
                         isCorrect: optIsCorrect,
@@ -272,7 +280,7 @@ exports.updateQuestion = async (req, res, next) => {
                     }, { transaction: t });
                     retainedIds.add(existingOpt.id);
                 } else {
-                    // Create new option (if admin added a new option beyond original count)
+                    // Create new option (only if admin genuinely added a new option beyond previous count)
                     const newOpt = await Option.create({
                         questionId: question.id,
                         text: optText,
@@ -283,16 +291,18 @@ exports.updateQuestion = async (req, res, next) => {
                 }
             }
 
-            // Remove only options explicitly deleted by the admin in the UI
-            const toDeleteIds = existingOptions
-                .map(o => o.id)
-                .filter(id => !retainedIds.has(id));
+            // Remove only surplus options if admin genuinely deleted options in UI (sent fewer than existed)
+            if (options.length < existingOptions.length) {
+                const toDeleteIds = existingOptions
+                    .map(o => o.id)
+                    .filter(id => !retainedIds.has(id));
 
-            if (toDeleteIds.length > 0) {
-                await Option.destroy({
-                    where: { id: { [Op.in]: toDeleteIds } },
-                    transaction: t
-                });
+                if (toDeleteIds.length > 0) {
+                    await Option.destroy({
+                        where: { id: { [Op.in]: toDeleteIds } },
+                        transaction: t
+                    });
+                }
             }
         }
 

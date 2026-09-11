@@ -21,13 +21,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: const Text('Notifications',
             style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
+        foregroundColor: isDark ? const Color(0xFFF8FAFC) : Colors.black,
         elevation: 0,
         actions: [
           Consumer<NotificationProvider>(
@@ -141,6 +143,7 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final color = _colorForType(notification.type);
     return Dismissible(
       key: Key('notif_${notification.id}'),
@@ -167,17 +170,17 @@ class _NotificationCard extends StatelessWidget {
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: notification.isRead
-                ? Colors.white
-                : color.withValues(alpha: 0.05),
+                ? (isDark ? Theme.of(context).cardColor : Colors.white)
+                : (isDark ? color.withValues(alpha: 0.15) : color.withValues(alpha: 0.05)),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
               color: notification.isRead
-                  ? Colors.grey.withValues(alpha: 0.1)
+                  ? (isDark ? const Color(0xFF334155) : Colors.grey.withValues(alpha: 0.1))
                   : color.withValues(alpha: 0.2),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -189,7 +192,7 @@ class _NotificationCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: color.withValues(alpha: isDark ? 0.2 : 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(_iconForType(notification.type),
@@ -210,6 +213,7 @@ class _NotificationCard extends StatelessWidget {
                                   ? FontWeight.w500
                                   : FontWeight.bold,
                               fontSize: 14,
+                              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                             ),
                           ),
                         ),
@@ -228,12 +232,18 @@ class _NotificationCard extends StatelessWidget {
                     Text(
                       notification.message,
                       style: TextStyle(
-                          fontSize: 12, color: Colors.grey[600], height: 1.4),
+                        fontSize: 12,
+                        color: isDark ? const Color(0xFF94A3B8) : Colors.grey[600],
+                        height: 1.4,
+                      ),
                     ),
                     const SizedBox(height: 6),
                     Text(
                       '${_timeAgo(notification.createdAt)} ago',
-                      style: TextStyle(fontSize: 11, color: Colors.grey[400]),
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: isDark ? const Color(0xFF64748B) : Colors.grey[400],
+                      ),
                     ),
                   ],
                 ),

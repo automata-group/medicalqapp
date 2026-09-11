@@ -37,6 +37,8 @@ dependencies:
   firebase_messaging: ^15.2.5
   flutter_markdown: ^0.7.7+1
   moyasar: ^3.0.2
+  google_sign_in: ^6.2.2
+  sign_in_with_apple: ^6.1.4
 
 dev_dependencies:
   flutter_test:

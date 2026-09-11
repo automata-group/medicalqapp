@@ -8,12 +8,12 @@ import '../../../core/theme/app_colors.dart';
 import 'package:flutter/services.dart';
 import '../login_screen.dart';
 import '../forgot_password_screen.dart';
-import '../specialty_selection_screen.dart';
 import '../../providers/sync_provider.dart';
 import '../../../core/utils/toast_utils.dart';
 import 'edit_profile_screen.dart';
 import '../subscription/pricing_screen.dart';
 import '../../providers/locale_provider.dart';
+import '../../providers/theme_provider.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -60,7 +60,7 @@ class ProfileScreen extends StatelessWidget {
     final streak = dashboard?.currentStreak ?? 0;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
           // Collapsible Header with gradient
@@ -236,21 +236,6 @@ class ProfileScreen extends StatelessWidget {
                               builder: (_) => const ForgotPasswordScreen()),
                         ),
                       ),
-
-                      _buildListTile(
-                        icon: Icons.school_outlined,
-                        iconColor: const Color(0xFF7C3AED),
-                        title: l10n.mySpecialties,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const SpecialtySelectionScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                      // ------------------------------------
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -324,6 +309,38 @@ class ProfileScreen extends StatelessWidget {
                           onTap: () => _showLanguageDialog(context, localeProv),
                         ),
                       ),
+                      Consumer<ThemeProvider>(
+                        builder: (ctx, themeProv, _) => _buildListTile(
+                          icon: themeProv.themeMode == ThemeMode.dark
+                              ? Icons.dark_mode_rounded
+                              : (themeProv.themeMode == ThemeMode.light
+                                  ? Icons.light_mode_rounded
+                                  : Icons.brightness_auto_rounded),
+                          iconColor: const Color(0xFF8B5CF6),
+                          title: l10n.themeMode,
+                          trailing: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF8B5CF6).withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              themeProv.themeMode == ThemeMode.dark
+                                  ? l10n.themeDark
+                                  : (themeProv.themeMode == ThemeMode.light
+                                      ? l10n.themeLight
+                                      : l10n.themeSystem),
+                              style: const TextStyle(
+                                color: Color(0xFF8B5CF6),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                          onTap: () => _showThemeDialog(context, themeProv),
+                        ),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -334,7 +351,7 @@ class ProfileScreen extends StatelessWidget {
 
                   // === LOGOUT ===
                   Material(
-                    color: Colors.white,
+                    color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(16),
                     elevation: 1,
                     shadowColor: Colors.black.withValues(alpha: 0.08),
@@ -615,14 +632,16 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildMasteryStats(BuildContext context, int totalSolved, int accuracy, int streak) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
+        border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
         boxShadow: [
           BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4))
         ],
@@ -632,10 +651,10 @@ class ProfileScreen extends StatelessWidget {
         children: [
           Text(
             l10n.myMasteryProgress,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimaryLight),
+                color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight),
           ),
           const SizedBox(height: 16),
           Row(
@@ -644,7 +663,7 @@ class ProfileScreen extends StatelessWidget {
                 child: _buildStatCard(
                   icon: Icons.check_circle_outline,
                   iconColor: AppColors.primary,
-                  bgColor: const Color(0xFFEFF6FF),
+                  bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFEFF6FF),
                   label: l10n.questionsLabel,
                   value: totalSolved.toString(),
                 ),
@@ -654,7 +673,7 @@ class ProfileScreen extends StatelessWidget {
                 child: _buildStatCard(
                   icon: Icons.insights,
                   iconColor: const Color(0xFF16A34A),
-                  bgColor: const Color(0xFFF0FDF4),
+                  bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF0FDF4),
                   label: l10n.accuracy,
                   value: '$accuracy%',
                 ),
@@ -664,7 +683,7 @@ class ProfileScreen extends StatelessWidget {
                 child: _buildStatCard(
                   icon: Icons.local_fire_department,
                   iconColor: const Color(0xFFD97706),
-                  bgColor: const Color(0xFFFFFBEB),
+                  bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFFFFBEB),
                   label: l10n.streakLabel,
                   value: l10n.streakDaysCount(streak),
                 ),
@@ -767,57 +786,72 @@ class ProfileScreen extends StatelessWidget {
     required String label,
     required String value,
   }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: iconColor, size: 22),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold, color: iconColor),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          decoration: BoxDecoration(
+            color: bgColor,
+            borderRadius: BorderRadius.circular(14),
+            border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
           ),
-          const SizedBox(height: 2),
-          Text(label,
-              style: const TextStyle(fontSize: 11, color: AppColors.textLight)),
-        ],
-      ),
+          child: Column(
+            children: [
+              Icon(icon, color: iconColor, size: 22),
+              const SizedBox(height: 6),
+              Text(
+                value,
+                style: TextStyle(
+                    fontSize: 18, fontWeight: FontWeight.bold, color: iconColor),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _buildSection(
       {required String title, required List<Widget> children}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
-          child: Text(
-            title,
-            style: TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey.shade500,
-                letterSpacing: 0.5),
-          ),
-        ),
-        Material(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          elevation: 1,
-          shadowColor: Colors.black.withValues(alpha: 0.08),
-          clipBehavior: Clip.antiAlias,
-          child: Column(children: children),
-        ),
-      ],
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 4, bottom: 8),
+              child: Text(
+                title,
+                style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    letterSpacing: 0.5),
+              ),
+            ),
+            Material(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(16),
+              elevation: 1,
+              shadowColor: Colors.black.withValues(alpha: isDark ? 0.25 : 0.08),
+              clipBehavior: Clip.antiAlias,
+              child: Column(children: children),
+            ),
+          ],
+        );
+      },
     );
   }
-
 
   Widget _buildListTile({
     required IconData icon,
@@ -827,31 +861,208 @@ class ProfileScreen extends StatelessWidget {
     VoidCallback? onTap,
     Widget? trailing,
   }) {
-    return ListTile(
-      leading: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: iconColor.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, color: iconColor, size: 20),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return ListTile(
+          leading: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, color: iconColor, size: 20),
+          ),
+          title: Text(
+            title,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 14.5,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+            ),
+          ),
+          subtitle: subtitle != null
+              ? Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                  ),
+                )
+              : null,
+          trailing: trailing ??
+              Icon(Icons.chevron_right,
+                  color: isDark ? const Color(0xFF64748B) : Colors.grey.shade400),
+          onTap: onTap,
+        );
+      },
+    );
+  }
+
+  void _showThemeDialog(BuildContext context, ThemeProvider themeProv) {
+    final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      title: Text(title,
-          style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-      subtitle: subtitle != null
-          ? Text(subtitle,
-              style: const TextStyle(fontSize: 12, color: AppColors.textLight))
-          : null,
-      trailing: trailing ?? const Icon(Icons.chevron_right, color: Colors.grey),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      l10n.themeMode,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () => Navigator.pop(ctx),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildThemeOption(
+                  context,
+                  title: l10n.themeLight,
+                  subtitle: 'واجهة نهارية عالية التباين وواضحة',
+                  icon: Icons.light_mode_rounded,
+                  iconColor: const Color(0xFFF59E0B),
+                  isSelected: themeProv.themeMode == ThemeMode.light,
+                  onTap: () {
+                    themeProv.setThemeMode(ThemeMode.light);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildThemeOption(
+                  context,
+                  title: l10n.themeDark,
+                  subtitle: 'واجهة ليلية مريحة للعين ومتقنة',
+                  icon: Icons.dark_mode_rounded,
+                  iconColor: const Color(0xFF8B5CF6),
+                  isSelected: themeProv.themeMode == ThemeMode.dark,
+                  onTap: () {
+                    themeProv.setThemeMode(ThemeMode.dark);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildThemeOption(
+                  context,
+                  title: l10n.themeSystem,
+                  subtitle: 'يتبع الإعداد التلقائي لجهازك',
+                  icon: Icons.brightness_auto_rounded,
+                  iconColor: AppColors.primary,
+                  isSelected: themeProv.themeMode == ThemeMode.system,
+                  onTap: () {
+                    themeProv.setThemeMode(ThemeMode.system);
+                    Navigator.pop(ctx);
+                  },
+                ),
+                const SizedBox(height: 12),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildThemeOption(
+    BuildContext context, {
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? AppColors.primary.withValues(alpha: 0.08)
+              : (isDark ? const Color(0xFF0F172A) : Colors.grey.shade50),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isSelected
+                ? AppColors.primary
+                : (isDark ? const Color(0xFF334155) : Colors.grey.shade200),
+            width: isSelected ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 20),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: isSelected
+                          ? AppColors.primary
+                          : (isDark ? Colors.white : const Color(0xFF0F172A)),
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (isSelected)
+              const Icon(Icons.check_circle_rounded,
+                  color: AppColors.primary, size: 24)
+            else
+              Icon(Icons.radio_button_unchecked,
+                  color: isDark ? const Color(0xFF64748B) : Colors.grey.shade400,
+                  size: 24),
+          ],
+        ),
+      ),
     );
   }
 
   void _showLanguageDialog(BuildContext context, LocaleProvider localeProv) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).cardColor,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -868,10 +1079,10 @@ class ProfileScreen extends StatelessWidget {
                   children: [
                     Text(
                       l10n.language,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
-                        color: Color(0xFF1E293B),
+                        color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                       ),
                     ),
                     IconButton(
@@ -882,6 +1093,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 16),
                 _buildLanguageOption(
+                  context,
                   title: 'العربية (Arabic)',
                   subtitle: 'الواجهة باللغة العربية',
                   isSelected: localeProv.isArabic,
@@ -892,6 +1104,7 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 _buildLanguageOption(
+                  context,
                   title: 'English',
                   subtitle: 'English interface',
                   isSelected: !localeProv.isArabic,
@@ -909,12 +1122,14 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLanguageOption({
+  Widget _buildLanguageOption(
+    BuildContext context, {
     required String title,
     required String subtitle,
     required bool isSelected,
     required VoidCallback onTap,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
@@ -922,11 +1137,13 @@ class ProfileScreen extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
           color: isSelected
-              ? AppColors.primary.withValues(alpha: 0.08)
-              : Colors.grey.shade50,
+              ? AppColors.primary.withValues(alpha: isDark ? 0.2 : 0.08)
+              : (isDark ? const Color(0xFF0F172A) : Colors.grey.shade50),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? AppColors.primary : Colors.grey.shade200,
+            color: isSelected
+                ? AppColors.primary
+                : (isDark ? const Color(0xFF334155) : Colors.grey.shade200),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -941,7 +1158,9 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: isSelected ? AppColors.primary : const Color(0xFF1E293B),
+                      color: isSelected
+                          ? AppColors.primary
+                          : (isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B)),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -949,7 +1168,7 @@ class ProfileScreen extends StatelessWidget {
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600,
                     ),
                   ),
                 ],
@@ -958,7 +1177,8 @@ class ProfileScreen extends StatelessWidget {
             if (isSelected)
               const Icon(Icons.check_circle_rounded, color: AppColors.primary, size: 24)
             else
-              Icon(Icons.radio_button_unchecked, color: Colors.grey.shade400, size: 24),
+              Icon(Icons.radio_button_unchecked,
+                  color: isDark ? const Color(0xFF64748B) : Colors.grey.shade400, size: 24),
           ],
         ),
       ),

@@ -10,28 +10,66 @@ class AppTheme {
 
   // Light Theme
   static ThemeData get lightTheme {
+    final baseTextTheme = _buildTextTheme(ThemeData.light().textTheme);
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.backgroundLight,
+      scaffoldBackgroundColor: const Color(0xFFF8FAFC),
+      cardColor: Colors.white,
+      cardTheme: CardThemeData(
+        color: Colors.white,
+        elevation: 1,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      listTileTheme: const ListTileThemeData(
+        textColor: Color(0xFF0F172A),
+        iconColor: AppColors.primary,
+        titleTextStyle: TextStyle(
+          color: Color(0xFF0F172A),
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+        ),
+        subtitleTextStyle: TextStyle(
+          color: Color(0xFF64748B),
+          fontSize: 13,
+        ),
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         brightness: Brightness.light,
-        surface: AppColors.backgroundLight,
+        surface: Colors.white,
         error: AppColors.error,
       ),
       fontFamily: GoogleFonts.ibmPlexSansArabic().fontFamily,
-      textTheme: _buildTextTheme(ThemeData.light().textTheme),
+      textTheme: baseTextTheme.apply(
+        bodyColor: const Color(0xFF0F172A),
+        displayColor: const Color(0xFF0F172A),
+      ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: Colors.white,
+        foregroundColor: Color(0xFF0F172A),
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.textPrimaryLight),
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFF0F172A)),
         titleTextStyle: TextStyle(
-          color: AppColors.textPrimaryLight,
+          color: Color(0xFF0F172A),
           fontWeight: FontWeight.bold,
           fontSize: 18,
         ),
+      ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFFE2E8F0),
+        thickness: 1,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
@@ -42,11 +80,11 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+          borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
@@ -64,43 +102,81 @@ class AppTheme {
 
   // Dark Theme
   static ThemeData get darkTheme {
+    final baseTextTheme = _buildTextTheme(ThemeData.dark().textTheme);
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
       primaryColor: AppColors.primary,
-      scaffoldBackgroundColor: AppColors.backgroundDark,
+      scaffoldBackgroundColor: const Color(0xFF0B1120),
+      cardColor: const Color(0xFF1E293B),
+      cardTheme: CardThemeData(
+        color: const Color(0xFF1E293B),
+        elevation: 1,
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      listTileTheme: const ListTileThemeData(
+        textColor: Color(0xFFF8FAFC),
+        iconColor: AppColors.primaryLight,
+        titleTextStyle: TextStyle(
+          color: Color(0xFFF8FAFC),
+          fontWeight: FontWeight.w600,
+          fontSize: 15,
+        ),
+        subtitleTextStyle: TextStyle(
+          color: Color(0xFF94A3B8),
+          fontSize: 13,
+        ),
+      ),
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         brightness: Brightness.dark,
-        surface: AppColors.backgroundDark,
+        surface: const Color(0xFF1E293B),
         error: AppColors.error,
       ),
       fontFamily: GoogleFonts.ibmPlexSansArabic().fontFamily,
-      textTheme: _buildTextTheme(ThemeData.dark().textTheme),
+      textTheme: baseTextTheme.apply(
+        bodyColor: const Color(0xFFF8FAFC),
+        displayColor: const Color(0xFFF8FAFC),
+      ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: AppColors.backgroundDark,
+        backgroundColor: Color(0xFF0F172A),
+        foregroundColor: Color(0xFFF8FAFC),
         elevation: 0,
-        iconTheme: IconThemeData(color: AppColors.textPrimaryDark),
+        scrolledUnderElevation: 0,
+        iconTheme: IconThemeData(color: Color(0xFFF8FAFC)),
         titleTextStyle: TextStyle(
-          color: AppColors.textPrimaryDark,
+          color: Color(0xFFF8FAFC),
           fontWeight: FontWeight.bold,
           fontSize: 18,
         ),
       ),
+      dialogTheme: const DialogThemeData(
+        backgroundColor: Color(0xFF1E293B),
+        surfaceTintColor: Colors.transparent,
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        backgroundColor: Color(0xFF1E293B),
+        surfaceTintColor: Colors.transparent,
+      ),
+      dividerTheme: const DividerThemeData(
+        color: Color(0xFF334155),
+        thickness: 1,
+      ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: AppColors.backgroundDarkAlt,
+        fillColor: const Color(0xFF1E293B),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.1)),
+          borderSide: const BorderSide(color: Color(0xFF334155)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: AppColors.primary),
+          borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(

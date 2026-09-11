@@ -19,6 +19,7 @@ import 'presentation/providers/reminder_provider.dart';
 import 'presentation/providers/ai_feedback_provider.dart';
 import 'presentation/providers/contribution_provider.dart';
 import 'presentation/providers/locale_provider.dart';
+import 'presentation/providers/theme_provider.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/screens/splash_screen.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => di.sl<ThemeProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<LocaleProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<AuthProvider>()),
         ChangeNotifierProvider(create: (_) => di.sl<DashboardProvider>()),
@@ -76,14 +78,14 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => AdminProvider()), // Inject AdminProvider
       ],
-      child: Consumer<LocaleProvider>(
-        builder: (context, localeProvider, child) {
+      child: Consumer2<LocaleProvider, ThemeProvider>(
+        builder: (context, localeProvider, themeProvider, child) {
           return MaterialApp(
             title: 'SDLE',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: ThemeMode.system,
+            themeMode: themeProvider.themeMode,
             locale: localeProvider.locale,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,

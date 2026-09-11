@@ -33,6 +33,7 @@ import '../../data/datasources/ai_feedback_remote_data_source.dart';
 import '../../presentation/providers/ai_feedback_provider.dart';
 import '../../presentation/providers/contribution_provider.dart';
 import '../../presentation/providers/locale_provider.dart';
+import '../../presentation/providers/theme_provider.dart';
 
 final sl = GetIt.instance;
 
@@ -41,6 +42,9 @@ Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => DioClient(sharedPreferences: sl()));
+
+  // Theme Provider
+  sl.registerLazySingleton(() => ThemeProvider(sl()));
 
   // Locale Provider
   sl.registerLazySingleton(() => LocaleProvider(prefs: sl()));

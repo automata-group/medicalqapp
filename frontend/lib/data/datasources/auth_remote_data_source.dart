@@ -6,6 +6,19 @@ import '../models/user_model.dart';
 
 abstract class AuthRemoteDataSource {
   Future<UserModel> login(String email, String password);
+  Future<UserModel> signInWithGoogle({
+    required String idToken,
+    String? email,
+    String? fullName,
+    String? googleId,
+    String? avatar,
+  });
+  Future<UserModel> signInWithApple({
+    required String identityToken,
+    required String appleId,
+    String? email,
+    String? fullName,
+  });
   Future<void> register(Map<String, dynamic> data);
   Future<UserModel> verifyEmail(String email, String otp);
   Future<void> resendVerificationCode(String email);
@@ -46,6 +59,70 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'Login failed');
+    }
+  }
+
+  @override
+  Future<UserModel> signInWithGoogle({
+    required String idToken,
+    String? email,
+    String? fullName,
+    String? googleId,
+    String? avatar,
+  }) async {
+    try {
+      final response = await dioClient.dio.post('/auth/google', data: {
+        'idToken': idToken,
+        if (email != null) 'email': email,
+        if (fullName != null) 'fullName': fullName,
+        if (googleId != null) 'googleId': googleId,
+        if (avatar != null) 'avatar': avatar,
+      });
+
+      final data = response.data;
+      if (data != null && data['success'] == true && data['data'] != null) {
+        final userData = data['data'];
+        final accessToken = userData['accessToken'];
+        if (accessToken != null) {
+          await sharedPreferences.setString('accessToken', accessToken);
+        }
+        return UserModel.fromJson(userData);
+      } else {
+        throw Exception('Invalid response format');
+      }
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Google sign-in failed');
+    }
+  }
+
+  @override
+  Future<UserModel> signInWithApple({
+    required String identityToken,
+    required String appleId,
+    String? email,
+    String? fullName,
+  }) async {
+    try {
+      final response = await dioClient.dio.post('/auth/apple', data: {
+        'identityToken': identityToken,
+        'appleId': appleId,
+        if (email != null) 'email': email,
+        if (fullName != null) 'fullName': fullName,
+      });
+
+      final data = response.data;
+      if (data != null && data['success'] == true && data['data'] != null) {
+        final userData = data['data'];
+        final accessToken = userData['accessToken'];
+        if (accessToken != null) {
+          await sharedPreferences.setString('accessToken', accessToken);
+        }
+        return UserModel.fromJson(userData);
+      } else {
+        throw Exception('Invalid response format');
+      }
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'Apple sign-in failed');
     }
   }
 

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import 'package:frontend/core/utils/specialty_extension.dart';
 import '../../providers/specialty_provider.dart';
-import '../../screens/practice/specialty_topics_screen.dart';
+import '../../screens/exam/exam_screen.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../domain/entities/specialty.dart';
 
@@ -13,6 +13,7 @@ class SpecialtiesCarousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Consumer<SpecialtyProvider>(
       builder: (context, provider, child) {
@@ -36,10 +37,10 @@ class SpecialtiesCarousel extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
               child: Text(
                 l10n.specialties,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
+                  color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                 ),
               ),
             ),
@@ -63,15 +64,17 @@ class SpecialtiesCarousel extends StatelessWidget {
 
   Widget _buildSpecialtyCard(BuildContext context, AppLocalizations l10n, Specialty specialty) {
     final localizedName = specialty.getLocalizedName(l10n);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => SpecialtyTopicsScreen(
-              specialtyId: specialty.id,
-              specialtyName: localizedName,
+            builder: (_) => ExamScreen(
+              specialtyId: specialty.id.toString(),
+              shuffle: false,
+              autoResume: true,
             ),
           ),
         );
@@ -81,11 +84,12 @@ class SpecialtiesCarousel extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDark ? Theme.of(context).cardColor : Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -122,10 +126,10 @@ class SpecialtiesCarousel extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                     height: 1.2,
                   ),
                 ),

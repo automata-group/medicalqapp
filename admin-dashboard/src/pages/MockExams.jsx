@@ -12,7 +12,8 @@ import {
     addMockQuestionsFromBank,
     addCustomMockQuestion,
     deleteMockQuestion,
-    getQuestions
+    getQuestions,
+    createStandardSdleMockExam
 } from '../api/api';
 import styles from './Dashboard.module.css';
 import pageStyles from './Page.module.css';
@@ -32,11 +33,17 @@ export default function MockExams() {
         duration: 60,
         isPremium: true,
         specialtyId: '',
-        achievementId: ''
+        achievementId: '',
+        hasBreak: false,
+        breakDuration: 30,
+        breakScheduleType: 'between_sections',
+        breakIntervalQuestions: 50,
+        allowBreakSkip: true
     });
 
     const [aiLoading, setAiLoading] = useState(false);
     const [aiTopic, setAiTopic] = useState('');
+    const [generatingSdle, setGeneratingSdle] = useState(false);
 
     // Attached Questions State
     const [examQuestions, setExamQuestions] = useState([]);
@@ -166,7 +173,12 @@ export default function MockExams() {
             duration: 60,
             isPremium: true,
             specialtyId: '',
-            achievementId: ''
+            achievementId: '',
+            hasBreak: false,
+            breakDuration: 30,
+            breakScheduleType: 'between_sections',
+            breakIntervalQuestions: 50,
+            allowBreakSkip: true
         });
     };
 
@@ -179,7 +191,12 @@ export default function MockExams() {
             duration: exam.duration,
             isPremium: exam.isPremium,
             specialtyId: exam.specialtyId || '',
-            achievementId: exam.achievementId || ''
+            achievementId: exam.achievementId || '',
+            hasBreak: exam.hasBreak ?? false,
+            breakDuration: exam.breakDuration ?? 30,
+            breakScheduleType: exam.breakScheduleType || 'between_sections',
+            breakIntervalQuestions: exam.breakIntervalQuestions ?? 50,
+            allowBreakSkip: exam.allowBreakSkip ?? true
         });
         setIsEditing(true);
         setIsCreating(true);
@@ -358,13 +375,55 @@ export default function MockExams() {
         }
     };
 
+    const handleCreateSdleSimulation = async () => {
+        const confirm = window.confirm(
+            'هل تريد إنشاء اختبار محاكاة الهيئة الرسمي (SDLE Official Simulation)؟\n\n' +
+            '• قسمان (Section 1 & Section 2)\n' +
+            '• 105 أسئلة عشوائية لكل قسم (إجمالي 210 أسئلة)\n' +
+            '• ساعتان لكل قسم (120 دقيقة لكل قسم)\n' +
+            '• استراحة اختيارية لمدة 30 دقيقة بين القسمين مع إمكانية التخطي\n' +
+            '• متاح للمشتركين فقط (PRO Only)'
+        );
+        if (!confirm) return;
+
+        setGeneratingSdle(true);
+        try {
+            const res = await createStandardSdleMockExam();
+            alert(res.data.message || 'تم إنشاء اختبار محاكاة الهيئة بنجاح!');
+            loadData();
+        } catch (err) {
+            console.error(err);
+            alert('فشل إنشاء اختبار المحاكاة: ' + (err.response?.data?.message || err.message));
+        } finally {
+            setGeneratingSdle(false);
+        }
+    };
+
     return (
         <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
                 <h2 className={styles.pageTitle}>📝 Mock Exams Management</h2>
-                <button className={`${pageStyles.btn} ${pageStyles.btnPrimary}`} onClick={() => isCreating ? resetForm() : setIsCreating(true)}>
-                    {isCreating ? 'Cancel / Close Form' : '+ Create New Mock Exam'}
-                </button>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                    <button 
+                        className={pageStyles.btn} 
+                        style={{ 
+                            background: 'linear-gradient(135deg, #f59e0b, #d97706)', 
+                            color: '#ffffff', 
+                            border: 'none',
+                            fontWeight: 'bold',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }} 
+                        onClick={handleCreateSdleSimulation}
+                        disabled={generatingSdle}
+                    >
+                        {generatingSdle ? '⏳ جاري التوليد...' : '⚡ إنشاء محاكاة الهيئة الرسمية (2x105 Qs)'}
+                    </button>
+                    <button className={`${pageStyles.btn} ${pageStyles.btnPrimary}`} onClick={() => isCreating ? resetForm() : setIsCreating(true)}>
+                        {isCreating ? 'Cancel / Close Form' : '+ Create New Mock Exam'}
+                    </button>
+                </div>
             </div>
 
             {isCreating && (
@@ -415,6 +474,92 @@ export default function MockExams() {
                         <div className={pageStyles.formGroup} style={{ gridColumn: 'span 2' }}>
                             <label style={{ color: '#94a3b8', fontSize: '13px', marginBottom: '5px', display: 'block' }}>Description (Visible to students before starting)</label>
                             <textarea className={pageStyles.search} rows="3" placeholder="Describe what this exam covers..." value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} />
+                        </div>
+
+                        {/* Break Period Configuration */}
+                        <div style={{ 
+                            gridColumn: 'span 2', 
+                            background: '#0f172a', 
+                            padding: '16px 20px', 
+                            borderRadius: '10px', 
+                            border: '1px solid #334155',
+                            marginTop: '10px'
+                        }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: formData.hasBreak ? '16px' : '0' }}>
+                                <label style={{ color: '#f8fafc', display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', fontWeight: 600, fontSize: '14px' }}>
+                                    <input 
+                                        type="checkbox" 
+                                        checked={formData.hasBreak} 
+                                        onChange={e => setFormData({ ...formData, hasBreak: e.target.checked })} 
+                                        style={{ width: '18px', height: '18px', accentColor: '#3b82f6', cursor: 'pointer' }}
+                                    />
+                                    <span>☕ تفعيل فترات الاستراحة (Enable Break Periods)</span>
+                                </label>
+                                <span style={{ color: '#94a3b8', fontSize: '12px' }}>
+                                    تسمح للطلاب بأخذ استراحة منظمة أثناء الاختبار مع إيقاف مؤقت للوقت
+                                </span>
+                            </div>
+
+                            {formData.hasBreak && (
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', paddingTop: '12px', borderTop: '1px solid #1e293b' }}>
+                                    <div className={pageStyles.formGroup} style={{ marginBottom: 0 }}>
+                                        <label style={{ color: '#cbd5e1', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                                            ⏱️ مدة الاستراحة (بالدقائق)
+                                        </label>
+                                        <input 
+                                            className={pageStyles.search} 
+                                            type="number" 
+                                            min="1"
+                                            max="120"
+                                            value={formData.breakDuration} 
+                                            onChange={e => setFormData({ ...formData, breakDuration: parseInt(e.target.value) || 0 })} 
+                                            placeholder="e.g. 30"
+                                        />
+                                    </div>
+
+                                    <div className={pageStyles.formGroup} style={{ marginBottom: 0 }}>
+                                        <label style={{ color: '#cbd5e1', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                                            📅 توقيت وجدولة الاستراحة
+                                        </label>
+                                        <select 
+                                            className={pageStyles.search} 
+                                            value={formData.breakScheduleType} 
+                                            onChange={e => setFormData({ ...formData, breakScheduleType: e.target.value })}
+                                        >
+                                            <option value="between_sections">بين الأقسام الرسمية (Between Sections)</option>
+                                            <option value="every_n_questions">تكرار دوري كل عدد أسئلة (Every N Questions)</option>
+                                        </select>
+                                    </div>
+
+                                    {formData.breakScheduleType === 'every_n_questions' && (
+                                        <div className={pageStyles.formGroup} style={{ marginBottom: 0 }}>
+                                            <label style={{ color: '#cbd5e1', fontSize: '12px', marginBottom: '6px', display: 'block' }}>
+                                                🔢 تكرار الاستراحة كل كم سؤال؟
+                                            </label>
+                                            <input 
+                                                className={pageStyles.search} 
+                                                type="number" 
+                                                min="5"
+                                                max="500"
+                                                value={formData.breakIntervalQuestions} 
+                                                onChange={e => setFormData({ ...formData, breakIntervalQuestions: parseInt(e.target.value) || 50 })} 
+                                                placeholder="e.g. 50 or 105"
+                                            />
+                                        </div>
+                                    )}
+
+                                    <div className={pageStyles.formGroup} style={{ display: 'flex', alignItems: 'center', paddingTop: '20px', marginBottom: 0 }}>
+                                        <label style={{ color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '13px' }}>
+                                            <input 
+                                                type="checkbox" 
+                                                checked={formData.allowBreakSkip} 
+                                                onChange={e => setFormData({ ...formData, allowBreakSkip: e.target.checked })} 
+                                            />
+                                            <span>السماح للطالب بتخطي الاستراحة (Allow Skip)</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -606,7 +751,14 @@ export default function MockExams() {
                                             {e.totalQuestions}
                                         </span>
                                     </td>
-                                    <td style={{ textAlign: 'center' }}>{e.duration}m</td>
+                                    <td style={{ textAlign: 'center' }}>
+                                        <div style={{ fontWeight: 600 }}>{e.duration}m</div>
+                                        {e.hasBreak && (
+                                            <div style={{ fontSize: '11px', color: '#38bdf8', marginTop: '3px', whiteSpace: 'nowrap' }}>
+                                                ☕ {e.breakDuration}m ({e.breakScheduleType === 'every_n_questions' ? `Every ${e.breakIntervalQuestions}Q` : 'Sections'})
+                                            </div>
+                                        )}
+                                    </td>
                                     <td>
                                         {e.isPremium ? (
                                             <span className={pageStyles.badge} style={{ background: '#4c1d95', color: '#ede9fe' }}>Premium</span>

@@ -15,6 +15,7 @@ import 'study_goal_screen.dart';
 import 'forgot_password_screen.dart';
 import 'email_verification_screen.dart';
 import 'admin/admin_scaffold.dart';
+import '../widgets/social_auth_buttons.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,6 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+        clipBehavior: Clip.antiAlias,
+        actionsOverflowButtonSpacing: 8,
+        actionsPadding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
         title: Row(
           children: [
             const Icon(Icons.mark_email_unread_outlined, color: Color(0xFFF59E0B), size: 28),
@@ -55,9 +59,12 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           ],
         ),
-        content: Text(
-          l10n.accountNotVerifiedMessage,
-          style: const TextStyle(fontSize: 14, height: 1.5),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 320, maxWidth: 420),
+          child: Text(
+            l10n.accountNotVerifiedMessage,
+            style: const TextStyle(fontSize: 14, height: 1.5),
+          ),
         ),
         actions: [
           TextButton(
@@ -76,6 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
               foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             child: Text(l10n.verifyNow, style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -282,6 +290,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: _submit,
                   isLoading: _isLoading,
                 ),
+
+                const SizedBox(height: 24),
+
+                // Social Auth Buttons (Google & Apple)
+                const SocialAuthButtons(),
 
                 const SizedBox(height: 24),
 

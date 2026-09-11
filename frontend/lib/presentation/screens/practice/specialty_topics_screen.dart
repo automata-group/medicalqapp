@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
-import '../../providers/question_provider.dart';
 import '../exam/exam_screen.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -44,36 +42,18 @@ class SpecialtyTopicsScreen extends StatelessWidget {
               const SizedBox(height: 48),
               _buildBigButton(
                 context,
-                title: l10n.startRandomPractice,
-                subtitle: l10n.practiceAllQuestionsSubtitle,
-                icon: Icons.shuffle_rounded,
-                color: AppColors.primary,
-                onTap: () {
-                  context.read<QuestionProvider>().resetSession();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ExamScreen(
-                        specialtyId: specialtyId.toString(),
-                        shuffle: true,
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 20),
-              _buildBigButton(
-                context,
                 title: l10n.continueRevision,
                 subtitle: l10n.resumeWhereLeftOff,
                 icon: Icons.history_rounded,
-                color: Colors.orange,
+                color: AppColors.primary,
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ExamScreen(
                         specialtyId: specialtyId.toString(),
+                        shuffle: false,
+                        autoResume: true,
                       ),
                     ),
                   );

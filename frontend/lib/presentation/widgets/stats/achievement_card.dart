@@ -8,13 +8,15 @@ class AchievementCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -33,7 +35,7 @@ class AchievementCard extends StatelessWidget {
                   height: 60,
                   decoration: BoxDecoration(
                     color: achievement.isUnlocked
-                        ? Colors.amber.withValues(alpha: 0.1)
+                        ? Colors.amber.withValues(alpha: isDark ? 0.2 : 0.1)
                         : Colors.grey.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
@@ -57,8 +59,9 @@ class AchievementCard extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
-                    color:
-                        achievement.isUnlocked ? Colors.black87 : Colors.grey,
+                    color: achievement.isUnlocked
+                        ? (isDark ? const Color(0xFFF8FAFC) : Colors.black87)
+                        : (isDark ? const Color(0xFF64748B) : Colors.grey),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -68,9 +71,9 @@ class AchievementCard extends StatelessWidget {
                 Text(
                   achievement.description,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 10,
-                    color: Colors.grey,
+                    color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

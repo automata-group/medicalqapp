@@ -10,6 +10,14 @@ class MockExamModel extends Equatable {
   final bool isPremium;
   final List<MockExamSectionModel> sections;
 
+  final int? specialtyId;
+  final int? achievementId;
+  final int breakDuration;
+  final bool hasBreak;
+  final String breakScheduleType;
+  final int? breakIntervalQuestions;
+  final bool allowBreakSkip;
+
   const MockExamModel({
     required this.id,
     required this.title,
@@ -21,10 +29,12 @@ class MockExamModel extends Equatable {
     this.sections = const [],
     this.specialtyId,
     this.achievementId,
+    this.breakDuration = 30,
+    this.hasBreak = true,
+    this.breakScheduleType = 'between_sections',
+    this.breakIntervalQuestions = 50,
+    this.allowBreakSkip = true,
   });
-
-  final int? specialtyId;
-  final int? achievementId;
 
   factory MockExamModel.fromJson(Map<String, dynamic> json) {
     return MockExamModel(
@@ -41,6 +51,11 @@ class MockExamModel extends Equatable {
           [],
       specialtyId: json['specialtyId'],
       achievementId: json['achievementId'],
+      breakDuration: json['breakDuration'] ?? 30,
+      hasBreak: json['hasBreak'] ?? (json['breakDuration'] != null ? json['breakDuration'] > 0 : true),
+      breakScheduleType: json['breakScheduleType'] ?? 'between_sections',
+      breakIntervalQuestions: json['breakIntervalQuestions'] ?? 50,
+      allowBreakSkip: json['allowBreakSkip'] ?? true,
     );
   }
 

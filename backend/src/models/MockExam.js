@@ -23,6 +23,26 @@ const MockExam = sequelize.define('MockExam', {
         type: DataTypes.INTEGER, // in minutes
         defaultValue: 60
     },
+    breakDuration: {
+        type: DataTypes.INTEGER, // in minutes
+        defaultValue: 30
+    },
+    hasBreak: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    breakScheduleType: {
+        type: DataTypes.ENUM('between_sections', 'every_n_questions'),
+        defaultValue: 'between_sections'
+    },
+    breakIntervalQuestions: {
+        type: DataTypes.INTEGER,
+        allowNull: true // e.g. 50 or 105 questions
+    },
+    allowBreakSkip: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
     isActive: {
         type: DataTypes.BOOLEAN,
         defaultValue: true

@@ -114,9 +114,10 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
         }
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFFF6F8FA),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: Consumer<MockExamProvider>(
           builder: (context, provider, child) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
             if (provider.isLoading && provider.currentQuestion == null) {
               return const Center(child: CircularProgressIndicator());
             }
@@ -182,11 +183,14 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
                                   question.text,
                                   textAlign: TextAlign.left,
                                   textDirection: TextDirection.ltr,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     height: 1.5,
                                     fontFamily: 'IBM Plex Sans Arabic',
+                                    color: isDark
+                                        ? const Color(0xFFF8FAFC)
+                                        : const Color(0xFF1E293B),
                                   ),
                                 ),
                                 const SizedBox(height: 32),

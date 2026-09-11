@@ -61,8 +61,10 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
@@ -95,8 +97,12 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: Colors.grey[200]!)),
+          color: isDark ? const Color(0xFF0F172A) : Colors.white,
+          border: Border(
+            top: BorderSide(
+              color: isDark ? const Color(0xFF1E293B) : Colors.grey[200]!,
+            ),
+          ),
         ),
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: BottomNavigationBar(
@@ -110,8 +116,8 @@ class _MainContainerScreenState extends State<MainContainerScreen> {
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: Colors.grey[400],
+          selectedItemColor: isDark ? const Color(0xFF38BDF8) : AppColors.primary,
+          unselectedItemColor: isDark ? const Color(0xFF64748B) : Colors.grey[400],
           selectedFontSize: 10,
           unselectedFontSize: 10,
           showUnselectedLabels: true,

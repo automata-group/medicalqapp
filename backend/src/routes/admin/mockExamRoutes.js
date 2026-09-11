@@ -9,12 +9,15 @@ const {
     getMockExamQuestions,
     addQuestionsFromBank,
     addCustomMockQuestion,
-    deleteMockQuestion
+    deleteMockQuestion,
+    createStandardSdleExam
 } = require('../../controllers/admin/mockExamController');
 const { protect, admin } = require('../../middleware/auth');
 
 router.use(protect);
 router.use(admin);
+
+router.post('/create-standard-simulation', createStandardSdleExam);
 
 router.route('/')
     .get(getMockExams)

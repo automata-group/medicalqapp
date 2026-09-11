@@ -674,11 +674,11 @@ abstract class AppLocalizations {
   /// **'Advanced Performance Stats'**
   String get advancedStats;
 
-  /// No description provided for @adFree.
+  /// No description provided for @offlineMode.
   ///
   /// In en, this message translates to:
-  /// **'Ad-Free Experience'**
-  String get adFree;
+  /// **'Offline Mode'**
+  String get offlineMode;
 
   /// No description provided for @monthlyPlan.
   ///
@@ -881,7 +881,7 @@ abstract class AppLocalizations {
   /// No description provided for @shuffleQuestions.
   ///
   /// In en, this message translates to:
-  /// **'Shuffle Questions'**
+  /// **'Comprehensive Study'**
   String get shuffleQuestions;
 
   /// No description provided for @examRecallTitle.
@@ -1333,12 +1333,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Daily Reminder Time'**
   String get dailyReminderTime;
-
-  /// No description provided for @offlineMode.
-  ///
-  /// In en, this message translates to:
-  /// **'Offline Mode'**
-  String get offlineMode;
 
   /// No description provided for @readyStatus.
   ///
@@ -2029,6 +2023,144 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Verification code has been sent to your email successfully.'**
   String get otpSentSuccess;
+
+  /// No description provided for @startQuickPractice.
+  ///
+  /// In en, this message translates to:
+  /// **'Start Quick Practice'**
+  String get startQuickPractice;
+
+  /// No description provided for @themeMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
+  String get themeMode;
+
+  /// No description provided for @themeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get themeLight;
+
+  /// No description provided for @themeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get themeDark;
+
+  /// No description provided for @themeSystem.
+  ///
+  /// In en, this message translates to:
+  /// **'System Default'**
+  String get themeSystem;
+
+  /// No description provided for @examBreakTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Break Period'**
+  String get examBreakTitle;
+
+  /// No description provided for @examBreakSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Optional 30-minute break. You can take a rest or proceed directly to Section 2.'**
+  String get examBreakSubtitle;
+
+  /// No description provided for @skipBreakAndContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip Break & Proceed to Section 2'**
+  String get skipBreakAndContinue;
+
+  /// No description provided for @breakTimeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Break Time Remaining'**
+  String get breakTimeRemaining;
+
+  /// No description provided for @sectionFinished.
+  ///
+  /// In en, this message translates to:
+  /// **'Section 1 Completed Successfully!'**
+  String get sectionFinished;
+
+  /// No description provided for @correctAnswerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct Answer'**
+  String get correctAnswerLabel;
+
+  /// No description provided for @aiExplanationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'AI Explanation'**
+  String get aiExplanationTitle;
+
+  /// No description provided for @showAiExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Show AI Explanation'**
+  String get showAiExplanation;
+
+  /// No description provided for @hideAiExplanation.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide AI Explanation'**
+  String get hideAiExplanation;
+
+  /// No description provided for @summaryTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Clinical Summary:'**
+  String get summaryTitle;
+
+  /// No description provided for @keyPointsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Key Points:'**
+  String get keyPointsTitle;
+
+  /// No description provided for @whyOthersWrongTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Why other options are incorrect:'**
+  String get whyOthersWrongTitle;
+
+  /// No description provided for @referencesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Medical References:'**
+  String get referencesTitle;
+
+  /// No description provided for @continueWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Google'**
+  String get continueWithGoogle;
+
+  /// No description provided for @continueWithApple.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with Apple'**
+  String get continueWithApple;
+
+  /// No description provided for @orContinueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Or continue with'**
+  String get orContinueWith;
+
+  /// No description provided for @googleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sign in with Google. Please try again later.'**
+  String get googleSignInFailed;
+
+  /// No description provided for @appleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sign in with Apple. Please try again later.'**
+  String get appleSignInFailed;
 }
 
 class _AppLocalizationsDelegate

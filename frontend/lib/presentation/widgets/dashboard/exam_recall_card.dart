@@ -61,7 +61,7 @@ class ExamRecallCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n?.examRecallTitle ?? 'تذكّر سؤالاً جاءك في الاختبار؟',
+                      l10n?.examRecallTitle ?? 'تذكر سؤال من الاختبار؟',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 15,

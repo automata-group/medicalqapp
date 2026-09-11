@@ -1,4 +1,4 @@
-const { Bookmark, Question, Specialty, Option } = require('../models');
+const { Bookmark, Question, Specialty, Option, Explanation } = require('../models');
 
 // @desc    Get user bookmarks
 // @route   GET /api/v1/bookmarks
@@ -13,7 +13,8 @@ exports.getBookmarks = async (req, res, next) => {
                     as: 'question',
                     include: [
                         { model: Specialty, as: 'specialty', attributes: ['name'] },
-                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] }
+                        { model: Option, as: 'options', attributes: ['id', 'text', 'order', 'isCorrect'] },
+                        { model: Explanation, as: 'explanation', attributes: ['id', 'text', 'whyWrong', 'references', 'aiGenerated'] }
                     ]
                 }
             ],
@@ -88,7 +89,11 @@ exports.getBookmark = async (req, res, next) => {
                 {
                     model: Question,
                     as: 'question',
-                    include: [{ model: Specialty, as: 'specialty', attributes: ['name'] }]
+                    include: [
+                        { model: Specialty, as: 'specialty', attributes: ['name'] },
+                        { model: Option, as: 'options', attributes: ['id', 'text', 'order', 'isCorrect'] },
+                        { model: Explanation, as: 'explanation', attributes: ['id', 'text', 'whyWrong', 'references', 'aiGenerated'] }
+                    ]
                 }
             ]
         });

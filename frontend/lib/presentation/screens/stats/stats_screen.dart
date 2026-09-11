@@ -13,10 +13,14 @@ class StatsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF6F7F8),
+        backgroundColor: isDark
+            ? Theme.of(context).scaffoldBackgroundColor
+            : const Color(0xFFF6F7F8),
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
@@ -60,6 +64,7 @@ class StatsScreen extends StatelessWidget {
                       insets: const EdgeInsets.symmetric(horizontal: 16.0),
                     ),
                     isScrollable: true,
+                    tabAlignment: TabAlignment.center,
                     tabs: [
                       Tab(text: l10n.performanceTrend),
                       Tab(text: l10n.achievements),
@@ -96,9 +101,23 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
-      color: Colors.white,
-      child: _tabBar,
+      decoration: BoxDecoration(
+        color: isDark ? theme.cardColor : Colors.white,
+        border: Border(
+          bottom: BorderSide(
+            color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            width: 1,
+          ),
+        ),
+      ),
+      alignment: Alignment.center,
+      child: Center(
+        child: _tabBar,
+      ),
     );
   }
 

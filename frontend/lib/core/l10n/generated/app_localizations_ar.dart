@@ -310,7 +310,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get advancedStats => 'إحصائيات أداء متقدمة';
 
   @override
-  String get adFree => 'تجربة خالية من الإعلانات';
+  String get offlineMode => 'المذاكرة بدون إنترنت';
 
   @override
   String get monthlyPlan => 'شهري';
@@ -420,10 +420,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get allSpecialties => 'جميع التخصصات';
 
   @override
-  String get shuffleQuestions => 'خلط الأسئلة';
+  String get shuffleQuestions => 'مذاكرة شاملة';
 
   @override
-  String get examRecallTitle => 'تذكّر سؤالاً جاءك في الاختبار؟';
+  String get examRecallTitle => 'تذكر سؤال من الاختبار؟';
 
   @override
   String get examRecallSubtitle =>
@@ -671,9 +671,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get dailyReminderTime => 'وقت التذكير اليومي';
-
-  @override
-  String get offlineMode => 'المذاكرة بدون إنترنت';
 
   @override
   String get readyStatus => 'جاهز ✓';
@@ -1062,4 +1059,76 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get otpSentSuccess =>
       'تم إرسال رمز التحقق إلى بريدك الإلكتروني بنجاح.';
+
+  @override
+  String get startQuickPractice => 'بدء تدريب سريع';
+
+  @override
+  String get themeMode => 'المظهر';
+
+  @override
+  String get themeLight => 'فاتح';
+
+  @override
+  String get themeDark => 'داكن';
+
+  @override
+  String get themeSystem => 'تلقائي (حسب النظام)';
+
+  @override
+  String get examBreakTitle => 'فترة استراحة';
+
+  @override
+  String get examBreakSubtitle =>
+      'فترة استراحة اختيارية لمدة 30 دقيقة. يمكنك أخذ قسط من الراحة أو المتابعة مباشرة للقسم الثاني.';
+
+  @override
+  String get skipBreakAndContinue => 'تخطي الاستراحة والمتابعة للقسم الثاني';
+
+  @override
+  String get breakTimeRemaining => 'الوقت المتبقي للاستراحة';
+
+  @override
+  String get sectionFinished => 'اكتمل القسم الأول بنجاح!';
+
+  @override
+  String get correctAnswerLabel => 'الإجابة الصحيحة';
+
+  @override
+  String get aiExplanationTitle => 'الشرح بالذكاء الاصطناعي';
+
+  @override
+  String get showAiExplanation => 'عرض الشرح الذكي';
+
+  @override
+  String get hideAiExplanation => 'إخفاء الشرح الذكي';
+
+  @override
+  String get summaryTitle => 'الملخص الطبي:';
+
+  @override
+  String get keyPointsTitle => 'النقاط الجوهرية:';
+
+  @override
+  String get whyOthersWrongTitle => 'لماذا الخيارات الأخرى غير صحيحة؟';
+
+  @override
+  String get referencesTitle => 'المراجع الطبية:';
+
+  @override
+  String get continueWithGoogle => 'المتابعة باستخدام Google';
+
+  @override
+  String get continueWithApple => 'المتابعة باستخدام Apple';
+
+  @override
+  String get orContinueWith => 'أو المتابعة عبر';
+
+  @override
+  String get googleSignInFailed =>
+      'تعذر إكمال تسجيل الدخول بواسطة Google. يرجى المحاولة لاحقاً.';
+
+  @override
+  String get appleSignInFailed =>
+      'تعذر إكمال تسجيل الدخول بواسطة Apple. يرجى المحاولة لاحقاً.';
 }

@@ -310,7 +310,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get advancedStats => 'Advanced Performance Stats';
 
   @override
-  String get adFree => 'Ad-Free Experience';
+  String get offlineMode => 'Offline Mode';
 
   @override
   String get monthlyPlan => 'Monthly';
@@ -420,7 +420,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get allSpecialties => 'All Specialties';
 
   @override
-  String get shuffleQuestions => 'Shuffle Questions';
+  String get shuffleQuestions => 'Comprehensive Study';
 
   @override
   String get examRecallTitle => 'Remember a question from the exam?';
@@ -676,9 +676,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dailyReminderTime => 'Daily Reminder Time';
-
-  @override
-  String get offlineMode => 'Offline Mode';
 
   @override
   String get readyStatus => 'Ready ✓';
@@ -1069,4 +1066,76 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get otpSentSuccess =>
       'Verification code has been sent to your email successfully.';
+
+  @override
+  String get startQuickPractice => 'Start Quick Practice';
+
+  @override
+  String get themeMode => 'Theme';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystem => 'System Default';
+
+  @override
+  String get examBreakTitle => 'Break Period';
+
+  @override
+  String get examBreakSubtitle =>
+      'Optional 30-minute break. You can take a rest or proceed directly to Section 2.';
+
+  @override
+  String get skipBreakAndContinue => 'Skip Break & Proceed to Section 2';
+
+  @override
+  String get breakTimeRemaining => 'Break Time Remaining';
+
+  @override
+  String get sectionFinished => 'Section 1 Completed Successfully!';
+
+  @override
+  String get correctAnswerLabel => 'Correct Answer';
+
+  @override
+  String get aiExplanationTitle => 'AI Explanation';
+
+  @override
+  String get showAiExplanation => 'Show AI Explanation';
+
+  @override
+  String get hideAiExplanation => 'Hide AI Explanation';
+
+  @override
+  String get summaryTitle => 'Clinical Summary:';
+
+  @override
+  String get keyPointsTitle => 'Key Points:';
+
+  @override
+  String get whyOthersWrongTitle => 'Why other options are incorrect:';
+
+  @override
+  String get referencesTitle => 'Medical References:';
+
+  @override
+  String get continueWithGoogle => 'Continue with Google';
+
+  @override
+  String get continueWithApple => 'Continue with Apple';
+
+  @override
+  String get orContinueWith => 'Or continue with';
+
+  @override
+  String get googleSignInFailed =>
+      'Failed to sign in with Google. Please try again later.';
+
+  @override
+  String get appleSignInFailed =>
+      'Failed to sign in with Apple. Please try again later.';
 }

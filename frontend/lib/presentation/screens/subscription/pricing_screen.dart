@@ -157,9 +157,10 @@ class _PricingScreenState extends State<PricingScreen>
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       bottomNavigationBar: _buildBottomCTA(context),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -167,41 +168,64 @@ class _PricingScreenState extends State<PricingScreen>
           _buildSliverHeader(context),
           SliverToBoxAdapter(
             child: Transform.translate(
-              offset: const Offset(0, -24),
+              offset: const Offset(0, -16),
               child: Container(
-                decoration: const BoxDecoration(
-                  color: Color(0xFFF8FAFC),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(28),
-                    topRight: Radius.circular(28),
+                decoration: BoxDecoration(
+                  color: isDark ? Theme.of(context).scaffoldBackgroundColor : const Color(0xFFF8FAFC),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(32),
+                    topRight: Radius.circular(32),
                   ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Color(0x0F000000),
+                      blurRadius: 12,
+                      offset: Offset(0, -4),
+                    ),
+                  ],
                 ),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      const EdgeInsets.fromLTRB(20, 24, 20, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                      // Elegant handle bar
+                      Center(
+                        child: Container(
+                          width: 42,
+                          height: 4.5,
+                          margin: const EdgeInsets.only(bottom: 22),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                      ),
+
                       // Subtitle
                       Text(
                         l10n.chooseYourPlan,
                         textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                          color: Color(0xFF0F172A),
+                        style: TextStyle(
+                          fontSize: 21,
+                          fontWeight: FontWeight.w900,
+                          color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                          letterSpacing: -0.3,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 14),
 
                       // Notice pill
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 14, vertical: 10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFEFF6FF),
+                          color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF6FF),
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: const Color(0xFFBFDBFE)),
+                          border: Border.all(
+                            color: isDark ? const Color(0xFF334155) : const Color(0xFFBFDBFE),
+                          ),
                         ),
                         child: Row(
                           children: [
@@ -211,9 +235,9 @@ class _PricingScreenState extends State<PricingScreen>
                             Expanded(
                               child: Text(
                                 l10n.fullProAccessHeader,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
-                                  color: Color(0xFF1E40AF),
+                                  color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF1E40AF),
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
@@ -283,21 +307,25 @@ class _PricingScreenState extends State<PricingScreen>
     final l10n = AppLocalizations.of(context)!;
 
     return SliverAppBar(
-      expandedHeight: 280,
+      expandedHeight: 310,
       pinned: true,
       elevation: 0,
-      backgroundColor: const Color(0xFF0A1128),
+      backgroundColor: const Color(0xFF030712),
       leading: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10.0),
         child: InkWell(
           onTap: () => Navigator.pop(context),
           borderRadius: BorderRadius.circular(24),
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.white.withValues(alpha: 0.15),
+              color: Colors.white.withValues(alpha: 0.12),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.20),
+                width: 1,
+              ),
             ),
-            child: const Icon(Icons.close_rounded, color: Colors.white, size: 20),
+            child: const Icon(Icons.close_rounded, color: Colors.white, size: 18),
           ),
         ),
       ),
@@ -305,7 +333,11 @@ class _PricingScreenState extends State<PricingScreen>
         background: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF070D1E), Color(0xFF1E3A8A), Color(0xFF1E293B)],
+              colors: [
+                Color(0xFF030712), // Deepest obsidian midnight
+                Color(0xFF0F172A), // Rich dark slate
+                Color(0xFF1E293B), // Navy steel
+              ],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -313,110 +345,210 @@ class _PricingScreenState extends State<PricingScreen>
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Ambient Glow
+              // Top-center luminous royal aura
+              Positioned(
+                top: -40,
+                child: Container(
+                  height: 250,
+                  width: 340,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        const Color(0xFF2563EB).withValues(alpha: 0.28),
+                        const Color(0xFF1D4ED8).withValues(alpha: 0.08),
+                        Colors.transparent,
+                      ],
+                      stops: const [0.0, 0.55, 1.0],
+                    ),
+                  ),
+                ),
+              ),
+              // Golden halo behind the PRO badge
               Positioned(
                 top: 40,
-                right: -20,
+                child: Container(
+                  height: 110,
+                  width: 220,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        const Color(0xFFF59E0B).withValues(alpha: 0.22),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              // Soft cyan ambient light on right
+              Positioned(
+                top: 70,
+                right: -40,
                 child: Container(
                   height: 160,
                   width: 160,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.amber.withValues(alpha: 0.12),
-                    backgroundBlendMode: BlendMode.screen,
+                    gradient: RadialGradient(
+                      colors: [
+                        const Color(0xFF38BDF8).withValues(alpha: 0.12),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
+              // Soft violet ambient light on left
               Positioned(
-                bottom: 20,
-                left: -20,
+                bottom: 30,
+                left: -40,
                 child: Container(
                   height: 180,
                   width: 180,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: AppColors.primary.withValues(alpha: 0.25),
-                    backgroundBlendMode: BlendMode.screen,
+                    gradient: RadialGradient(
+                      colors: [
+                        const Color(0xFF818CF8).withValues(alpha: 0.14),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 30),
-                  ScaleTransition(
-                    scale: _pulseAnimation,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 6),
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
-                        ),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.amber.withValues(alpha: 0.4),
-                            blurRadius: 16,
-                            offset: const Offset(0, 4),
+              SafeArea(
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16, bottom: 26),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Luxury PRO Badge
+                      ScaleTransition(
+                        scale: _pulseAnimation,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 7),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFFF59E0B), Color(0xFFD97706), Color(0xFFB45309)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(24),
+                            border: Border.all(
+                              color: const Color(0xFFFDE68A).withValues(alpha: 0.55),
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
+                                blurRadius: 18,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
-                        ],
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.workspace_premium_rounded,
+                                  size: 16, color: Colors.white),
+                              const SizedBox(width: 6),
+                              Text(
+                                l10n.proMembership,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w900,
+                                  letterSpacing: 1.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      child: Row(
+                      const SizedBox(height: 14),
+
+                      // Title "SDLE PRO" with Radiant Gold Mask
+                      Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.workspace_premium_rounded,
-                              size: 16, color: Colors.white),
-                          const SizedBox(width: 6),
                           Text(
-                            l10n.proMembership,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
+                            'SDLE',
+                            style: TextStyle(
+                              fontSize: 34,
                               fontWeight: FontWeight.w900,
-                              letterSpacing: 1.2,
+                              letterSpacing: 2.0,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black.withValues(alpha: 0.5),
+                                  offset: const Offset(0, 2),
+                                  blurRadius: 8,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          ShaderMask(
+                            shaderCallback: (bounds) => const LinearGradient(
+                              colors: [Color(0xFFFFFBEB), Color(0xFFFDE68A), Color(0xFFF59E0B)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ).createShader(bounds),
+                            child: Text(
+                              'PRO',
+                              style: TextStyle(
+                                fontSize: 34,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 1.5,
+                                color: Colors.white,
+                                shadows: [
+                                  Shadow(
+                                    color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                                    offset: const Offset(0, 2),
+                                    blurRadius: 12,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'SDLE PRO',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w900,
-                      letterSpacing: 1.2,
-                      color: Colors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      l10n.passExamWithConfidence,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.blue.shade100,
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(height: 8),
+
+                      // Subtitle
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28),
+                        child: Text(
+                          l10n.passExamWithConfidence,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 14.5,
+                            color: Color(0xFFE2E8F0),
+                            fontWeight: FontWeight.w500,
+                            letterSpacing: 0.2,
+                            height: 1.4,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Quick stats pill row
-                  Wrap(
-                    alignment: WrapAlignment.center,
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      _buildHeaderTag(l10n.tagQuestionsCount),
-                      _buildHeaderTag(l10n.tagSmartExplanations),
-                      _buildHeaderTag(l10n.tagExamSimulation),
+                      const SizedBox(height: 18),
+
+                      // Quick stats pill row with luxury glassmorphism
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 8,
+                        runSpacing: 8,
+                        children: [
+                          _buildHeaderTag(l10n.tagQuestionsCount),
+                          _buildHeaderTag(l10n.tagSmartExplanations),
+                          _buildHeaderTag(l10n.tagExamSimulation),
+                        ],
+                      ),
                     ],
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -427,18 +559,29 @@ class _PricingScreenState extends State<PricingScreen>
 
   Widget _buildHeaderTag(String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.18)),
+        color: Colors.white.withValues(alpha: 0.09),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.18),
+          width: 1.0,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: Text(
         label,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 11,
+          fontSize: 11.5,
           fontWeight: FontWeight.w600,
+          letterSpacing: 0.2,
         ),
       ),
     );
@@ -446,6 +589,7 @@ class _PricingScreenState extends State<PricingScreen>
 
   Widget _buildPlanCardItem(int index) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final plan = _plans[index];
     final isSelected = _selectedPlanIndex == index;
     final isPopular = plan['isPopular'] == true;
@@ -463,14 +607,16 @@ class _PricingScreenState extends State<PricingScreen>
         curve: Curves.easeInOut,
         margin: EdgeInsets.only(top: isPopular ? 8 : 0),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFF0F7FF) : Colors.white,
+          color: isSelected
+              ? (isDark ? const Color(0xFF1E3A8A).withValues(alpha: 0.35) : const Color(0xFFF0F7FF))
+              : (isDark ? Theme.of(context).cardColor : Colors.white),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected
                 ? AppColors.primary
                 : (isPopular
                     ? const Color(0xFFF59E0B).withValues(alpha: 0.6)
-                    : const Color(0xFFE2E8F0)),
+                    : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0))),
             width: isSelected ? 2.5 : 1.4,
           ),
           boxShadow: isSelected
@@ -509,13 +655,12 @@ class _PricingScreenState extends State<PricingScreen>
                       border: Border.all(
                         color: isSelected
                             ? AppColors.primary
-                            : const Color(0xFFCBD5E1),
+                            : (isDark ? const Color(0xFF64748B) : const Color(0xFFCBD5E1)),
                         width: 2,
                       ),
                     ),
                     child: isSelected
-                        ? const Icon(Icons.check_rounded,
-                            size: 16, color: Colors.white)
+                        ? const Icon(Icons.check, color: Colors.white, size: 16)
                         : null,
                   ),
                   const SizedBox(width: 14),
@@ -533,8 +678,8 @@ class _PricingScreenState extends State<PricingScreen>
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                                 color: isSelected
-                                    ? const Color(0xFF0F172A)
-                                    : const Color(0xFF334155),
+                                    ? (isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A))
+                                    : (isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155)),
                               ),
                             ),
                             if (savings != null && savings > 0) ...[
@@ -558,8 +703,8 @@ class _PricingScreenState extends State<PricingScreen>
                             ],
                           ],
                         ),
-                        const SizedBox(height: 4),
-                        if (monthlyEquiv != null && days > 30)
+                        if (monthlyEquiv != null && days > 30) ...[
+                          const SizedBox(height: 4),
                           Text(
                             l10n.equivalentPerMonth(
                                 monthlyEquiv.toStringAsFixed(0)),
@@ -567,20 +712,13 @@ class _PricingScreenState extends State<PricingScreen>
                               fontSize: 12,
                               color: isSelected
                                   ? AppColors.primary
-                                  : const Color(0xFF64748B),
+                                  : (isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
                               fontWeight: isSelected
                                   ? FontWeight.w600
                                   : FontWeight.normal,
                             ),
-                          )
-                        else
-                          Text(
-                            l10n.sarPerMonth,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF64748B),
-                            ),
                           ),
+                        ],
                       ],
                     ),
                   ),
@@ -595,10 +733,10 @@ class _PricingScreenState extends State<PricingScreen>
                         children: [
                           Text(
                             plan['price'],
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 26,
                               fontWeight: FontWeight.w900,
-                              color: Color(0xFF0F172A),
+                              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
                             ),
                           ),
                           const SizedBox(width: 4),
@@ -717,44 +855,51 @@ class _PricingScreenState extends State<PricingScreen>
   }
 
   Widget _buildFeatureItem(String text, IconData icon) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14.0),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(5),
-            decoration: const BoxDecoration(
-              color: Color(0xFFDCFCE7),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.check_rounded,
-                size: 14, color: Color(0xFF16A34A)),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              text,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF334155),
+    return Builder(
+      builder: (context) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 14.0),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF14532D).withValues(alpha: 0.4) : const Color(0xFFDCFCE7),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(Icons.check_rounded,
+                    size: 14, color: Color(0xFF16A34A)),
               ),
-            ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? const Color(0xFFE2E8F0) : const Color(0xFF334155),
+                  ),
+                ),
+              ),
+              Icon(icon, size: 18, color: const Color(0xFF94A3B8)),
+            ],
           ),
-          Icon(icon, size: 18, color: const Color(0xFF94A3B8)),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildTrustBadges(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFF1F5F9),
+        color: isDark ? Theme.of(context).cardColor : const Color(0xFFF1F5F9),
         borderRadius: BorderRadius.circular(16),
+        border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
       ),
       child: Column(
         children: [
@@ -766,9 +911,9 @@ class _PricingScreenState extends State<PricingScreen>
               Expanded(
                 child: Text(
                   l10n.secureCheckout,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF475569),
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -784,9 +929,9 @@ class _PricingScreenState extends State<PricingScreen>
               Expanded(
                 child: Text(
                   l10n.moneyBackGuarantee,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF475569),
+                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -800,14 +945,20 @@ class _PricingScreenState extends State<PricingScreen>
 
   Widget _buildBottomCTA(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF0F172A) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? const Color(0xFF1E293B) : Colors.transparent,
+          ),
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.08),
             blurRadius: 16,
             offset: const Offset(0, -4),
           ),

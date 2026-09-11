@@ -28,13 +28,15 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         title: Text(l10n.aiCoach,
             style: const TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
+        foregroundColor: isDark ? const Color(0xFFF8FAFC) : Colors.black,
         elevation: 0,
         actions: [
           IconButton(
@@ -216,17 +218,30 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                   data: feedback.content,
                   selectable: true,
                   styleSheet: MarkdownStyleSheet(
-                    p: const TextStyle(fontSize: 16, height: 1.6, color: Colors.black87),
+                    p: TextStyle(
+                      fontSize: 16,
+                      height: 1.6,
+                      color: isDark ? const Color(0xFFF1F5F9) : Colors.black87,
+                    ),
                     h1: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
                     h2: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
                     h3: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
                     listBullet: const TextStyle(fontSize: 16, color: AppColors.primary),
-                    tableBorder: TableBorder.all(color: Colors.grey.shade300, width: 1),
-                    tableHead: const TextStyle(fontWeight: FontWeight.bold),
+                    tableBorder: TableBorder.all(
+                      color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
+                      width: 1,
+                    ),
+                    tableHead: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: isDark ? const Color(0xFFF8FAFC) : Colors.black87,
+                    ),
                     tableCellsPadding: const EdgeInsets.all(12),
-                    blockquote: const TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
+                    blockquote: TextStyle(
+                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
+                      fontStyle: FontStyle.italic,
+                    ),
                     blockquoteDecoration: BoxDecoration(
-                      color: Colors.grey.shade100,
+                      color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(8),
                       border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
                     ),

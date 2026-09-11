@@ -455,3 +455,150 @@ exports.deleteMockQuestion = async (req, res, next) => {
         next(error);
     }
 };
+
+// @desc    Create Standard SDLE Simulation Mock Exam (2 Sections, 105 Qs each, 120 mins each, 30 min break, Random, Pro only)
+// @route   POST /api/v1/admin/mock-exams/create-standard-simulation
+// @access  Private/Admin
+exports.createStandardSdleExam = async (req, res, next) => {
+    const sequelize = require('../../config/database');
+    const t = await sequelize.transaction();
+    try {
+        const title = req.body.title || 'محاكاة اختبار الهيئة الرسمية (SDLE Simulation)';
+        const description = req.body.description || 'اختبار محاكاة رسمي متكامل بنظام الهيئة: قسمان، 105 أسئلة لكل قسم (إجمالي 210 أسئلة عشوائية)، ساعتان لكل قسم مع استراحة 30 دقيقة اختيارية.';
+        
+        const totalNeeded = 210;
+        const questionsPerSection = 105;
+        
+        // Find 210 random active questions with options & explanation
+        const randomQuestions = await Question.findAll({
+            where: { isActive: true },
+            order: sequelize.random(),
+            limit: totalNeeded,
+            include: [
+                { model: Option, as: 'options' },
+                { model: Explanation, as: 'explanation' }
+            ],
+            transaction: t
+        });
+
+        if (randomQuestions.length === 0) {
+            await t.rollback();
+            return res.status(400).json({
+                success: false,
+                message: 'لا توجد أسئلة متوفرة في بنك الأسئلة'
+            });
+        }
+
+        // Create the MockExam header
+        const exam = await MockExam.create({
+            title,
+            description,
+            totalQuestions: randomQuestions.length,
+            duration: 240, // 4 hours total
+            breakDuration: 30, // 30 mins break
+            hasBreak: true,
+            breakScheduleType: 'between_sections',
+            breakIntervalQuestions: 105,
+            allowBreakSkip: true,
+            isPremium: true, // PRO only
+            isActive: true
+        }, { transaction: t });
+
+        const actualPerSection = Math.min(questionsPerSection, Math.ceil(randomQuestions.length / 2));
+
+        // Section 1
+        const section1Questions = randomQuestions.slice(0, actualPerSection);
+        const section1 = await MockExamSection.create({
+            mockExamId: exam.id,
+            title: 'القسم الأول (Section 1)',
+            timeLimit: 120, // 2 hours
+            questionCount: section1Questions.length,
+            sortOrder: 1
+        }, { transaction: t });
+
+        // Section 2
+        const section2Questions = randomQuestions.slice(actualPerSection);
+        const section2 = await MockExamSection.create({
+            mockExamId: exam.id,
+            title: 'القسم الثاني (Section 2)',
+            timeLimit: 120, // 2 hours
+            questionCount: section2Questions.length,
+            sortOrder: 2
+        }, { transaction: t });
+
+        const orderMap = { 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5 };
+
+        // Helper to insert section questions
+        const insertSectionQuestions = async (section, questionsList) => {
+            for (let i = 0; i < questionsList.length; i++) {
+                const bq = questionsList[i];
+                const mockQ = await MockQuestion.create({
+                    text: bq.text,
+                    specialtyId: bq.specialtyId,
+                    topicId: bq.topicId || null,
+                    image: bq.image || null,
+                    difficulty: bq.difficulty || 'medium',
+                    isPremium: true,
+                    isActive: true,
+                    source: `SDLE Sim - Bank #${bq.id}`
+                }, { transaction: t });
+
+                if (bq.options && bq.options.length > 0) {
+                    for (let j = 0; j < bq.options.length; j++) {
+                        const opt = bq.options[j];
+                        let orderVal = parseInt(opt.order);
+                        if (isNaN(orderVal)) {
+                            orderVal = orderMap[String(opt.order).toUpperCase()] || (j + 1);
+                        }
+                        await MockOption.create({
+                            mockQuestionId: mockQ.id,
+                            text: opt.text,
+                            isCorrect: !!opt.isCorrect,
+                            order: orderVal
+                        }, { transaction: t });
+                    }
+                }
+
+                if (bq.explanation) {
+                    await MockExplanation.create({
+                        mockQuestionId: mockQ.id,
+                        text: bq.explanation.text,
+                        references: bq.explanation.references || null
+                    }, { transaction: t });
+                }
+
+                await SectionQuestion.create({
+                    sectionId: section.id,
+                    mockQuestionId: mockQ.id,
+                    sortOrder: i + 1
+                }, { transaction: t });
+            }
+        };
+
+        await insertSectionQuestions(section1, section1Questions);
+        await insertSectionQuestions(section2, section2Questions);
+
+        await t.commit();
+
+        res.status(201).json({
+            success: true,
+            message: 'تم إنشاء اختبار محاكاة الهيئة بنجاح (قسمين، 105 سؤال لكل قسم، ساعتين واستراحة 30 دقيقة)',
+            data: {
+                id: exam.id,
+                title: exam.title,
+                totalQuestions: exam.totalQuestions,
+                sections: [
+                    { id: section1.id, title: section1.title, count: section1Questions.length, timeLimit: 120 },
+                    { id: section2.id, title: section2.title, count: section2Questions.length, timeLimit: 120 }
+                ],
+                breakDuration: 30,
+                isPremium: true
+            }
+        });
+    } catch (error) {
+        await t.rollback();
+        console.error('[Create Standard SDLE Exam Error]', error);
+        next(error);
+    }
+};
+

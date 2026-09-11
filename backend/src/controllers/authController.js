@@ -680,3 +680,192 @@ exports.resendVerificationCode = async (req, res, next) => {
         next(error);
     }
 };
+
+// Helper to format auth success response
+const sendAuthSuccessResponse = async (user, req, res) => {
+    const freshUser = await User.findByPk(user.id, {
+        include: [
+            { model: require('../models').Specialty, as: 'specialties', attributes: ['id'] },
+            { model: require('../models').StudyPlan, as: 'studyPlan', attributes: ['id'] },
+            {
+                model: require('../models').Subscription,
+                as: 'subscriptions',
+                where: { status: 'active' },
+                required: false,
+                limit: 1,
+                order: [['endDate', 'DESC']]
+            }
+        ]
+    });
+
+    const activeSubscription = freshUser.subscriptions && freshUser.subscriptions.length > 0 ? freshUser.subscriptions[0] : null;
+    const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+
+    const accessToken = generateAccessToken(freshUser.id);
+    const refreshToken = await RefreshToken.createToken(freshUser, req.ip, req.headers['user-agent']);
+
+    return res.status(200).json({
+        success: true,
+        data: {
+            id: freshUser.id,
+            fullName: freshUser.fullName,
+            email: freshUser.email,
+            role: freshUser.role,
+            hasSpecialties: freshUser.specialties && freshUser.specialties.length > 0,
+            hasStudyPlan: !!freshUser.studyPlan,
+            isPremium: !!isPremium,
+            accessToken,
+            refreshToken
+        }
+    });
+};
+
+exports.googleAuth = async (req, res, next) => {
+    try {
+        let { idToken, email, fullName, googleId, avatar } = req.body;
+
+        if (idToken) {
+            try {
+                const axios = require('axios');
+                const googleRes = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
+                if (googleRes.data) {
+                    email = googleRes.data.email || email;
+                    fullName = googleRes.data.name || fullName;
+                    googleId = googleRes.data.sub || googleId;
+                    avatar = googleRes.data.picture || avatar;
+                }
+            } catch (verifyErr) {
+                try {
+                    const decoded = jwt.decode(idToken);
+                    if (decoded) {
+                        email = decoded.email || email;
+                        fullName = decoded.name || fullName;
+                        googleId = decoded.sub || googleId;
+                        avatar = decoded.picture || avatar;
+                    }
+                } catch (decodeErr) {
+                    console.warn('Google idToken decode error:', decodeErr.message);
+                }
+            }
+        }
+
+        if (!email && !googleId) {
+            return res.status(400).json({
+                success: false,
+                message: getMsg(req, 'فشل التحقق من حساب جوجل. يرجى إعادة المحاولة.', 'Google authentication failed. Please try again.')
+            });
+        }
+
+        const normalizedEmail = email ? email.trim().toLowerCase() : null;
+
+        let user = null;
+        if (googleId) {
+            user = await User.findOne({ where: { googleId } });
+        }
+        if (!user && normalizedEmail) {
+            user = await User.findOne({ where: { email: normalizedEmail } });
+        }
+
+        if (user) {
+            const updates = {};
+            if (!user.googleId && googleId) updates.googleId = googleId;
+            if (!user.isVerified) updates.isVerified = true;
+            if (!user.avatar && avatar) updates.avatar = avatar;
+            if (Object.keys(updates).length > 0) {
+                await user.update(updates);
+            }
+        } else {
+            let newReferralCode;
+            let isUnique = false;
+            while (!isUnique) {
+                newReferralCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+                const exists = await User.findOne({ where: { referralCode: newReferralCode } });
+                if (!exists) isUnique = true;
+            }
+
+            user = await User.create({
+                fullName: fullName || 'Google User',
+                email: normalizedEmail || `google_${googleId}@sdle-user.com`,
+                password: crypto.randomBytes(24).toString('hex'),
+                googleId: googleId || null,
+                authProvider: 'google',
+                isVerified: true,
+                avatar: avatar || null,
+                referralCode: newReferralCode
+            });
+        }
+
+        return await sendAuthSuccessResponse(user, req, res);
+    } catch (error) {
+        next(error);
+    }
+};
+
+exports.appleAuth = async (req, res, next) => {
+    try {
+        let { identityToken, appleId, email, fullName } = req.body;
+
+        if (identityToken) {
+            try {
+                const decoded = jwt.decode(identityToken);
+                if (decoded) {
+                    appleId = decoded.sub || appleId;
+                    if (!email && decoded.email) email = decoded.email;
+                }
+            } catch (decodeErr) {
+                console.warn('Apple identityToken decode error:', decodeErr.message);
+            }
+        }
+
+        if (!appleId && !email) {
+            return res.status(400).json({
+                success: false,
+                message: getMsg(req, 'فشل التحقق من حساب آبل. يرجى إعادة المحاولة.', 'Apple authentication failed. Please try again.')
+            });
+        }
+
+        const normalizedEmail = email ? email.trim().toLowerCase() : null;
+
+        let user = null;
+        if (appleId) {
+            user = await User.findOne({ where: { appleId } });
+        }
+        if (!user && normalizedEmail) {
+            user = await User.findOne({ where: { email: normalizedEmail } });
+        }
+
+        if (user) {
+            const updates = {};
+            if (!user.appleId && appleId) updates.appleId = appleId;
+            if (!user.isVerified) updates.isVerified = true;
+            if (fullName && (!user.fullName || user.fullName === 'Apple User')) {
+                updates.fullName = fullName;
+            }
+            if (Object.keys(updates).length > 0) {
+                await user.update(updates);
+            }
+        } else {
+            let newReferralCode;
+            let isUnique = false;
+            while (!isUnique) {
+                newReferralCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+                const exists = await User.findOne({ where: { referralCode: newReferralCode } });
+                if (!exists) isUnique = true;
+            }
+
+            user = await User.create({
+                fullName: fullName || 'Apple User',
+                email: normalizedEmail || `apple_${appleId}@sdle-user.com`,
+                password: crypto.randomBytes(24).toString('hex'),
+                appleId: appleId || null,
+                authProvider: 'apple',
+                isVerified: true,
+                referralCode: newReferralCode
+            });
+        }
+
+        return await sendAuthSuccessResponse(user, req, res);
+    } catch (error) {
+        next(error);
+    }
+};

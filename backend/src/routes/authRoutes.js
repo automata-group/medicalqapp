@@ -1,5 +1,18 @@
 const express = require('express');
-const { register, login, getMe, refreshToken, logout, forgotPassword, resetPassword, resetPasswordWithOtp, verifyEmail, resendVerificationCode } = require('../controllers/authController');
+const { 
+    register, 
+    login, 
+    googleAuth,
+    appleAuth,
+    getMe, 
+    refreshToken, 
+    logout, 
+    forgotPassword, 
+    resetPassword, 
+    resetPasswordWithOtp, 
+    verifyEmail, 
+    resendVerificationCode 
+} = require('../controllers/authController');
 const { protect } = require('../middleware/auth');
 
 const router = express.Router();
@@ -69,6 +82,8 @@ router.post('/register', register);
  *         description: Invalid credentials
  */
 router.post('/login', login);
+router.post('/google', googleAuth);
+router.post('/apple', appleAuth);
 router.post('/logout', logout);
 router.post('/refresh-token', refreshToken);
 router.get('/me', protect, getMe);

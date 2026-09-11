@@ -155,7 +155,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFFF59E0B).withOpacity(0.25),
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.25),
                             blurRadius: 20,
                             offset: const Offset(0, 8),
                           ),
@@ -204,7 +204,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.04),
+                            color: Colors.black.withValues(alpha: 0.04),
                             blurRadius: 10,
                             offset: const Offset(0, 4),
                           ),

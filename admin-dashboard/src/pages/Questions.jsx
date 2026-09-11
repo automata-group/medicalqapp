@@ -268,21 +268,23 @@ export default function Questions() {
                 setImageFile(null);
                 setImagePreview(q.image ? getImageUrl(q.image) : null);
 
-                // Sort options deterministically by order ('A', 'B'...) or id
+                // Sort options safely and deterministically by order or id (handles numbers and strings)
                 const sortedOptions = (q.options || []).slice().sort((a, b) => {
-                    if (a.order && b.order) return a.order.localeCompare(b.order);
+                    const orderA = String(a.order ?? '').trim();
+                    const orderB = String(b.order ?? '').trim();
+                    if (orderA && orderB) return orderA.localeCompare(orderB, undefined, { numeric: true });
                     return (a.id || 0) - (b.id || 0);
                 });
 
                 setFormData({
-                    text: q.text,
+                    text: q.text || '',
                     specialtyId: q.specialtyId || '',
                     topicId: q.topicId || '',
                     difficulty: q.difficulty || 'medium',
                     image: q.image || null,
-                    options: sortedOptions.length > 0 ? sortedOptions.map(o => ({
+                    options: sortedOptions.length > 0 ? sortedOptions.map((o, idx) => ({
                         id: o.id,
-                        order: o.order,
+                        order: o.order || String.fromCharCode(65 + idx),
                         text: o.text || '',
                         isCorrect: Boolean(o.isCorrect)
                     })) : [
@@ -300,8 +302,8 @@ export default function Questions() {
                 setShowModal(true);
             }
         } catch (error) {
-            console.error(error);
-            alert('Failed to load question details');
+            console.error('Failed to load question details', error);
+            alert('Failed to load question details: ' + (error.response?.data?.message || error.message));
         }
     };
 

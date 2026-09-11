@@ -14,7 +14,6 @@ import 'components/exam_report_sheet.dart';
 import '../subscription/pricing_screen.dart';
 import '../../../core/utils/toast_utils.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../data/models/session_model.dart';
 
 class ExamScreen extends StatefulWidget {
   final String? specialtyId;
@@ -58,20 +57,8 @@ class _ExamScreenState extends State<ExamScreen> {
 
       if (mounted && provider.activeSessionToResume != null) {
         final session = provider.activeSessionToResume!;
-        
-        if (widget.autoResume) {
-          await provider.restoreSession(session);
-          return;
-        }
-
-        final resume = await _showResumeDialog(session);
-        
-        if (resume == true) {
-          await provider.restoreSession(session);
-          return;
-        } else if (resume == false) {
-          provider.discardActiveSession();
-        }
+        await provider.restoreSession(session);
+        return;
       }
 
       provider.resetSession();
@@ -242,37 +229,6 @@ class _ExamScreenState extends State<ExamScreen> {
     Navigator.pop(context);
   }
 
-  Future<bool?> _showResumeDialog(SessionModel session) {
-    final l10n = AppLocalizations.of(context);
-    final String subTopic = session.subTopic ?? l10n?.thisSpecialty ?? 'this specialty';
-    final String title = l10n?.resumeSessionTitle ?? 'Resume Session?';
-    final String content = l10n != null
-        ? l10n.resumeSessionContent(subTopic)
-        : 'You have a saved session in $subTopic.\nWould you like to continue from where you left off?';
-    final String startNewText = l10n?.startNew ?? 'Start New';
-    final String continueText = l10n?.continueAction ?? 'Continue';
-
-    return showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(title),
-        content: Text(content),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(startNewText, style: const TextStyle(color: Colors.grey)),
-          ),
-          ElevatedButton(
-            onPressed: () => Navigator.pop(context, true),
-            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-            child: Text(continueText, style: const TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<QuestionProvider>();
@@ -337,7 +293,7 @@ class _ExamScreenState extends State<ExamScreen> {
           : l10n.questionBankLimitReached;
 
       return Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: const Color(0xFF0B1120),
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -351,8 +307,8 @@ class _ExamScreenState extends State<ExamScreen> {
             child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 460),
-                padding: const EdgeInsets.all(28.0),
+                constraints: const BoxConstraints(maxWidth: 480),
+                padding: const EdgeInsets.all(32.0),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     colors: [Color(0xFF1E293B), Color(0xFF0F172A)],
@@ -361,51 +317,64 @@ class _ExamScreenState extends State<ExamScreen> {
                   ),
                   borderRadius: BorderRadius.circular(28),
                   border: Border.all(
-                    color: const Color(0xFFF59E0B).withValues(alpha: 0.35),
+                    color: const Color(0xFFF59E0B).withValues(alpha: 0.45),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
-                      blurRadius: 30,
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                      blurRadius: 36,
                       spreadRadius: 2,
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.5),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Glowing crown badge
+                    // Glowing multi-layer lock badge
                     Container(
-                      padding: const EdgeInsets.all(18),
+                      padding: const EdgeInsets.all(22),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(
                           colors: [
                             const Color(0xFFF59E0B).withValues(alpha: 0.25),
-                            const Color(0xFFD97706).withValues(alpha: 0.08),
+                            const Color(0xFFEA580C).withValues(alpha: 0.1),
                           ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
                         border: Border.all(
-                          color: const Color(0xFFF59E0B).withValues(alpha: 0.6),
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.7),
                           width: 2,
                         ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                            blurRadius: 24,
+                          ),
+                        ],
                       ),
                       child: const Icon(
-                        Icons.workspace_premium_rounded,
-                        size: 48,
-                        color: Color(0xFFF59E0B),
+                        Icons.lock_rounded,
+                        size: 52,
+                        color: Color(0xFFFBBF24),
                       ),
                     ),
                     const SizedBox(height: 20),
 
                     // Pill Badge
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        color: const Color(0xFFF59E0B).withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+                        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.5)),
                       ),
                       child: Text(
                         l10n.proMembership,
@@ -417,13 +386,14 @@ class _ExamScreenState extends State<ExamScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 18),
 
+                    // Main Title
                     Text(
                       quotaTitle,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         height: 1.3,
@@ -435,74 +405,96 @@ class _ExamScreenState extends State<ExamScreen> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
-                        color: Colors.blue.shade100.withValues(alpha: 0.8),
-                        height: 1.4,
+                        color: Colors.blue.shade100.withValues(alpha: 0.85),
+                        height: 1.5,
                       ),
                     ),
                     const SizedBox(height: 24),
 
                     // Feature highlights list
                     Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(18),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.05),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
                       ),
                       child: Column(
                         children: [
                           _buildProFeatureRow(l10n.tagQuestionsCount),
-                          const Divider(color: Colors.white12, height: 16),
+                          const Divider(color: Colors.white12, height: 18),
                           _buildProFeatureRow(l10n.tagSmartExplanations),
-                          const Divider(color: Colors.white12, height: 16),
+                          const Divider(color: Colors.white12, height: 18),
                           _buildProFeatureRow(l10n.tagExamSimulation),
                         ],
                       ),
                     ),
                     const SizedBox(height: 28),
 
-                    // Upgrade Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => const PricingScreen()),
+                    // Prominent Vibrant Orange Button
+                    InkWell(
+                      onTap: () async {
+                        await Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const PricingScreen()),
+                        );
+                        if (!context.mounted) return;
+                        final user = context.read<AuthProvider>().user;
+                        if (user?.isPremium == true) {
+                          final provider = context.read<QuestionProvider>();
+                          provider.resetSession();
+                          provider.loadNextQuestion(
+                            specialtyId: widget.specialtyId,
+                            subTopic: widget.subTopic,
+                            filter: widget.filter,
+                            shuffle: widget.shuffle,
                           );
-                          if (!context.mounted) return;
-                          final user = context.read<AuthProvider>().user;
-                          if (user?.isPremium == true) {
-                            final provider = context.read<QuestionProvider>();
-                            provider.resetSession();
-                            provider.loadNextQuestion(
-                              specialtyId: widget.specialtyId,
-                              subTopic: widget.subTopic,
-                              filter: widget.filter,
-                              shuffle: widget.shuffle,
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF2563EB),
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 17),
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFFF59E0B),
+                              Color(0xFFF97316),
+                              Color(0xFFEA580C),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                          elevation: 6,
-                          shadowColor: const Color(0xFF2563EB).withValues(alpha: 0.5),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFEA580C).withValues(alpha: 0.45),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          l10n.upgradeToProBtn,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text(
+                              '👑 ',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              l10n.upgradeToProBtn,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 14),
 
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
@@ -525,12 +517,13 @@ class _ExamScreenState extends State<ExamScreen> {
     }
 
     if (provider.status == QuestionStatus.error) {
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
           elevation: 0,
-          foregroundColor: Colors.black,
+          foregroundColor: isDark ? const Color(0xFFF8FAFC) : Colors.black,
         ),
         body: Center(
           child: Padding(
@@ -606,12 +599,13 @@ class _ExamScreenState extends State<ExamScreen> {
       final accuracy = total > 0 ? (correct / total * 100).round() : 0;
       final hasMistakes = provider.hasMistakes;
 
+      final isDark = Theme.of(context).brightness == Brightness.dark;
       return Scaffold(
-        backgroundColor: const Color(0xFFF8FAFC),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: isDark ? Theme.of(context).cardColor : Colors.white,
           elevation: 0,
-          foregroundColor: const Color(0xFF1E293B),
+          foregroundColor: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
           title: const Text('Session Summary',
               style: TextStyle(fontWeight: FontWeight.bold)),
           centerTitle: true,
@@ -728,7 +722,7 @@ class _ExamScreenState extends State<ExamScreen> {
     }
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8FAFC),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
