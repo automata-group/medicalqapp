@@ -14,6 +14,8 @@ class ExamHeader extends StatelessWidget {
   final bool hasPrevious;
   final bool isBookmarked;
   final bool showTotalQuestions;
+  final bool showCorrectAnswer;
+  final VoidCallback? onToggleShowAnswer;
 
   const ExamHeader({
     super.key,
@@ -28,6 +30,8 @@ class ExamHeader extends StatelessWidget {
     this.hasPrevious = false,
     this.isBookmarked = false,
     this.showTotalQuestions = true,
+    this.showCorrectAnswer = false,
+    this.onToggleShowAnswer,
   });
 
   @override
@@ -121,10 +125,32 @@ class ExamHeader extends StatelessWidget {
                   ),
                 ),
 
-                // Actions Row (Bookmark, Report, Close)
+                // Actions Row (Show/Hide Answer, Bookmark, Report, Close)
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    if (onToggleShowAnswer != null) ...[
+                      // Show / Hide Answer Toggle Button
+                      Tooltip(
+                        message: showCorrectAnswer ? 'إخفاء الإجابة' : 'إظهار الإجابة',
+                        child: IconButton(
+                          icon: Icon(
+                            showCorrectAnswer
+                                ? Icons.visibility_rounded
+                                : Icons.visibility_off_outlined,
+                            color: showCorrectAnswer
+                                ? const Color(0xFF10B981)
+                                : Colors.grey[400],
+                            size: 22,
+                          ),
+                          onPressed: onToggleShowAnswer,
+                          padding: const EdgeInsets.all(4),
+                          constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+                        ),
+                      ),
+                      const SizedBox(width: 2),
+                    ],
+
                     // Bookmark
                     IconButton(
                       icon: Icon(

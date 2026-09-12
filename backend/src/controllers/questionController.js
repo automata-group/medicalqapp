@@ -19,7 +19,7 @@ exports.getNextQuestion = async (req, res, next) => {
         if (topicId) {
             const topic = await Topic.findByPk(topicId);
             // ─── Block free users from premium topics ───────────────
-            if (!req.isPremium && topic && topic.isPremium) {
+            if (!req.isPremium && req.user.role !== 'admin' && topic && topic.isPremium) {
                 return res.status(403).json({
                     success: false,
                     message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
@@ -34,8 +34,8 @@ exports.getNextQuestion = async (req, res, next) => {
             // Find topic by name first to support migrated relational models
             const topic = await Topic.findOne({ where: { name: subTopic } });
             if (topic) {
-                // Block free users from premium topics
-                if (!req.isPremium && topic.isPremium) {
+                // ─── Block free users from premium topics by name ─────
+                if (!req.isPremium && req.user.role !== 'admin' && topic.isPremium) {
                     return res.status(403).json({
                         success: false,
                         message: 'هذا الموضوع مخصص لمشتركي PRO فقط.',
@@ -59,8 +59,8 @@ exports.getNextQuestion = async (req, res, next) => {
             }
         }
 
-        // ─── Free accounts: maximum 15 questions per specialty ────────
-        if (!req.isPremium) {
+        // ─── Free accounts: maximum 15 questions per specialty, 30 for bank ────────
+        if (!req.isPremium && req.user.role !== 'admin') {
             if (effectiveSpecialtyId) {
                 const specialtyQuestions = await Question.findAll({
                     where: { specialtyId: effectiveSpecialtyId },
@@ -198,34 +198,32 @@ exports.getNextQuestion = async (req, res, next) => {
 
         let question;
 
+        const questionInclude = [
+            { model: Option, as: 'options', attributes: ['id', 'text', 'order', 'isCorrect'] },
+            { model: Explanation, as: 'explanation' },
+            { model: Specialty, as: 'specialty', attributes: ['name'] },
+            { model: Topic, as: 'topic', attributes: ['name'] }
+        ];
+
+        const optionOrder = [
+            [{ model: Option, as: 'options' }, 'order', 'ASC'],
+            [{ model: Option, as: 'options' }, 'id', 'ASC']
+        ];
+
         if (id) {
             // Direct lookup for session resume or specific question - NO SHUFFLE / NO OFFSET
             whereClause.id = id;
             question = await Question.findOne({
                 where: whereClause,
-                include: [
-                    { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
-                    { model: Specialty, as: 'specialty', attributes: ['name'] },
-                    { model: Topic, as: 'topic', attributes: ['name'] }
-                ],
-                order: [
-                    [{ model: Option, as: 'options' }, 'order', 'ASC'],
-                    [{ model: Option, as: 'options' }, 'id', 'ASC']
-                ]
+                include: questionInclude,
+                order: optionOrder
             });
 
             // Fallback: if specialty/subTopic filters caused a mismatch, still attempt direct primary key lookup
             if (!question) {
                 question = await Question.findByPk(id, {
-                    include: [
-                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
-                        { model: Specialty, as: 'specialty', attributes: ['name'] },
-                        { model: Topic, as: 'topic', attributes: ['name'] }
-                    ],
-                    order: [
-                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
-                        [{ model: Option, as: 'options' }, 'id', 'ASC']
-                    ]
+                    include: questionInclude,
+                    order: optionOrder
                 });
             }
         } else {
@@ -243,15 +241,8 @@ exports.getNextQuestion = async (req, res, next) => {
                 question = await Question.findOne({
                     where: whereClause,
                     offset: randomIndex,
-                    include: [
-                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
-                        { model: Specialty, as: 'specialty', attributes: ['name'] },
-                        { model: Topic, as: 'topic', attributes: ['name'] }
-                    ],
-                    order: [
-                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
-                        [{ model: Option, as: 'options' }, 'id', 'ASC']
-                    ]
+                    include: questionInclude,
+                    order: optionOrder
                 });
             } else {
                 // Fetch the next question sequentially by ID
@@ -259,14 +250,9 @@ exports.getNextQuestion = async (req, res, next) => {
                     where: whereClause,
                     order: [
                         ['id', 'ASC'],
-                        [{ model: Option, as: 'options' }, 'order', 'ASC'],
-                        [{ model: Option, as: 'options' }, 'id', 'ASC']
+                        ...optionOrder
                     ],
-                    include: [
-                        { model: Option, as: 'options', attributes: ['id', 'text', 'order'] },
-                        { model: Specialty, as: 'specialty', attributes: ['name'] },
-                        { model: Topic, as: 'topic', attributes: ['name'] }
-                    ]
+                    include: questionInclude
                 });
             }
         }

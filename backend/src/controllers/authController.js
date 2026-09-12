@@ -205,8 +205,15 @@ exports.login = async (req, res, next) => {
         const accessToken = generateAccessToken(user.id);
         const refreshToken = await RefreshToken.createToken(user, req.ip, req.headers['user-agent']);
 
-        const activeSubscription = user.subscriptions && user.subscriptions.length > 0 ? user.subscriptions[0] : null;
-        const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+        const activeSub = await require('../models').Subscription.findOne({
+            where: {
+                userId: user.id,
+                status: 'active',
+                endDate: { [require('sequelize').Op.gt]: new Date() }
+            },
+            order: [['endDate', 'DESC']]
+        });
+        const isPremium = (user.role === 'admin') || (!!activeSub);
 
         res.status(200).json({
             success: true,
@@ -233,27 +240,29 @@ exports.getMe = async (req, res, next) => {
             attributes: { exclude: ['password', 'verificationToken', 'resetPasswordToken'] },
             include: [
                 'specialties',
-                'studyPlan',
-                {
-                    model: require('../models').Subscription,
-                    as: 'subscriptions',
-                    where: { status: 'active' },
-                    required: false,
-                    limit: 1,
-                    order: [['endDate', 'DESC']]
-                }
+                'studyPlan'
             ]
         });
 
-        const activeSubscription = user.subscriptions && user.subscriptions.length > 0 ? user.subscriptions[0] : null;
-        const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
 
-        // Clone user data to add isPremium (since Sequelize instance is immutable-ish without .get({plain:true}))
+        const activeSub = await require('../models').Subscription.findOne({
+            where: {
+                userId: user.id,
+                status: 'active',
+                endDate: { [require('sequelize').Op.gt]: new Date() }
+            },
+            order: [['endDate', 'DESC']]
+        });
+        const isPremium = (user.role === 'admin') || (!!activeSub);
+
+        // Clone user data to add isPremium
         const userData = user.get({ plain: true });
         userData.isPremium = !!isPremium;
         userData.hasSpecialties = Array.isArray(userData.specialties) && userData.specialties.length > 0;
         userData.hasStudyPlan = !!userData.studyPlan;
-        delete userData.subscriptions; // Optional: hide raw subscription details
 
         res.status(200).json({
             success: true,

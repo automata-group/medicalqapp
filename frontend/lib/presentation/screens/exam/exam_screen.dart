@@ -38,6 +38,7 @@ class ExamScreen extends StatefulWidget {
 class _ExamScreenState extends State<ExamScreen> {
   int? _selectedAnswerIndex;
   bool _isAnswerChecked = false;
+  bool _showCorrectAnswer = false;
   Timer? _timer;
   int _secondsElapsed = 0;
 
@@ -128,16 +129,19 @@ class _ExamScreenState extends State<ExamScreen> {
     ExamReportSheet.show(context, questionId: question.id);
   }
 
-  void _showExplanationSheet(bool isCorrect) {
+  void _showExplanationSheet([bool? isCorrect]) {
     final provider = context.read<QuestionProvider>();
     final question = provider.currentQuestion;
     final result = provider.answerResult;
 
-    if (question == null || result == null) return;
+    if (question == null) return;
 
     final correctOption = question.options.firstWhere(
-        (o) => o.id == result.correctOptionId,
-        orElse: () => question.options.first);
+        (o) => (result != null ? o.id == result.correctOptionId : o.isCorrect),
+        orElse: () => question.options.firstWhere((o) => o.isCorrect, orElse: () => question.options.first));
+
+    final effectiveExplanation = result?.explanation ?? question.explanation ?? 'No explanation provided.';
+    final effectiveIsCorrect = isCorrect ?? result?.isCorrect ?? true;
 
     showModalBottomSheet(
       context: context,
@@ -147,11 +151,11 @@ class _ExamScreenState extends State<ExamScreen> {
       enableDrag: true,
       builder: (sheetContext) {
         return ExamExplanationSheet(
-          isCorrect: result.isCorrect,
+          isCorrect: effectiveIsCorrect,
           correctAnswerText: correctOption.text,
-          explanation: result.explanation ?? 'No explanation provided.',
-          passRate: result.stats?.passRate ?? 0,
-          averageTimeSeconds: result.stats?.averageTimeSeconds ?? 0,
+          explanation: effectiveExplanation,
+          passRate: result?.stats?.passRate ?? 0,
+          averageTimeSeconds: result?.stats?.averageTimeSeconds ?? 0,
           userTimeSeconds: provider.lastTimeTaken,
           onPrevious: provider.hasPreviousQuestion
               ? () {
@@ -174,13 +178,14 @@ class _ExamScreenState extends State<ExamScreen> {
     setState(() {
       _selectedAnswerIndex = provider.selectedAnswerIndex;
       _isAnswerChecked = provider.isCurrentAnswerChecked;
+      _showCorrectAnswer = false;
     });
   }
 
   void _loadNextQuestion() {
     final provider = context.read<QuestionProvider>();
     final user = context.read<AuthProvider>().user;
-    final isPremium = user?.isPremium ?? false;
+    final isPremium = (user?.isPremium ?? false) || user?.role == 'admin';
 
     // Check quota for free accounts before advancing to next question
     if (!isPremium && !provider.hasNextInHistory) {
@@ -207,6 +212,7 @@ class _ExamScreenState extends State<ExamScreen> {
       setState(() {
         _selectedAnswerIndex = provider.selectedAnswerIndex;
         _isAnswerChecked = provider.isCurrentAnswerChecked;
+        _showCorrectAnswer = false;
       });
       return;
     }
@@ -214,6 +220,7 @@ class _ExamScreenState extends State<ExamScreen> {
     setState(() {
       _selectedAnswerIndex = null;
       _isAnswerChecked = false;
+      _showCorrectAnswer = false;
     });
     _startTimer();
     provider.loadNextQuestion(
@@ -736,6 +743,12 @@ class _ExamScreenState extends State<ExamScreen> {
               hasPrevious: provider.hasPreviousQuestion,
               onPrevious: _loadPreviousQuestion,
               showTotalQuestions: !widget.shuffle && dashboardProvider.showQuestionCount,
+              showCorrectAnswer: _showCorrectAnswer,
+              onToggleShowAnswer: () {
+                setState(() {
+                  _showCorrectAnswer = !_showCorrectAnswer;
+                });
+              },
               onBookmark: () async {
                 await provider.toggleBookmark();
                 if (context.mounted) {
@@ -795,15 +808,84 @@ class _ExamScreenState extends State<ExamScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 16),
+
+                    // Show/Hide Answer quick toggle bar
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4, bottom: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _showCorrectAnswer = !_showCorrectAnswer;
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(20),
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 200),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: _showCorrectAnswer
+                                      ? const Color(0xFF10B981).withValues(alpha: 0.12)
+                                      : Colors.grey.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: _showCorrectAnswer
+                                        ? const Color(0xFF10B981)
+                                        : Colors.grey.withValues(alpha: 0.25),
+                                    width: 1.2,
+                                  ),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      _showCorrectAnswer
+                                          ? Icons.visibility_rounded
+                                          : Icons.visibility_off_outlined,
+                                      size: 16,
+                                      color: _showCorrectAnswer
+                                          ? const Color(0xFF10B981)
+                                          : Colors.grey[600],
+                                    ),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      _showCorrectAnswer ? 'إخفاء الإجابة' : 'إظهار الإجابة',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: _showCorrectAnswer
+                                            ? const Color(0xFF10B981)
+                                            : Colors.grey[700],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
 
                     // Options
                     ...List.generate(question.options.length, (index) {
                       final option = question.options[index];
                       AnswerState state = AnswerState.idle;
 
-                      if (isAnswerSubmitted) {
-                        if (provider.answerResult?.correctOptionId == option.id) {
+                      if (_showCorrectAnswer) {
+                        if (option.isCorrect || (provider.answerResult?.correctOptionId == option.id)) {
+                          state = AnswerState.correct;
+                        } else if (index == activeAnswerIndex && isAnswerSubmitted) {
+                          state = AnswerState.wrong;
+                        } else if (index == activeAnswerIndex) {
+                          state = AnswerState.selected;
+                        }
+                      } else if (isAnswerSubmitted) {
+                        if (provider.answerResult?.correctOptionId == option.id || option.isCorrect) {
                           state = AnswerState.correct;
                         } else if (index == activeAnswerIndex) {
                           state = AnswerState.wrong;
@@ -820,15 +902,15 @@ class _ExamScreenState extends State<ExamScreen> {
                       );
                     }),
 
-                    // Inline Review Actions when question is answered
-                    if (isAnswerSubmitted && provider.answerResult != null) ...[
+                    // Inline Review Actions when question is answered or answer is revealed
+                    if (isAnswerSubmitted || _showCorrectAnswer) ...[
                       const SizedBox(height: 24),
                       Row(
                         children: [
                           Expanded(
                             child: OutlinedButton.icon(
                               onPressed: () {
-                                _showExplanationSheet(provider.answerResult!.isCorrect);
+                                _showExplanationSheet(provider.answerResult?.isCorrect);
                               },
                               icon: const Icon(Icons.lightbulb_outline, color: AppColors.primary),
                               label: Text(l10n.viewExplanation, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),

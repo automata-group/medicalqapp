@@ -61,17 +61,27 @@ const subscription = (options = {}) => {
     // Support both subscription (as function call) and subscription (as direct middleware)
     const middleware = async (req, res, next) => {
         try {
+            // Admin users always have full unlimited premium access
+            if (req.user && req.user.role === 'admin') {
+                req.subscription = { plan: { slug: 'pro', name: 'Admin Pro' }, isValid: () => true };
+                req.isPremium = true;
+                return next();
+            }
+
             const { Subscription, SubscriptionPlan } = require('../models');
+            const { Op } = require('sequelize');
 
             const activeSubscription = await Subscription.findOne({
                 where: {
                     userId: req.user.id,
-                    status: 'active'
+                    status: 'active',
+                    endDate: { [Op.gt]: new Date() }
                 },
                 include: [{
                     model: SubscriptionPlan,
                     as: 'plan',
-                    attributes: ['id', 'name', 'slug', 'features']
+                    attributes: ['id', 'name', 'slug', 'features'],
+                    required: false
                 }],
                 order: [['endDate', 'DESC']]
             });

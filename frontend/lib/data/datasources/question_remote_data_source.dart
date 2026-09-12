@@ -73,13 +73,18 @@ class QuestionRemoteDataSourceImpl implements QuestionRemoteDataSource {
       }
       return null;
     } on DioException catch (e) {
-      if (e.response?.statusCode == 403 &&
-          e.response?.data['code'] == 'QUOTA_EXCEEDED') {
-        throw Exception('QUOTA_EXCEEDED');
+      if (e.response?.statusCode == 403) {
+        final code = e.response?.data is Map ? e.response?.data['code'] : null;
+        if (code == 'QUOTA_EXCEEDED') {
+          throw Exception('QUOTA_EXCEEDED');
+        }
+        if (code == 'PREMIUM_TOPIC_LOCKED' || code == 'SUBSCRIPTION_REQUIRED') {
+          throw Exception('SUBSCRIPTION_REQUIRED');
+        }
+        throw Exception(e.response?.data is Map ? (e.response?.data['message'] ?? 'Access denied') : 'Access denied');
       }
-      // If 404 or data null, it might mean no more questions
-      if (e.response?.statusCode == 404 ||
-          (e.response?.data?['data'] == null)) {
+      // If 404, it means no questions available matching criteria
+      if (e.response?.statusCode == 404) {
         return null;
       }
       rethrow;
