@@ -3,14 +3,21 @@ import '../../screens/practice/exam_question_contribution_screen.dart';
 import '../../../core/l10n/generated/app_localizations.dart';
 
 class ExamRecallCard extends StatelessWidget {
-  const ExamRecallCard({super.key});
+  final EdgeInsetsGeometry? margin;
+  final bool isTablet;
+
+  const ExamRecallCard({
+    super.key,
+    this.margin,
+    this.isTablet = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      padding: margin ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       child: InkWell(
         onTap: () {
           Navigator.push(
@@ -23,17 +30,21 @@ class ExamRecallCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(isTablet ? 15 : 20),
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF4F46E5), Color(0xFF6366F1), Color(0xFF818CF8)],
+              colors: [Color(0xFF4338CA), Color(0xFF6366F1), Color(0xFF7C3AED)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.18),
+              width: 1,
+            ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF6366F1).withValues(alpha: 0.35),
+                color: const Color(0xFF6366F1).withValues(alpha: 0.25),
                 blurRadius: 18,
                 offset: const Offset(0, 8),
               ),
@@ -42,8 +53,8 @@ class ExamRecallCard extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                width: 52,
-                height: 52,
+                width: isTablet ? 44 : 52,
+                height: isTablet ? 44 : 52,
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
@@ -53,18 +64,18 @@ class ExamRecallCard extends StatelessWidget {
                   ),
                 ),
                 alignment: Alignment.center,
-                child: const Text('📝', style: TextStyle(fontSize: 26)),
+                child: Text('📝', style: TextStyle(fontSize: isTablet ? 20 : 26)),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: isTablet ? 12 : 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       l10n?.examRecallTitle ?? 'تذكر سؤال من الاختبار؟',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: isTablet ? 14 : 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -72,21 +83,30 @@ class ExamRecallCard extends StatelessWidget {
                     Text(
                       l10n?.examRecallSubtitle ??
                           'ساهم بالسؤال وساعد زملاءك في الاستعداد للاختبار.',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.9),
-                        fontSize: 12,
+                        fontSize: isTablet ? 11 : 12,
                         height: 1.35,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    SizedBox(height: isTablet ? 8 : 10),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: isTablet ? 10 : 12,
+                        vertical: isTablet ? 4 : 5,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 4,
+                            offset: const Offset(0, 1),
+                          ),
+                        ],
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -94,15 +114,15 @@ class ExamRecallCard extends StatelessWidget {
                           Text(
                             l10n?.shareNow ?? 'شارك الآن',
                             style: const TextStyle(
-                              color: Color(0xFF4F46E5),
+                              color: Color(0xFF4338CA),
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(width: 4),
                           const Icon(
-                            Icons.arrow_forward,
-                            color: Color(0xFF4F46E5),
+                            Icons.arrow_forward_rounded,
+                            color: Color(0xFF4338CA),
                             size: 13,
                           ),
                         ],

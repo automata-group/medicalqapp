@@ -5,6 +5,7 @@ import '../../../domain/entities/specialty.dart';
 import '../../providers/specialty_provider.dart';
 import '../../providers/dashboard_provider.dart';
 import 'bookmarks_screen.dart';
+import '../exam/exam_screen.dart';
 
 import 'specialty_detail_screen.dart';
 import '../../../core/theme/app_colors.dart';
@@ -76,14 +77,14 @@ class _LibraryScreenState extends State<LibraryScreen> {
         ),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 1100),
+            constraints: BoxConstraints(maxWidth: isTablet ? 720 : 1100),
             child: isLibraryTemporarilyClosed
                 ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       // Top Section: Bookmarks (Open and functional)
                       _buildBookmarksCard(context, l10n, isDark, isTablet),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
 
                       // Bottom Section: Temporarily Closed Notice
                       _buildTemporarilyClosedCard(context, isDark, isTablet),
@@ -282,22 +283,141 @@ class _LibraryScreenState extends State<LibraryScreen> {
     bool isDark,
     bool isTablet,
   ) {
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: isTablet ? 360 : double.infinity),
-      child: _buildActionCard(
-        context,
-        title: l10n.bookmarks,
-        icon: Icons.bookmark_rounded,
-        color: AppColors.primary,
-        isTablet: isTablet,
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const BookmarksScreen(),
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const BookmarksScreen(),
+          ),
+        );
+      },
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(isTablet ? 22 : 18),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1D4ED8), Color(0xFF2563EB), Color(0xFF38BDF8)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.22),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF2563EB).withValues(alpha: 0.3),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
             ),
-          );
-        },
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              width: isTablet ? 54 : 46,
+              height: isTablet ? 54 : 46,
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.35),
+                  width: 1.5,
+                ),
+              ),
+              child: Icon(
+                Icons.bookmark_rounded,
+                color: Colors.white,
+                size: isTablet ? 28 : 24,
+              ),
+            ),
+            SizedBox(width: isTablet ? 18 : 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        l10n.bookmarks,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: isTablet ? 18 : 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.25),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Text(
+                          'نشط',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'استعرض وراجع كافة الأسئلة التي قمت بحفظها أثناء دراستك واختباراتك',
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: isTablet ? 13 : 12,
+                      height: 1.35,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 12),
+            Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: isTablet ? 14 : 10,
+                vertical: isTablet ? 8 : 6,
+              ),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'فتح المحفوظات',
+                    style: TextStyle(
+                      color: const Color(0xFF1D4ED8),
+                      fontSize: isTablet ? 12 : 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(
+                    Icons.arrow_forward_rounded,
+                    color: Color(0xFF1D4ED8),
+                    size: 14,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -313,58 +433,123 @@ class _LibraryScreenState extends State<LibraryScreen> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(
         horizontal: isTablet ? 36 : 24,
-        vertical: isTablet ? 40 : 32,
+        vertical: isTablet ? 38 : 30,
       ),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(22),
         border: Border.all(
           color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+          width: 1.2,
         ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.04),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
+            blurRadius: 16,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.all(16),
+            width: isTablet ? 70 : 58,
+            height: isTablet ? 70 : 58,
             decoration: BoxDecoration(
-              color: Colors.amber.withValues(alpha: 0.12),
+              gradient: LinearGradient(
+                colors: [
+                  const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                  const Color(0xFFD97706).withValues(alpha: 0.25),
+                ],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               shape: BoxShape.circle,
+              border: Border.all(
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+                width: 1.5,
+              ),
             ),
             child: Icon(
-              Icons.lock_clock_rounded,
-              size: isTablet ? 40 : 34,
-              color: Colors.amber.shade700,
+              Icons.auto_stories_rounded,
+              size: isTablet ? 34 : 28,
+              color: const Color(0xFFD97706),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Icon(Icons.construction_rounded, size: 14, color: Color(0xFFD97706)),
+                SizedBox(width: 6),
+                Text(
+                  'تحديث شامل • قيد التطوير',
+                  style: TextStyle(
+                    color: Color(0xFFD97706),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
           Text(
-            isAr ? 'المكتبة مغلقة مؤقتاً' : 'Library Temporarily Closed',
+            isAr ? 'المكتبة الطبية قيد التحديث والتطوير' : 'Medical Library Under Development',
             style: TextStyle(
-              fontSize: isTablet ? 20 : 18,
+              fontSize: isTablet ? 19 : 17,
               fontWeight: FontWeight.bold,
               color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
             ),
           ),
           const SizedBox(height: 8),
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 460),
+            constraints: const BoxConstraints(maxWidth: 520),
             child: Text(
               isAr
-                  ? 'نقوم حالياً بتطوير وتحديث محتوى التخصصات الطبية والأسئلة لتقديم تجربة دراسية أفضل. بإمكانك الوصول إلى أسئلتك المحفوظة أعلاه في أي وقت.'
-                  : 'We are currently updating our medical specialties and question bank. You can still access your saved bookmarks above.',
+                  ? 'نقوم حالياً بتطوير وتحديث بنك التخصصات والأسئلة لتقديم تجربة دراسية أكثر شمولاً ودقة. بإمكانك مواصلة التدريب عبر بنك الأسئلة بالرئيسية، والوصول إلى أسئلتك المحفوظة أعلاه في أي وقت.'
+                  : 'We are currently updating our medical specialties and question bank. You can continue practicing via the Question Bank and access your saved bookmarks above.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: isTablet ? 14 : 13,
+                fontSize: isTablet ? 13.5 : 12.5,
                 color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 height: 1.5,
               ),
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ExamScreen()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: Colors.white,
+              padding: EdgeInsets.symmetric(
+                horizontal: isTablet ? 22 : 18,
+                vertical: isTablet ? 12 : 10,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
+              elevation: 0,
+            ),
+            icon: const Icon(Icons.bolt_rounded, size: 18),
+            label: const Text(
+              'الانتقال إلى بنك الأسئلة',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
             ),
           ),
         ],

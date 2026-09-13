@@ -41,22 +41,80 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
             await notificationProvider.fetchUnreadCount();
           },
           color: Theme.of(context).primaryColor,
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 100),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                DashboardHeader(),
-                WeeklyProgressCard(),
-                QuestionBankCard(),
-                ExamRecallCard(),
-                SpecialtiesCarousel(),
-              ],
-            ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final isTablet = constraints.maxWidth >= 700;
+
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: EdgeInsets.only(bottom: isTablet ? 20 : 40),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 1100),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const DashboardHeader(),
+                        _buildCardsSection(isTablet),
+                        const SpecialtiesCarousel(),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildCardsSection(bool isTablet) {
+    if (isTablet) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: const [
+              Expanded(
+                flex: 12,
+                child: WeeklyProgressCard(
+                  margin: EdgeInsets.zero,
+                  isTablet: true,
+                ),
+              ),
+              SizedBox(width: 16),
+              Expanded(
+                flex: 11,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    QuestionBankCard(
+                      margin: EdgeInsets.zero,
+                      isTablet: true,
+                    ),
+                    SizedBox(height: 12),
+                    ExamRecallCard(
+                      margin: EdgeInsets.zero,
+                      isTablet: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: const [
+        WeeklyProgressCard(),
+        QuestionBankCard(),
+        ExamRecallCard(),
+      ],
     );
   }
 }

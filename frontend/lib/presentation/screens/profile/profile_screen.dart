@@ -58,6 +58,7 @@ class ProfileScreen extends StatelessWidget {
     final totalSolved = dashboard?.totalSolved ?? 0;
     final accuracy = dashboard?.accuracy ?? 0;
     final streak = dashboard?.currentStreak ?? 0;
+    final isTablet = MediaQuery.of(context).size.width >= 700;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -155,26 +156,50 @@ class ProfileScreen extends StatelessWidget {
           ),
 
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // === MASTERY STATS ===
-                  _buildMasteryStats(context, totalSolved, accuracy, streak),
-                  const SizedBox(height: 20),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 860),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isTablet ? 24 : 16,
+                    vertical: 20,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // === MASTERY STATS ===
+                      _buildMasteryStats(context, totalSolved, accuracy, streak, isTablet: isTablet),
+                      const SizedBox(height: 20),
 
-                  // === PRO SUBSCRIPTION BANNER ===
-                  _buildSubscriptionCard(context, user),
-                  const SizedBox(height: 20),
+                      // === PRO SUBSCRIPTION & INVITE BANNERS ===
+                      if (isTablet && user?.referralCode != null)
+                        IntrinsicHeight(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Expanded(
+                                flex: 11,
+                                child: _buildSubscriptionCard(context, user, isTablet: true),
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                flex: 10,
+                                child: _buildInviteFriendsCard(context, user!.referralCode!, isTablet: true),
+                              ),
+                            ],
+                          ),
+                        )
+                      else ...[
+                        _buildSubscriptionCard(context, user, isTablet: isTablet),
+                        if (user?.referralCode != null) ...[
+                          const SizedBox(height: 16),
+                          _buildInviteFriendsCard(context, user!.referralCode!, isTablet: isTablet),
+                        ],
+                      ],
+                      const SizedBox(height: 20),
 
-                  // === INVITE FRIENDS ===
-                  if (user?.referralCode != null)
-                    _buildInviteFriendsCard(context, user!.referralCode!),
-                  const SizedBox(height: 20),
-
-                  // === ACCOUNT SECTION ===
-                  _buildSection(
+                      // === ACCOUNT SECTION ===
+                      _buildSection(
                     title: l10n.account,
                     children: [
                       _buildListTile(
@@ -380,18 +405,20 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-        ],
+        ),
+      ),
+    ],
       ),
     );
   }
 
-  Widget _buildSubscriptionCard(BuildContext context, dynamic user) {
+  Widget _buildSubscriptionCard(BuildContext context, dynamic user, {bool isTablet = false}) {
     final l10n = AppLocalizations.of(context)!;
     final isPremium = user?.isPremium == true;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(isTablet ? 18 : 20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -401,6 +428,10 @@ class ProfileScreen extends StatelessWidget {
               : const [Color(0xFF1E1B4B), Color(0xFF312E81), Color(0xFF1D4ED8)],
         ),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.16),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: (isPremium ? Colors.black : const Color(0xFF312E81))
@@ -412,80 +443,88 @@ class ProfileScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: isTablet ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFB800).withValues(alpha: 0.2),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.workspace_premium_rounded,
-                      color: Color(0xFFFFB800),
-                      size: 22,
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFFB800).withValues(alpha: 0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.workspace_premium_rounded,
+                            color: Color(0xFFFFB800),
+                            size: 20,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Flexible(
+                          child: Text(
+                            isPremium
+                                ? l10n.subscriptionCardActiveTitle
+                                : l10n.subscriptionCardTitle,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isTablet ? 15 : 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Text(
-                    isPremium
-                        ? l10n.subscriptionCardActiveTitle
-                        : l10n.subscriptionCardTitle,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                    decoration: BoxDecoration(
+                      color: isPremium
+                          ? Colors.green.withValues(alpha: 0.2)
+                          : const Color(0xFFFFB800).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: isPremium ? Colors.green : const Color(0xFFFFB800),
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      isPremium
+                          ? l10n.subscriptionCardActiveBadge
+                          : l10n.subscriptionCardBadge,
+                      style: TextStyle(
+                        color: isPremium ? Colors.greenAccent : const Color(0xFFFFB800),
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ],
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: isPremium
-                      ? Colors.green.withValues(alpha: 0.2)
-                      : const Color(0xFFFFB800).withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isPremium
-                        ? Colors.green
-                        : const Color(0xFFFFB800),
-                    width: 1,
-                  ),
-                ),
-                child: Text(
-                  isPremium
-                      ? l10n.subscriptionCardActiveBadge
-                      : l10n.subscriptionCardBadge,
-                  style: TextStyle(
-                    color: isPremium
-                        ? Colors.greenAccent
-                        : const Color(0xFFFFB800),
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const SizedBox(height: 10),
+              Text(
+                isPremium
+                    ? l10n.subscriptionCardActiveDesc
+                    : l10n.subscriptionCardDesc,
+                textAlign: TextAlign.start,
+                maxLines: isTablet ? 3 : null,
+                overflow: isTablet ? TextOverflow.ellipsis : null,
+                style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.85),
+                  fontSize: isTablet ? 12 : 13,
+                  height: 1.4,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            isPremium
-                ? l10n.subscriptionCardActiveDesc
-                : l10n.subscriptionCardDesc,
-            textAlign: TextAlign.start,
-            style: TextStyle(
-              color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 13,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 16),
+          SizedBox(height: isTablet ? 14 : 16),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -501,7 +540,7 @@ class ProfileScreen extends StatelessWidget {
                     : const Color(0xFFFFB800),
                 foregroundColor:
                     isPremium ? Colors.white : const Color(0xFF0F172A),
-                padding: const EdgeInsets.symmetric(vertical: 12),
+                padding: EdgeInsets.symmetric(vertical: isTablet ? 10 : 12),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -630,11 +669,11 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMasteryStats(BuildContext context, int totalSolved, int accuracy, int streak) {
+  Widget _buildMasteryStats(BuildContext context, int totalSolved, int accuracy, int streak, {bool isTablet = false}) {
     final l10n = AppLocalizations.of(context)!;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(isTablet ? 22 : 20),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
@@ -652,11 +691,11 @@ class ProfileScreen extends StatelessWidget {
           Text(
             l10n.myMasteryProgress,
             style: TextStyle(
-                fontSize: 15,
+                fontSize: isTablet ? 16 : 15,
                 fontWeight: FontWeight.bold,
                 color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: isTablet ? 18 : 16),
           Row(
             children: [
               Expanded(
@@ -666,9 +705,10 @@ class ProfileScreen extends StatelessWidget {
                   bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFEFF6FF),
                   label: l10n.questionsLabel,
                   value: totalSolved.toString(),
+                  isTablet: isTablet,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: isTablet ? 14 : 10),
               Expanded(
                 child: _buildStatCard(
                   icon: Icons.insights,
@@ -676,9 +716,10 @@ class ProfileScreen extends StatelessWidget {
                   bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF0FDF4),
                   label: l10n.accuracy,
                   value: '$accuracy%',
+                  isTablet: isTablet,
                 ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: isTablet ? 14 : 10),
               Expanded(
                 child: _buildStatCard(
                   icon: Icons.local_fire_department,
@@ -686,6 +727,7 @@ class ProfileScreen extends StatelessWidget {
                   bgColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFFFFBEB),
                   label: l10n.streakLabel,
                   value: l10n.streakDaysCount(streak),
+                  isTablet: isTablet,
                 ),
               ),
             ],
@@ -695,10 +737,10 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildInviteFriendsCard(BuildContext context, String referralCode) {
+  Widget _buildInviteFriendsCard(BuildContext context, String referralCode, {bool isTablet = false}) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(isTablet ? 18 : 20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF6366F1), Color(0xFF4F46E5)],
@@ -706,40 +748,64 @@ class ProfileScreen extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.18),
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
-              color: const Color(0xFF6366F1).withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4))
+              color: const Color(0xFF6366F1).withValues(alpha: 0.25),
+              blurRadius: 16,
+              offset: const Offset(0, 6))
         ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: isTablet ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
         children: [
-          Row(
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.card_giftcard, color: Colors.white, size: 24),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  l10n.inviteFriendsTitle,
-                  style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white),
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(7),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withValues(alpha: 0.15),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.card_giftcard, color: Colors.white, size: 20),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      l10n.inviteFriendsTitle,
+                      style: TextStyle(
+                        fontSize: isTablet ? 15 : 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                l10n.inviteFriendsDesc,
+                maxLines: isTablet ? 3 : null,
+                overflow: isTablet ? TextOverflow.ellipsis : null,
+                style: TextStyle(
+                  fontSize: isTablet ? 12 : 13,
+                  color: Colors.white.withValues(alpha: 0.9),
+                  height: 1.4,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            l10n.inviteFriendsDesc,
-            style: TextStyle(
-                fontSize: 13, color: Colors.white.withValues(alpha: 0.9)),
-          ),
-          const SizedBox(height: 16),
+          SizedBox(height: isTablet ? 14 : 16),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: isTablet ? 12 : 16, vertical: isTablet ? 8 : 12),
             decoration: BoxDecoration(
               color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
@@ -750,11 +816,12 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Text(
                   referralCode,
-                  style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 2,
-                      color: Colors.white),
+                  style: TextStyle(
+                    fontSize: isTablet ? 16 : 18,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                    color: Colors.white,
+                  ),
                 ),
                 InkWell(
                   onTap: () {
@@ -762,18 +829,17 @@ class ProfileScreen extends StatelessWidget {
                     ToastUtils.showSuccess(context, l10n.referralCodeCopied);
                   },
                   child: Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    child: const Icon(Icons.copy,
-                        size: 20, color: Color(0xFF4F46E5)),
+                    child: const Icon(Icons.copy, size: 18, color: Color(0xFF4F46E5)),
                   ),
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -785,12 +851,13 @@ class ProfileScreen extends StatelessWidget {
     required Color bgColor,
     required String label,
     required String value,
+    bool isTablet = false,
   }) {
     return Builder(
       builder: (context) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         return Container(
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 10),
+          padding: EdgeInsets.symmetric(vertical: isTablet ? 18 : 14, horizontal: 10),
           decoration: BoxDecoration(
             color: bgColor,
             borderRadius: BorderRadius.circular(14),
@@ -798,18 +865,18 @@ class ProfileScreen extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Icon(icon, color: iconColor, size: 22),
-              const SizedBox(height: 6),
+              Icon(icon, color: iconColor, size: isTablet ? 26 : 22),
+              SizedBox(height: isTablet ? 8 : 6),
               Text(
                 value,
                 style: TextStyle(
-                    fontSize: 18, fontWeight: FontWeight.bold, color: iconColor),
+                    fontSize: isTablet ? 20 : 18, fontWeight: FontWeight.bold, color: iconColor),
               ),
               const SizedBox(height: 2),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: isTablet ? 12 : 11,
                   color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
                 ),
               ),
