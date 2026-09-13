@@ -25,15 +25,17 @@ class ExamExplanationSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: isDark ? Colors.black45 : Colors.black12,
             blurRadius: 20,
-            offset: Offset(0, -5),
+            offset: const Offset(0, -5),
           ),
         ],
       ),
@@ -48,7 +50,7 @@ class ExamExplanationSheet extends StatelessWidget {
               width: 48,
               height: 6,
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: isDark ? const Color(0xFF334155) : Colors.grey[200],
                 borderRadius: BorderRadius.circular(3),
               ),
             ),
@@ -65,15 +67,19 @@ class ExamExplanationSheet extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
                         color: isCorrect
-                            ? const Color(0xFF34C759).withValues(alpha: 0.1)
-                            : const Color(0xFFFF3B30).withValues(alpha: 0.1),
+                            ? (isDark
+                                ? const Color(0xFF064E3B).withValues(alpha: 0.4)
+                                : const Color(0xFF34C759).withValues(alpha: 0.1))
+                            : (isDark
+                                ? const Color(0xFF7F1D1D).withValues(alpha: 0.4)
+                                : const Color(0xFFFF3B30).withValues(alpha: 0.1)),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
                         isCorrect ? Icons.check_circle : Icons.cancel,
                         color: isCorrect
-                            ? const Color(0xFF34C759)
-                            : const Color(0xFFFF3B30),
+                            ? (isDark ? const Color(0xFF34D399) : const Color(0xFF34C759))
+                            : (isDark ? const Color(0xFFF87171) : const Color(0xFFFF3B30)),
                         size: 24,
                       ),
                     ),
@@ -84,10 +90,13 @@ class ExamExplanationSheet extends StatelessWidget {
                         children: [
                           Text(
                             isCorrect ? 'Correct!' : 'Incorrect',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               fontFamily: 'IBM Plex Sans Arabic',
+                              color: isCorrect
+                                  ? (isDark ? const Color(0xFF34D399) : const Color(0xFF15803D))
+                                  : (isDark ? const Color(0xFFF87171) : const Color(0xFFDC2626)),
                             ),
                           ),
                           if (!isCorrect)
@@ -96,7 +105,7 @@ class ExamExplanationSheet extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w500,
-                                color: Colors.grey[700],
+                                color: isDark ? const Color(0xFF94A3B8) : Colors.grey[700],
                               ),
                             ),
                         ],
@@ -112,28 +121,28 @@ class ExamExplanationSheet extends StatelessWidget {
                     margin: const EdgeInsets.only(bottom: 24),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     decoration: BoxDecoration(
-                      color: Colors.blue.withValues(alpha: 0.05),
+                      color: isDark ? const Color(0xFF0F172A) : Colors.blue.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                          color: Colors.blue.withValues(alpha: 0.1)),
+                        color: isDark ? const Color(0xFF334155) : Colors.blue.withValues(alpha: 0.1),
+                      ),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        _buildStatItem(
-                            'Pass Rate', '$passRate%', Icons.trending_up),
+                        _buildStatItem('Pass Rate', '$passRate%', Icons.trending_up, isDark),
                         Container(
-                            width: 1,
-                            height: 40,
-                            color: Colors.blue.withValues(alpha: 0.1)),
-                        _buildStatItem('Average Time',
-                            '${averageTimeSeconds}s', Icons.timer),
+                          width: 1,
+                          height: 40,
+                          color: isDark ? const Color(0xFF334155) : Colors.blue.withValues(alpha: 0.1),
+                        ),
+                        _buildStatItem('Average Time', '${averageTimeSeconds}s', Icons.timer, isDark),
                         Container(
-                            width: 1,
-                            height: 40,
-                            color: Colors.blue.withValues(alpha: 0.1)),
-                        _buildStatItem(
-                            'Your Time', '${userTimeSeconds}s', Icons.person),
+                          width: 1,
+                          height: 40,
+                          color: isDark ? const Color(0xFF334155) : Colors.blue.withValues(alpha: 0.1),
+                        ),
+                        _buildStatItem('Your Time', '${userTimeSeconds}s', Icons.person, isDark),
                       ],
                     ),
                   ),
@@ -142,24 +151,27 @@ class ExamExplanationSheet extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.05),
+                    color: isDark ? const Color(0xFF0F172A) : AppColors.primary.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: AppColors.primary.withValues(alpha: 0.1),
+                      color: isDark ? const Color(0xFF334155) : AppColors.primary.withValues(alpha: 0.1),
                     ),
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Row(
+                      Row(
                         children: [
-                          Icon(Icons.lightbulb_outline,
-                              size: 16, color: AppColors.primary),
-                          SizedBox(width: 8),
+                          Icon(
+                            Icons.lightbulb_outline,
+                            size: 16,
+                            color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
+                          ),
+                          const SizedBox(width: 8),
                           Text(
                             'Why is this the answer?',
                             style: TextStyle(
-                              color: AppColors.primary,
+                              color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                             ),
@@ -169,10 +181,10 @@ class ExamExplanationSheet extends StatelessWidget {
                       const SizedBox(height: 12),
                       Text(
                         explanation,
-                        style: const TextStyle(
+                        style: TextStyle(
                           height: 1.6,
                           fontSize: 14,
-                          color: Color(0xFF475569), // slate-600
+                          color: isDark ? const Color(0xFFCBD5E1) : const Color(0xFF475569),
                         ),
                       ),
                     ],
@@ -187,8 +199,12 @@ class ExamExplanationSheet extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border(top: BorderSide(color: Colors.grey[100]!)),
+              color: isDark ? const Color(0xFF1E293B) : Colors.white,
+              border: Border(
+                top: BorderSide(
+                  color: isDark ? const Color(0xFF334155) : Colors.grey[100]!,
+                ),
+              ),
             ),
             child: Row(
               children: [
@@ -198,12 +214,14 @@ class ExamExplanationSheet extends StatelessWidget {
                     icon: const Icon(Icons.chevron_left),
                     label: const Text('Previous'),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 16),
+                      foregroundColor: isDark ? const Color(0xFFF1F5F9) : null,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      side: BorderSide(color: Colors.grey.shade300),
+                      side: BorderSide(
+                        color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -245,14 +263,26 @@ class ExamExplanationSheet extends StatelessWidget {
     );
   }
 
-  Widget _buildStatItem(String label, String value, IconData icon) {
+  Widget _buildStatItem(String label, String value, IconData icon, bool isDark) {
     return Column(
       children: [
-        Icon(icon, size: 20, color: Colors.blue),
+        Icon(icon, size: 20, color: isDark ? const Color(0xFF60A5FA) : Colors.blue),
         const SizedBox(height: 4),
-        Text(value,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        Text(label, style: const TextStyle(fontSize: 10, color: Colors.grey)),
+        Text(
+          value,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 10,
+            color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
+          ),
+        ),
       ],
     );
   }

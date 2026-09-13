@@ -469,9 +469,8 @@ exports.createStandardSdleExam = async (req, res, next) => {
         const totalNeeded = 210;
         const questionsPerSection = 105;
         
-        // Find 210 random active questions with options & explanation
+        // Find 210 random questions from question bank with options & explanation
         const randomQuestions = await Question.findAll({
-            where: { isActive: true },
             order: sequelize.random(),
             limit: totalNeeded,
             include: [

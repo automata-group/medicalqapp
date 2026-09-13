@@ -24,15 +24,20 @@ class SubjectPerformanceChart extends StatelessWidget {
     // Limit to top 5 or 6 for clarity
     final displayStats = sortedStats.take(6).toList();
 
-    return AspectRatio(
-      aspectRatio: 1.4,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+
+    return SizedBox(
+      height: isTablet ? 210 : 200,
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
           maxY: 100,
           barTouchData: BarTouchData(
             touchTooltipData: BarTouchTooltipData(
-              getTooltipColor: (_) => const Color(0xFF1E293B),
+              getTooltipColor: (_) => isDark
+                  ? const Color(0xFF0F172A)
+                  : const Color(0xFF1E293B),
               getTooltipItem: (group, groupIndex, rod, rodIndex) {
                 return BarTooltipItem(
                   '${displayStats[groupIndex].name}\n',
@@ -54,7 +59,7 @@ class SubjectPerformanceChart extends StatelessWidget {
             bottomTitles: AxisTitles(
               sideTitles: SideTitles(
                 showTitles: true,
-                reservedSize: 60,
+                reservedSize: isTablet ? 45 : 55,
                 getTitlesWidget: (value, meta) {
                   final index = value.toInt();
                   if (index < 0 || index >= displayStats.length) {
@@ -69,8 +74,10 @@ class SubjectPerformanceChart extends StatelessWidget {
                         width: 60,
                         child: Text(
                           displayStats[index].name,
-                          style: const TextStyle(
-                            color: Color(0xFF64748B),
+                          style: TextStyle(
+                            color: isDark
+                                ? const Color(0xFF94A3B8)
+                                : const Color(0xFF64748B),
                             fontSize: 9,
                             fontWeight: FontWeight.w500,
                           ),
@@ -108,7 +115,9 @@ class SubjectPerformanceChart extends StatelessWidget {
             drawVerticalLine: false,
             horizontalInterval: 20,
             getDrawingHorizontalLine: (value) => FlLine(
-              color: const Color(0xFFE2E8F0),
+              color: isDark
+                  ? const Color(0xFF334155)
+                  : const Color(0xFFE2E8F0),
               strokeWidth: 1,
               dashArray: [5, 5],
             ),
@@ -136,7 +145,9 @@ class SubjectPerformanceChart extends StatelessWidget {
                   backDrawRodData: BackgroundBarChartRodData(
                     show: true,
                     toY: 100,
-                    color: const Color(0xFFF1F5F9),
+                    color: isDark
+                        ? const Color(0xFF334155)
+                        : const Color(0xFFF1F5F9),
                   ),
                 ),
               ],

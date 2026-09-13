@@ -70,6 +70,11 @@ class MockExamModel extends Equatable {
     List<MockExamSectionModel>? sections,
     int? specialtyId,
     int? achievementId,
+    int? breakDuration,
+    bool? hasBreak,
+    String? breakScheduleType,
+    int? breakIntervalQuestions,
+    bool? allowBreakSkip,
   }) {
     return MockExamModel(
       id: id ?? this.id,
@@ -82,6 +87,11 @@ class MockExamModel extends Equatable {
       sections: sections ?? this.sections,
       specialtyId: specialtyId ?? this.specialtyId,
       achievementId: achievementId ?? this.achievementId,
+      breakDuration: breakDuration ?? this.breakDuration,
+      hasBreak: hasBreak ?? this.hasBreak,
+      breakScheduleType: breakScheduleType ?? this.breakScheduleType,
+      breakIntervalQuestions: breakIntervalQuestions ?? this.breakIntervalQuestions,
+      allowBreakSkip: allowBreakSkip ?? this.allowBreakSkip,
     );
   }
 
@@ -104,21 +114,24 @@ class MockExamSectionModel extends Equatable {
   final int id;
   final String title;
   final int questionCount;
+  final int timeLimit;
 
   const MockExamSectionModel({
     required this.id,
     required this.title,
     required this.questionCount,
+    this.timeLimit = 120,
   });
 
   factory MockExamSectionModel.fromJson(Map<String, dynamic> json) {
     return MockExamSectionModel(
-      id: json['id'],
-      title: json['title'],
-      questionCount: json['questionCount'] ?? 0,
+      id: json['id'] is int ? json['id'] : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      title: json['title'] ?? '',
+      questionCount: json['questionCount'] ?? json['totalQuestions'] ?? 0,
+      timeLimit: json['timeLimit'] ?? 120,
     );
   }
 
   @override
-  List<Object?> get props => [id, title, questionCount];
+  List<Object?> get props => [id, title, questionCount, timeLimit];
 }

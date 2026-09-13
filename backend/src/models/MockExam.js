@@ -57,19 +57,11 @@ const MockExam = sequelize.define('MockExam', {
     },
     specialtyId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Specialties',
-            key: 'id'
-        }
+        allowNull: true
     },
     achievementId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Achievements',
-            key: 'id'
-        }
+        allowNull: true
     }
 }, {
     timestamps: true

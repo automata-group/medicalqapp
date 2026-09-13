@@ -70,7 +70,11 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
           if (provider.currentQuestionIndex <
               provider.currentQuestions.length - 1) {
             provider.nextQuestion();
+          } else if (!provider.isLastSection) {
+            // End of Section 1: Trigger 30-min break screen
+            provider.nextQuestion();
           } else {
+            // End of final section: finish exam
             provider.finishExam().then((success) {
               if (context.mounted && success) {
                 Navigator.pushReplacement(
@@ -248,6 +252,9 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
                                   if (provider.currentQuestionIndex <
                                       provider.currentQuestions.length - 1) {
                                     provider.nextQuestion();
+                                  } else if (!provider.isLastSection) {
+                                    // End of Section 1 -> Trigger Break
+                                    provider.nextQuestion();
                                   } else {
                                     // Finish Exam
                                     final success = await provider.finishExam();
@@ -284,9 +291,15 @@ class _ExamInterfaceScreenState extends State<ExamInterfaceScreen> {
                               provider.isAnswerSubmitted
                                   ? (provider.currentQuestionIndex <
                                           provider.currentQuestions.length - 1
-                                      ? AppLocalizations.of(context)!.next
-                                      : AppLocalizations.of(context)!.finishExam)
-                                  : AppLocalizations.of(context)!.submit,
+                                      ? (AppLocalizations.of(context)?.next ??
+                                          'التالي')
+                                      : (!provider.isLastSection
+                                          ? 'إنهاء القسم وبدء الاستراحة'
+                                          : (AppLocalizations.of(context)
+                                                  ?.finishExam ??
+                                              'إنهاء الاختبار')))
+                                  : (AppLocalizations.of(context)?.submit ??
+                                      'تأكيد الإجابة'),
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,

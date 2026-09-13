@@ -599,7 +599,7 @@ exports.verifyEmail = async (req, res, next) => {
         const refreshToken = await RefreshToken.createToken(user, req.ip, req.headers['user-agent']);
 
         const activeSubscription = user.subscriptions && user.subscriptions.length > 0 ? user.subscriptions[0] : null;
-        const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+        const isPremium = (user.role === 'admin') || (activeSubscription && new Date() <= activeSubscription.endDate);
 
         res.status(200).json({
             success: true,
@@ -708,7 +708,7 @@ const sendAuthSuccessResponse = async (user, req, res) => {
     });
 
     const activeSubscription = freshUser.subscriptions && freshUser.subscriptions.length > 0 ? freshUser.subscriptions[0] : null;
-    const isPremium = activeSubscription && new Date() <= activeSubscription.endDate;
+    const isPremium = (freshUser.role === 'admin') || (activeSubscription && new Date() <= activeSubscription.endDate);
 
     const accessToken = generateAccessToken(freshUser.id);
     const refreshToken = await RefreshToken.createToken(freshUser, req.ip, req.headers['user-agent']);

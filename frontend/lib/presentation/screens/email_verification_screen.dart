@@ -6,7 +6,7 @@ import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/toast_utils.dart';
 import '../providers/auth_provider.dart';
-import 'specialty_selection_screen.dart';
+import 'main_container_screen.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
   final String email;
@@ -88,7 +88,7 @@ class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
       ToastUtils.showSuccess(context, l10n.accountActivatedSuccess);
 
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
+        MaterialPageRoute(builder: (_) => const MainContainerScreen()),
         (route) => false,
       );
     } catch (e) {

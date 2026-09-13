@@ -66,28 +66,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: AppColors.textPrimaryLight),
+          icon: Icon(Icons.arrow_back_ios,
+              color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: _emailSent ? _buildSuccessView(l10n) : _buildFormView(l10n),
+          child: _emailSent ? _buildSuccessView(l10n, isDark) : _buildFormView(l10n, isDark),
         ),
       ),
     );
   }
 
-  Widget _buildFormView(AppLocalizations l10n) {
+  Widget _buildFormView(AppLocalizations l10n, bool isDark) {
     return Form(
       key: _formKey,
       child: Column(
@@ -109,18 +110,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           Text(
             l10n.forgotPassword,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: AppColors.textPrimaryLight,
+              color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             l10n.forgotPasswordSubtitle,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
-                fontSize: 15, color: AppColors.textLight, height: 1.5),
+            style: TextStyle(
+              fontSize: 15,
+              color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
+              height: 1.5,
+            ),
           ),
           const SizedBox(height: 36),
 
@@ -128,20 +132,27 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           TextFormField(
             controller: _emailController,
             keyboardType: TextInputType.emailAddress,
+            style: TextStyle(
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+            ),
             decoration: InputDecoration(
               labelText: l10n.emailAddress,
+              labelStyle: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              ),
               prefixIcon:
                   const Icon(Icons.email_outlined, color: AppColors.primary),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide: BorderSide.none,
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
-                borderSide:
-                    BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                borderSide: BorderSide(
+                  color: isDark ? const Color(0xFF334155) : Colors.grey.withValues(alpha: 0.2),
+                ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -163,20 +174,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               onPressed: _isLoading ? null : _submit,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-                elevation: 0,
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 3,
+                shadowColor: AppColors.primary.withValues(alpha: 0.4),
               ),
               child: _isLoading
                   ? const SizedBox(
-                      height: 20,
-                      width: 20,
+                      width: 22,
+                      height: 22,
                       child: CircularProgressIndicator(
-                          color: Colors.white, strokeWidth: 2))
-                  : Text(l10n.sendResetLink,
-                      style:
-                          const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          color: Colors.white, strokeWidth: 2.5),
+                    )
+                  : Text(
+                      l10n.sendResetLink,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
             ),
           ),
 
@@ -197,7 +214,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     );
   }
 
-  Widget _buildSuccessView(AppLocalizations l10n) {
+  Widget _buildSuccessView(AppLocalizations l10n, bool isDark) {
     return SizedBox(
       width: double.infinity,
       child: Column(
@@ -218,18 +235,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           Text(
             l10n.checkYourEmail,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: AppColors.textPrimaryLight),
+            style: TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.bold,
+              color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight,
+            ),
           ),
           const SizedBox(height: 12),
           Text(
             l10n.weSentResetLink(_emailController.text),
             textAlign: TextAlign.center,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
-                fontSize: 15, color: AppColors.textLight, height: 1.6),
+            style: TextStyle(
+              fontSize: 15,
+              color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
+              height: 1.6,
+            ),
           ),
           const SizedBox(height: 32),
 

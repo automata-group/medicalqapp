@@ -59,6 +59,7 @@ class _ExamQuestionContributionScreenState
 
   Future<void> _selectDate() async {
     final now = DateTime.now();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final picked = await showDatePicker(
       context: context,
       initialDate: _examDate ?? now,
@@ -67,11 +68,18 @@ class _ExamQuestionContributionScreenState
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Theme.of(context).primaryColor,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
+            colorScheme: isDark
+                ? ColorScheme.dark(
+                    primary: Theme.of(context).primaryColor,
+                    onPrimary: Colors.white,
+                    surface: const Color(0xFF1E293B),
+                    onSurface: Colors.white,
+                  )
+                : ColorScheme.light(
+                    primary: Theme.of(context).primaryColor,
+                    onPrimary: Colors.white,
+                    onSurface: Colors.black,
+                  ),
           ),
           child: child!,
         );
@@ -99,10 +107,12 @@ class _ExamQuestionContributionScreenState
   }
 
   void _showSuccessDialog(AppLocalizations? l10n, String message) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Column(
           children: [
@@ -110,7 +120,11 @@ class _ExamQuestionContributionScreenState
             const SizedBox(height: 8),
             Text(
               l10n?.contributionReceivedTitle ?? 'تم استلام مساهمتك',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 20,
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+              ),
               textAlign: TextAlign.center,
             ),
           ],
@@ -119,7 +133,11 @@ class _ExamQuestionContributionScreenState
           l10n?.contributionReceivedMessage ??
               'شكرًا لمساعدتك في تطوير بنك الأسئلة.\nسيقوم فريقنا بمراجعة السؤال والتحقق منه قبل إضافته.',
           textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 14, height: 1.5, color: Colors.black87),
+          style: TextStyle(
+            fontSize: 14,
+            height: 1.5,
+            color: isDark ? const Color(0xFFCBD5E1) : Colors.black87,
+          ),
         ),
         actionsAlignment: MainAxisAlignment.center,
         actions: [
@@ -292,29 +310,41 @@ class _ExamQuestionContributionScreenState
                 const SizedBox(height: 24),
 
                 // 1. Specialty Dropdown
-                _buildSectionTitle(l10n?.specialtyRequired ?? 'التخصص *'),
+                _buildSectionTitle(l10n?.specialtyRequired ?? 'التخصص *', isDark),
                 const SizedBox(height: 8),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(
+                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                    ),
                   ),
                   child: DropdownButtonHideUnderline(
                     child: DropdownButton<int>(
                       isExpanded: true,
+                      dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                       value: _selectedSpecialtyId,
-                      hint: Text(l10n?.selectSpecialtyHint ?? 'اختر التخصص'),
+                      hint: Text(
+                        l10n?.selectSpecialtyHint ?? 'اختر التخصص',
+                        style: TextStyle(
+                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                        ),
+                      ),
+                      icon: Icon(
+                        Icons.arrow_drop_down,
+                        color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                      ),
                       items: specialties.map((s) {
                         return DropdownMenuItem<int>(
                           value: s.id,
                           child: Text(
                             s.name,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
-                              color: Color(0xFF1E293B),
+                              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
                             ),
                           ),
                         );
@@ -330,30 +360,41 @@ class _ExamQuestionContributionScreenState
                 const SizedBox(height: 20),
 
                 // 2. Question Text
-                _buildSectionTitle(l10n?.questionTextLabel ?? 'ما الذي تتذكره من السؤال؟ *'),
+                _buildSectionTitle(l10n?.questionTextLabel ?? 'ما الذي تتذكره من السؤال؟ *', isDark),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _questionTextController,
                   maxLines: 5,
                   textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+                    fontSize: 14,
+                  ),
                   decoration: InputDecoration(
                     hintText: l10n?.questionTextHint ??
                         'اكتب نص السؤال أو الحالة السريرية أو الأعراض كما تذكرتها...',
-                    hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    hintStyle: TextStyle(
+                      color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                      fontSize: 13,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                     contentPadding: const EdgeInsets.all(16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      borderSide: BorderSide(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      borderSide: BorderSide(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFF2563EB), width: 1.5),
+                      borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
                     ),
                   ),
                   validator: (val) {
@@ -366,40 +407,41 @@ class _ExamQuestionContributionScreenState
                 const SizedBox(height: 24),
 
                 // 3. Options (A, B, C, D)
-                _buildSectionTitle(l10n?.optionsOptional ?? 'الخيارات إن كنت تتذكرها (اختياري)'),
+                _buildSectionTitle(l10n?.optionsOptional ?? 'الخيارات إن كنت تتذكرها (اختياري)', isDark),
                 const SizedBox(height: 12),
-                _buildOptionField('A', _optAController, l10n),
+                _buildOptionField('A', _optAController, l10n, isDark),
                 const SizedBox(height: 10),
-                _buildOptionField('B', _optBController, l10n),
+                _buildOptionField('B', _optBController, l10n, isDark),
                 const SizedBox(height: 10),
-                _buildOptionField('C', _optCController, l10n),
+                _buildOptionField('C', _optCController, l10n, isDark),
                 const SizedBox(height: 10),
-                _buildOptionField('D', _optDController, l10n),
+                _buildOptionField('D', _optDController, l10n, isDark),
                 const SizedBox(height: 24),
 
                 // 4. Perceived Correct Answer
-                _buildSectionTitle(l10n?.perceivedCorrectAnswer ?? 'ما الإجابة التي تعتقد أنها صحيحة؟'),
+                _buildSectionTitle(l10n?.perceivedCorrectAnswer ?? 'ما الإجابة التي تعتقد أنها صحيحة؟', isDark),
                 const SizedBox(height: 10),
                 Wrap(
                   spacing: 8,
                   children: [
-                    _buildAnswerChip('A', l10n),
-                    _buildAnswerChip('B', l10n),
-                    _buildAnswerChip('C', l10n),
-                    _buildAnswerChip('D', l10n),
-                    _buildAnswerChip('unsure', l10n, customLabel: l10n?.unsureAnswer ?? 'غير متأكد'),
+                    _buildAnswerChip('A', l10n, isDark),
+                    _buildAnswerChip('B', l10n, isDark),
+                    _buildAnswerChip('C', l10n, isDark),
+                    _buildAnswerChip('D', l10n, isDark),
+                    _buildAnswerChip('unsure', l10n, isDark, customLabel: l10n?.unsureAnswer ?? 'غير متأكد'),
                   ],
                 ),
                 const SizedBox(height: 24),
 
                 // 5. Confidence Level
-                _buildSectionTitle(l10n?.confidenceLevelQuestion ?? 'مدى ثقتك بتذكرك للسؤال؟ *'),
+                _buildSectionTitle(l10n?.confidenceLevelQuestion ?? 'مدى ثقتك بتذكرك للسؤال؟ *', isDark),
                 const SizedBox(height: 10),
                 _buildConfidenceTile(
                   key: 'high',
                   emoji: '🟢',
                   title: l10n?.confidenceHighTitle ?? 'أتذكره بشكل جيد',
                   subtitle: l10n?.confidenceHighSubtitle ?? 'حرفياً أو شبه مطابق لما ورد في الاختبار',
+                  isDark: isDark,
                 ),
                 const SizedBox(height: 8),
                 _buildConfidenceTile(
@@ -407,6 +449,7 @@ class _ExamQuestionContributionScreenState
                   emoji: '🟡',
                   title: l10n?.confidenceMediumTitle ?? 'أتذكر معظمه',
                   subtitle: l10n?.confidenceMediumSubtitle ?? 'قريب جداً من النص الأصلي مع نسيان بعض التفاصيل',
+                  isDark: isDark,
                 ),
                 const SizedBox(height: 8),
                 _buildConfidenceTile(
@@ -414,11 +457,12 @@ class _ExamQuestionContributionScreenState
                   emoji: '🔴',
                   title: l10n?.confidenceLowTitle ?? 'أتذكر الفكرة فقط',
                   subtitle: l10n?.confidenceLowSubtitle ?? 'أتذكر فكرة الحالة السريرية والموضوع العام',
+                  isDark: isDark,
                 ),
                 const SizedBox(height: 24),
 
                 // 6. Exam Date
-                _buildSectionTitle(l10n?.examDateOptional ?? 'متى اختبرت؟ (اختياري)'),
+                _buildSectionTitle(l10n?.examDateOptional ?? 'متى اختبرت؟ (اختياري)', isDark),
                 const SizedBox(height: 8),
                 InkWell(
                   onTap: _selectDate,
@@ -427,13 +471,19 @@ class _ExamQuestionContributionScreenState
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDark ? const Color(0xFF1E293B) : Colors.white,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFFE2E8F0)),
+                      border: Border.all(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.calendar_month, color: Color(0xFF64748B), size: 20),
+                        Icon(
+                          Icons.calendar_month,
+                          color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                          size: 20,
+                        ),
                         const SizedBox(width: 12),
                         Text(
                           _examDate != null
@@ -441,8 +491,8 @@ class _ExamQuestionContributionScreenState
                               : (l10n?.selectExamDateHint ?? 'اختر تاريخ الاختبار إن كنت تتذكره'),
                           style: TextStyle(
                             color: _examDate != null
-                                ? const Color(0xFF1E293B)
-                                : const Color(0xFF94A3B8),
+                                ? (isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B))
+                                : (isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8)),
                             fontSize: 14,
                           ),
                         ),
@@ -450,7 +500,11 @@ class _ExamQuestionContributionScreenState
                         if (_examDate != null)
                           GestureDetector(
                             onTap: () => setState(() => _examDate = null),
-                            child: const Icon(Icons.close, size: 18, color: Colors.grey),
+                            child: Icon(
+                              Icons.close,
+                              size: 18,
+                              color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
+                            ),
                           ),
                       ],
                     ),
@@ -459,26 +513,41 @@ class _ExamQuestionContributionScreenState
                 const SizedBox(height: 24),
 
                 // 7. Note / Explanation
-                _buildSectionTitle(l10n?.notesOptional ?? 'شرح أو ملاحظة (اختياري)'),
+                _buildSectionTitle(l10n?.notesOptional ?? 'شرح أو ملاحظة (اختياري)', isDark),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _notesController,
                   maxLines: 3,
                   textDirection: TextDirection.rtl,
+                  style: TextStyle(
+                    color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+                    fontSize: 14,
+                  ),
                   decoration: InputDecoration(
                     hintText: l10n?.notesHint ??
                         'أضف أي ملاحظة حول سبب اختيارك أو تفاصيل إضافية عن السؤال...',
-                    hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    hintStyle: TextStyle(
+                      color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                      fontSize: 13,
+                    ),
                     filled: true,
-                    fillColor: Colors.white,
+                    fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                     contentPadding: const EdgeInsets.all(16),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      borderSide: BorderSide(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      ),
                     ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                      borderSide: BorderSide(
+                        color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
                     ),
                   ),
                 ),
@@ -527,18 +596,18 @@ class _ExamQuestionContributionScreenState
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, bool isDark) {
     return Text(
       title,
-      style: const TextStyle(
+      style: TextStyle(
         fontSize: 14,
         fontWeight: FontWeight.bold,
-        color: Color(0xFF1E293B),
+        color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF1E293B),
       ),
     );
   }
 
-  Widget _buildOptionField(String key, TextEditingController controller, AppLocalizations? l10n) {
+  Widget _buildOptionField(String key, TextEditingController controller, AppLocalizations? l10n, bool isDark) {
     return Row(
       children: [
         Container(
@@ -546,15 +615,17 @@ class _ExamQuestionContributionScreenState
           height: 38,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: const Color(0xFFEFF6FF),
+            color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF6FF),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFFBFDBFE)),
+            border: Border.all(
+              color: isDark ? const Color(0xFF3B82F6) : const Color(0xFFBFDBFE),
+            ),
           ),
           child: Text(
             key,
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1D4ED8),
+              color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8),
               fontSize: 14,
             ),
           ),
@@ -563,19 +634,34 @@ class _ExamQuestionContributionScreenState
         Expanded(
           child: TextFormField(
             controller: controller,
+            style: TextStyle(
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+              fontSize: 14,
+            ),
             decoration: InputDecoration(
               hintText: l10n?.optionTextHint(key) ?? 'نص الخيار ($key)',
-              hintStyle: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+              hintStyle: TextStyle(
+                color: isDark ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                fontSize: 13,
+              ),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
               contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                borderSide: BorderSide(
+                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+                borderSide: BorderSide(
+                  color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(10),
+                borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 1.5),
               ),
             ),
           ),
@@ -584,19 +670,23 @@ class _ExamQuestionContributionScreenState
     );
   }
 
-  Widget _buildAnswerChip(String key, AppLocalizations? l10n, {String? customLabel}) {
+  Widget _buildAnswerChip(String key, AppLocalizations? l10n, bool isDark, {String? customLabel}) {
     final isSelected = _selectedAnswer == key;
     final text = customLabel ?? (l10n?.optionLabel(key) ?? 'الخيار $key');
     return ChoiceChip(
       label: Text(text),
       selected: isSelected,
-      selectedColor: const Color(0xFF10B981),
-      backgroundColor: Colors.white,
+      selectedColor: isDark ? const Color(0xFF059669) : const Color(0xFF10B981),
+      backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
       side: BorderSide(
-        color: isSelected ? const Color(0xFF10B981) : const Color(0xFFCBD5E1),
+        color: isSelected
+            ? const Color(0xFF10B981)
+            : (isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1)),
       ),
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : const Color(0xFF334155),
+        color: isSelected
+            ? Colors.white
+            : (isDark ? const Color(0xFFCBD5E1) : const Color(0xFF334155)),
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
         fontSize: 13,
       ),
@@ -611,6 +701,7 @@ class _ExamQuestionContributionScreenState
     required String emoji,
     required String title,
     required String subtitle,
+    required bool isDark,
   }) {
     final isSelected = _confidenceLevel == key;
     return InkWell(
@@ -619,10 +710,14 @@ class _ExamQuestionContributionScreenState
       child: Container(
         padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFF0FDF4) : Colors.white,
+          color: isSelected
+              ? (isDark ? const Color(0xFF064E3B).withValues(alpha: 0.35) : const Color(0xFFF0FDF4))
+              : (isDark ? const Color(0xFF1E293B) : Colors.white),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? const Color(0xFF22C55E) : const Color(0xFFE2E8F0),
+            color: isSelected
+                ? const Color(0xFF22C55E)
+                : (isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
             width: isSelected ? 1.5 : 1.0,
           ),
         ),
@@ -639,13 +734,18 @@ class _ExamQuestionContributionScreenState
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      color: isSelected ? const Color(0xFF15803D) : const Color(0xFF1E293B),
+                      color: isSelected
+                          ? (isDark ? const Color(0xFF34D399) : const Color(0xFF15803D))
+                          : (isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B)),
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                    ),
                   ),
                 ],
               ),

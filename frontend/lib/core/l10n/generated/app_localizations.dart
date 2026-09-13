@@ -2161,6 +2161,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to sign in with Apple. Please try again later.'**
   String get appleSignInFailed;
+
+  /// No description provided for @takeMockExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Mock Exam'**
+  String get takeMockExam;
+
+  /// No description provided for @browseByTopic.
+  ///
+  /// In en, this message translates to:
+  /// **'Browse by Topic'**
+  String get browseByTopic;
+
+  /// No description provided for @noSubTopicsAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No sub-topics available'**
+  String get noSubTopicsAvailable;
+
+  /// No description provided for @questionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} Questions'**
+  String questionsCount(int count);
 }
 
 class _AppLocalizationsDelegate

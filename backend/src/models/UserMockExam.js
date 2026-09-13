@@ -9,19 +9,11 @@ const UserMockExam = sequelize.define('UserMockExam', {
     },
     userId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'Users',
-            key: 'id'
-        }
+        allowNull: false
     },
     mockExamId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'MockExams',
-            key: 'id'
-        }
+        allowNull: false
     },
     startTime: {
         type: DataTypes.DATE,

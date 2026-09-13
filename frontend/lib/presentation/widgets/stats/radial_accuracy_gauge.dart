@@ -4,19 +4,23 @@ import 'package:flutter/material.dart';
 class RadialAccuracyGauge extends StatelessWidget {
   final double accuracy; // 0 to 100
   final double size;
-  final Color baseColor;
+  final Color? baseColor;
   final Color progressColor;
 
   const RadialAccuracyGauge({
     super.key,
     required this.accuracy,
     this.size = 120,
-    this.baseColor = const Color(0xFFF1F5F9),
+    this.baseColor,
     this.progressColor = const Color(0xFF6366F1),
   });
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final effectiveBaseColor = baseColor ??
+        (isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9));
+
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -26,7 +30,7 @@ class RadialAccuracyGauge extends StatelessWidget {
           child: CustomPaint(
             painter: _RadialPainter(
               progress: accuracy / 100,
-              baseColor: baseColor,
+              baseColor: effectiveBaseColor,
               progressColor: progressColor,
             ),
           ),
@@ -39,14 +43,14 @@ class RadialAccuracyGauge extends StatelessWidget {
               style: TextStyle(
                 fontSize: size * 0.22,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1E293B),
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
               ),
             ),
             Text(
               'Accuracy', // Can be localized later if needed or passed as param
               style: TextStyle(
                 fontSize: size * 0.08,
-                color: const Color(0xFF64748B),
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 fontWeight: FontWeight.w500,
               ),
             ),

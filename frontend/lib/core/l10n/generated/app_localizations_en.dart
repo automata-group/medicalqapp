@@ -1138,4 +1138,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get appleSignInFailed =>
       'Failed to sign in with Apple. Please try again later.';
+
+  @override
+  String get takeMockExam => 'Take Mock Exam';
+
+  @override
+  String get browseByTopic => 'Browse by Topic';
+
+  @override
+  String get noSubTopicsAvailable => 'No sub-topics available';
+
+  @override
+  String questionsCount(int count) {
+    return '$count Questions';
+  }
 }

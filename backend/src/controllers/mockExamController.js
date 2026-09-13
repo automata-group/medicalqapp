@@ -7,9 +7,37 @@ exports.startMockExam = async (req, res, next) => {
     try {
         const { mockExamId } = req.body;
 
-        const mockExam = await MockExam.findByPk(mockExamId, {
-            include: [{ model: MockExamSection, as: 'sections' }]
-        });
+        let mockExam = null;
+        if (mockExamId && !isNaN(parseInt(mockExamId))) {
+            mockExam = await MockExam.findByPk(mockExamId, {
+                include: [{ model: MockExamSection, as: 'sections' }]
+            });
+        }
+
+        if (!mockExam) {
+            mockExam = await MockExam.findOne({
+                where: { isActive: true },
+                include: [{ model: MockExamSection, as: 'sections' }]
+            });
+        }
+
+        if (!mockExam) {
+            try {
+                const { createStandardSdleExam } = require('./admin/mockExamController');
+                await new Promise((resolve) => {
+                    createStandardSdleExam({ body: {} }, {
+                        status: () => ({ json: resolve }),
+                    }, () => resolve());
+                });
+
+                mockExam = await MockExam.findOne({
+                    where: { isActive: true },
+                    include: [{ model: MockExamSection, as: 'sections' }]
+                });
+            } catch (createErr) {
+                console.error('[Start Mock Exam Auto-create Error]', createErr);
+            }
+        }
 
         if (!mockExam) {
             return res.status(404).json({ success: false, message: 'Mock Exam not found' });
@@ -28,7 +56,7 @@ exports.startMockExam = async (req, res, next) => {
             }
         }
 
-        if (!req.isPremium) {
+        if (!req.isPremium && (!req.user || req.user.role !== 'admin')) {
             return res.status(403).json({
                 success: false,
                 message: 'الامتحانات التجريبية مخصصة لمشتركي باقة PRO فقط.',
@@ -36,11 +64,13 @@ exports.startMockExam = async (req, res, next) => {
             });
         }
 
+        const activeExamId = mockExam.id;
+
         // Check for existing in-progress attempt
         let userMockExam = await UserMockExam.findOne({
             where: {
                 userId: req.user.id,
-                mockExamId,
+                mockExamId: activeExamId,
                 status: 'in-progress'
             }
         });
@@ -49,7 +79,7 @@ exports.startMockExam = async (req, res, next) => {
             // Create New Attempt
             userMockExam = await UserMockExam.create({
                 userId: req.user.id,
-                mockExamId,
+                mockExamId: activeExamId,
                 startTime: new Date(),
                 status: 'in-progress',
                 totalQuestions: mockExam.totalQuestions
@@ -77,9 +107,9 @@ exports.startMockExam = async (req, res, next) => {
 // @access  Private
 exports.getMockExams = async (req, res, next) => {
     try {
-        const mockExams = await MockExam.findAll({
+        let mockExams = await MockExam.findAll({
             where: { isActive: true },
-            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId'],
+            attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId', 'breakDuration', 'hasBreak', 'allowBreakSkip', 'breakIntervalQuestions', 'breakScheduleType'],
             include: [
                 {
                     model: MockExamSection,
@@ -88,6 +118,32 @@ exports.getMockExams = async (req, res, next) => {
                 }
             ]
         });
+
+        // If no mock exams exist, auto-create the standard SDLE simulation (2 sections, 105 Qs each, 120 mins each, 30 min break, PRO only)
+        if (mockExams.length === 0) {
+            try {
+                const { createStandardSdleExam } = require('./admin/mockExamController');
+                await new Promise((resolve) => {
+                    createStandardSdleExam({ body: {} }, {
+                        status: () => ({ json: resolve }),
+                    }, () => resolve());
+                });
+
+                mockExams = await MockExam.findAll({
+                    where: { isActive: true },
+                    attributes: ['id', 'title', 'description', 'duration', 'totalQuestions', 'price', 'isPremium', 'specialtyId', 'achievementId', 'breakDuration', 'hasBreak', 'allowBreakSkip', 'breakIntervalQuestions', 'breakScheduleType'],
+                    include: [
+                        {
+                            model: MockExamSection,
+                            as: 'sections',
+                            attributes: ['id', 'title', 'timeLimit', 'questionCount', 'sortOrder']
+                        }
+                    ]
+                });
+            } catch (autoErr) {
+                console.error('[Auto Mock Exam Error]', autoErr);
+            }
+        }
 
         // Auto-heal section question counts if 0
         for (const exam of mockExams) {
@@ -123,7 +179,7 @@ exports.getMockExams = async (req, res, next) => {
 // @access  Private
 exports.getMockExam = async (req, res, next) => {
     try {
-        if (!req.isPremium) {
+        if (!req.isPremium && (!req.user || req.user.role !== 'admin')) {
             return res.status(403).json({
                 success: false,
                 message: 'الامتحانات التجريبية مخصصة لمشتركي باقة PRO فقط.',

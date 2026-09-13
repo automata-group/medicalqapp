@@ -488,5 +488,16 @@
   "continueWithApple": "Continue with Apple",
   "orContinueWith": "Or continue with",
   "googleSignInFailed": "Failed to sign in with Google. Please try again later.",
-  "appleSignInFailed": "Failed to sign in with Apple. Please try again later."
+  "appleSignInFailed": "Failed to sign in with Apple. Please try again later.",
+  "takeMockExam": "Take Mock Exam",
+  "browseByTopic": "Browse by Topic",
+  "noSubTopicsAvailable": "No sub-topics available",
+  "questionsCount": "{count} Questions",
+  "@questionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

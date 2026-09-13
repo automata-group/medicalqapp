@@ -181,7 +181,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                           Icon(Icons.assignment_outlined, color: AppColors.primary),
                           const SizedBox(width: 12),
                           Text(
-                            'Take Mock Exam',
+                            l10n.takeMockExam,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -202,7 +202,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(
-                'Browse by Topic',
+                l10n.browseByTopic,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -228,7 +228,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                           size: 48, color: Colors.grey.shade300),
                       const SizedBox(height: 16),
                       Text(
-                        'No sub-topics available',
+                        l10n.noSubTopicsAvailable,
                         style: TextStyle(color: Colors.grey.shade500),
                       ),
                     ],
@@ -256,6 +256,8 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
 
   Widget _buildTopicCard(BuildContext context, dynamic topic) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context)!;
+    final int questions = (topic.totalQuestions as num?)?.toInt() ?? 0;
     return InkWell(
       onTap: () => _startPractice(context, subTopic: topic.name),
       borderRadius: BorderRadius.circular(16),
@@ -297,7 +299,7 @@ class _SpecialtyDetailScreenState extends State<SpecialtyDetailScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${topic.totalQuestions} Questions',
+                    l10n.questionsCount(questions),
                     style: TextStyle(
                       color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade500,
                       fontSize: 13,

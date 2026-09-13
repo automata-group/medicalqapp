@@ -9,19 +9,11 @@ const SectionQuestion = sequelize.define('SectionQuestion', {
     },
     sectionId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'MockExamSections',
-            key: 'id'
-        }
+        allowNull: false
     },
     mockQuestionId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'MockQuestions',
-            key: 'id'
-        }
+        allowNull: false
     },
     sortOrder: {
         type: DataTypes.INTEGER,

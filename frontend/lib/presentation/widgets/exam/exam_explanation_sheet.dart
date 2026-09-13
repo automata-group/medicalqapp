@@ -27,15 +27,17 @@ class ExamExplanationSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.3,
       maxChildSize: 0.85,
       builder: (context, scrollController) {
         return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
           ),
           child: Column(
             children: [
@@ -45,7 +47,7 @@ class ExamExplanationSheet extends StatelessWidget {
                 height: 6,
                 margin: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade300,
+                  color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
                   borderRadius: BorderRadius.circular(3),
                 ),
               ),
@@ -61,13 +63,15 @@ class ExamExplanationSheet extends StatelessWidget {
                           padding: const EdgeInsets.all(12),
                           decoration: BoxDecoration(
                             color: isCorrect
-                                ? Colors.green.withValues(alpha: 0.1)
-                                : Colors.red.withValues(alpha: 0.1),
+                                ? (isDark ? const Color(0xFF064E3B).withValues(alpha: 0.4) : Colors.green.withValues(alpha: 0.1))
+                                : (isDark ? const Color(0xFF7F1D1D).withValues(alpha: 0.4) : Colors.red.withValues(alpha: 0.1)),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
                             isCorrect ? Icons.check_circle : Icons.cancel,
-                            color: isCorrect ? Colors.green : Colors.red,
+                            color: isCorrect
+                                ? (isDark ? const Color(0xFF34D399) : Colors.green)
+                                : (isDark ? const Color(0xFFF87171) : Colors.red),
                             size: 32,
                           ),
                         ),
@@ -81,7 +85,9 @@ class ExamExplanationSheet extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold,
-                                  color: isCorrect ? Colors.green : Colors.red,
+                                  color: isCorrect
+                                      ? (isDark ? const Color(0xFF34D399) : Colors.green)
+                                      : (isDark ? const Color(0xFFF87171) : Colors.red),
                                 ),
                               ),
                               if (!isCorrect)
@@ -94,7 +100,7 @@ class ExamExplanationSheet extends StatelessWidget {
                                     style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600,
-                                      color: Colors.grey.shade700,
+                                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade700,
                                     ),
                                   ),
                                 ),
@@ -109,9 +115,11 @@ class ExamExplanationSheet extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.grey.shade50,
+                        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade200),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF334155) : Colors.grey.shade200,
+                        ),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -121,30 +129,33 @@ class ExamExplanationSheet extends StatelessWidget {
                             '${(passRate * 100).toInt()}%',
                             Icons.pie_chart_outline,
                             AppColors.primary,
+                            isDark,
                           ),
                           Container(
                             height: 32,
                             width: 1,
-                            color: Colors.grey.shade300,
+                            color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
                           ),
                           _buildStatColumn(
                             'Avg. Time',
                             '${averageTimeSeconds}s',
                             Icons.timer_outlined,
                             Colors.orange,
+                            isDark,
                           ),
                           Container(
                             height: 32,
                             width: 1,
-                            color: Colors.grey.shade300,
+                            color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
                           ),
                           _buildStatColumn(
                             'Your Time',
                             '${userTimeSeconds}s',
                             Icons.speed,
                             userTimeSeconds <= averageTimeSeconds
-                                ? Colors.green
-                                : Colors.red,
+                                ? (isDark ? const Color(0xFF34D399) : Colors.green)
+                                : (isDark ? const Color(0xFFF87171) : Colors.red),
+                            isDark,
                           ),
                         ],
                       ),
@@ -152,17 +163,17 @@ class ExamExplanationSheet extends StatelessWidget {
                     const SizedBox(height: 24),
 
                     // Explanation Header
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.lightbulb_outline,
+                        const Icon(Icons.lightbulb_outline,
                             color: AppColors.primary, size: 20),
-                        SizedBox(width: 8),
+                        const SizedBox(width: 8),
                         Text(
                           'Explanation',
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: AppColors.textPrimaryLight,
+                            color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight,
                           ),
                         ),
                       ],
@@ -173,9 +184,13 @@ class ExamExplanationSheet extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.blue.shade50.withValues(alpha: 0.5),
+                        color: isDark
+                            ? const Color(0xFF0F172A)
+                            : Colors.blue.shade50.withValues(alpha: 0.5),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.blue.shade100),
+                        border: Border.all(
+                          color: isDark ? const Color(0xFF334155) : Colors.blue.shade100,
+                        ),
                       ),
                       child: MarkdownBody(
                         data: explanation,
@@ -183,7 +198,7 @@ class ExamExplanationSheet extends StatelessWidget {
                           p: GoogleFonts.ibmPlexSansArabic(
                             fontSize: 15,
                             height: 1.6,
-                            color: AppColors.textPrimaryLight,
+                            color: isDark ? const Color(0xFFCBD5E1) : AppColors.textPrimaryLight,
                           ),
                         ),
                       ),
@@ -205,10 +220,14 @@ class ExamExplanationSheet extends StatelessWidget {
                         icon: const Icon(Icons.chevron_left),
                         label: const Text('Previous'),
                         style: OutlinedButton.styleFrom(
+                          foregroundColor: isDark ? const Color(0xFFF1F5F9) : null,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16),
+                          ),
+                          side: BorderSide(
+                            color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
                           ),
                         ),
                       ),
@@ -253,7 +272,7 @@ class ExamExplanationSheet extends StatelessWidget {
   }
 
   Widget _buildStatColumn(
-      String label, String value, IconData icon, Color color) {
+      String label, String value, IconData icon, Color color, bool isDark) {
     return Column(
       children: [
         Row(
@@ -264,7 +283,7 @@ class ExamExplanationSheet extends StatelessWidget {
               label,
               style: TextStyle(
                 fontSize: 12,
-                color: Colors.grey.shade600,
+                color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600,
               ),
             ),
           ],

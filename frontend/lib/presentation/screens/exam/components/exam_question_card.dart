@@ -22,6 +22,7 @@ class ExamQuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final resolvedImageUrl = (imageUrl != null && imageUrl!.isNotEmpty)
         ? _resolveUrl(imageUrl!)
         : null;
@@ -34,12 +35,12 @@ class ExamQuestionCard extends StatelessWidget {
           // Question Text
           Text(
             questionText,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 20, // text-xl
               height: 1.6, // leading-relaxed
               fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B), // text-slate-800
-              fontFamily: 'IBM Plex Sans Arabic', // Specific font from design
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+              fontFamily: 'IBM Plex Sans Arabic',
             ),
             textAlign: TextAlign.left,
             textDirection: TextDirection.ltr,
@@ -58,9 +59,11 @@ class ExamQuestionCard extends StatelessWidget {
                     maxHeight: 240,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF1F5F9),
+                    color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                    border: Border.all(
+                      color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                    ),
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: Image.network(
@@ -76,12 +79,16 @@ class ExamQuestionCard extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.zoom_in_rounded, size: 14, color: Colors.grey.shade500),
+                  Icon(
+                    Icons.zoom_in_rounded,
+                    size: 14,
+                    color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade500,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'انقر لتكبير الصورة • Tap image to zoom',
                     style: TextStyle(
-                      color: Colors.grey.shade600,
+                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600,
                       fontSize: 11,
                       fontWeight: FontWeight.w500,
                     ),

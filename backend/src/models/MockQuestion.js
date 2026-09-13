@@ -13,19 +13,11 @@ const MockQuestion = sequelize.define('MockQuestion', {
     },
     specialtyId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Specialties',
-            key: 'id'
-        }
+        allowNull: true
     },
     topicId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'Topics',
-            key: 'id'
-        }
+        allowNull: true
     },
     image: {
         type: DataTypes.STRING,

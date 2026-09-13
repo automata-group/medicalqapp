@@ -9,27 +9,15 @@ const UserMockExamAnswer = sequelize.define('UserMockExamAnswer', {
     },
     userMockExamId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'UserMockExams',
-            key: 'id'
-        }
+        allowNull: false
     },
     mockQuestionId: {
         type: DataTypes.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'MockQuestions',
-            key: 'id'
-        }
+        allowNull: false
     },
     selectedOptionId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
-        references: {
-            model: 'MockOptions',
-            key: 'id'
-        }
+        allowNull: true
     },
     isCorrect: {
         type: DataTypes.BOOLEAN,

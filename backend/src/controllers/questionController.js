@@ -305,7 +305,7 @@ exports.submitAnswer = async (req, res, next) => {
         }
 
         // ─── Free accounts: block premium topics and enforce 15 questions per specialty ───
-        if (!req.isPremium) {
+        if (!req.isPremium && (!req.user || req.user.role !== 'admin')) {
             if (question.topic && question.topic.isPremium) {
                 return res.status(403).json({
                     success: false,

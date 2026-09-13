@@ -728,6 +728,8 @@ class _ExamScreenState extends State<ExamScreen> {
       );
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
@@ -777,7 +779,9 @@ class _ExamScreenState extends State<ExamScreen> {
                         begin: Colors.transparent,
                         end: (isAnswerSubmitted &&
                                 provider.answerResult?.isCorrect == true)
-                            ? Colors.green.withValues(alpha: 0.1)
+                            ? (isDark
+                                ? const Color(0xFF064E3B).withValues(alpha: 0.25)
+                                : Colors.green.withValues(alpha: 0.1))
                             : Colors.transparent,
                       ),
                       builder: (context, color, child) {
@@ -785,16 +789,17 @@ class _ExamScreenState extends State<ExamScreen> {
                           padding: const EdgeInsets.all(24),
                           margin: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
-                            color: color,
+                            color: color ?? (isDark ? const Color(0xFF1E293B).withValues(alpha: 0.4) : Colors.transparent),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
-                              color: color ?? Colors.grey.withValues(alpha: 0.1),
-                              width: 2,
+                              color: color ?? (isDark ? const Color(0xFF334155).withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.1)),
+                              width: 1.5,
                             ),
                             boxShadow: [
                               if (isAnswerSubmitted)
                                 BoxShadow(
-                                  color: (provider.answerResult?.isCorrect == true ? Colors.green : Colors.red).withValues(alpha: 0.1),
+                                  color: (provider.answerResult?.isCorrect == true ? Colors.green : Colors.red)
+                                      .withValues(alpha: isDark ? 0.2 : 0.1),
                                   blurRadius: 10,
                                   spreadRadius: 2,
                                 )
@@ -829,13 +834,19 @@ class _ExamScreenState extends State<ExamScreen> {
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: BoxDecoration(
                                   color: _showCorrectAnswer
-                                      ? const Color(0xFF10B981).withValues(alpha: 0.12)
-                                      : Colors.grey.withValues(alpha: 0.08),
+                                      ? (isDark
+                                          ? const Color(0xFF065F46).withValues(alpha: 0.35)
+                                          : const Color(0xFF10B981).withValues(alpha: 0.12))
+                                      : (isDark
+                                          ? const Color(0xFF1E293B)
+                                          : Colors.grey.withValues(alpha: 0.08)),
                                   borderRadius: BorderRadius.circular(20),
                                   border: Border.all(
                                     color: _showCorrectAnswer
                                         ? const Color(0xFF10B981)
-                                        : Colors.grey.withValues(alpha: 0.25),
+                                        : (isDark
+                                            ? const Color(0xFF334155)
+                                            : Colors.grey.withValues(alpha: 0.25)),
                                     width: 1.2,
                                   ),
                                 ),
@@ -848,8 +859,8 @@ class _ExamScreenState extends State<ExamScreen> {
                                           : Icons.visibility_off_outlined,
                                       size: 16,
                                       color: _showCorrectAnswer
-                                          ? const Color(0xFF10B981)
-                                          : Colors.grey[600],
+                                          ? const Color(0xFF34D399)
+                                          : (isDark ? const Color(0xFF94A3B8) : Colors.grey[600]),
                                     ),
                                     const SizedBox(width: 6),
                                     Text(
@@ -858,8 +869,8 @@ class _ExamScreenState extends State<ExamScreen> {
                                         fontSize: 12,
                                         fontWeight: FontWeight.bold,
                                         color: _showCorrectAnswer
-                                            ? const Color(0xFF10B981)
-                                            : Colors.grey[700],
+                                            ? const Color(0xFF34D399)
+                                            : (isDark ? const Color(0xFFCBD5E1) : Colors.grey[700]),
                                       ),
                                     ),
                                   ],
@@ -912,11 +923,23 @@ class _ExamScreenState extends State<ExamScreen> {
                               onPressed: () {
                                 _showExplanationSheet(provider.answerResult?.isCorrect);
                               },
-                              icon: const Icon(Icons.lightbulb_outline, color: AppColors.primary),
-                              label: Text(l10n.viewExplanation, style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary)),
+                              icon: Icon(
+                                Icons.lightbulb_outline,
+                                color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
+                              ),
+                              label: Text(
+                                l10n.viewExplanation,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
+                                ),
+                              ),
                               style: OutlinedButton.styleFrom(
                                 padding: const EdgeInsets.symmetric(vertical: 14),
-                                side: const BorderSide(color: AppColors.primary),
+                                backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.transparent,
+                                side: BorderSide(
+                                  color: isDark ? const Color(0xFF3B82F6) : AppColors.primary,
+                                ),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                               ),
                             ),

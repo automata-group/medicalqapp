@@ -8,7 +8,6 @@ import '../providers/dashboard_provider.dart';
 import '../providers/specialty_provider.dart';
 import '../screens/admin/admin_scaffold.dart';
 import '../screens/main_container_screen.dart';
-import '../screens/specialty_selection_screen.dart';
 import '../screens/study_goal_screen.dart';
 
 class SocialAuthButtons extends StatefulWidget {
@@ -38,11 +37,7 @@ class _SocialAuthButtonsState extends State<SocialAuthButtons> {
       context.read<DashboardProvider>().loadDashboardData();
       context.read<SpecialtyProvider>().loadUserSpecialties();
 
-      if (!user.hasSpecialties) {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
-        );
-      } else if (!user.hasStudyPlan) {
+      if (!user.hasStudyPlan) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
         );

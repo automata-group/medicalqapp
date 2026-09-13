@@ -14,7 +14,7 @@ exports.generateFeedback = async (req, res, next) => {
             order: [['endDate', 'DESC']]
         });
         
-        const isPremium = activeSub && new Date() <= activeSub.endDate;
+        const isPremium = (req.user && req.user.role === 'admin') || (activeSub && new Date() <= activeSub.endDate);
 
         if (!isPremium) {
             return res.status(403).json({
@@ -24,22 +24,7 @@ exports.generateFeedback = async (req, res, next) => {
             });
         }
 
-        // 2. Weekly Limit Check (2 times per 7 days)
-        const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-        const weeklyUsage = await AIFeedback.count({
-            where: {
-                userId: req.user.id,
-                createdAt: { [Op.gte]: sevenDaysAgo }
-            }
-        });
-
-        if (weeklyUsage >= 2) {
-            return res.status(429).json({
-                success: false,
-                message: 'You have reached your weekly limit for AI Coach (2 reports per week).',
-                message_ar: 'لقد وصلت إلى الحد الأسبوعي لمدرب الذكاء الاصطناعي (تقريرين فقط في الأسبوع).'
-            });
-        }
+        // 2. PRO accounts have full unlimited access without restriction.
 
         // 3. Get last 15 incorrect attempts
         const attempts = await QuestionAttempt.findAll({

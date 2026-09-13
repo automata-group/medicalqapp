@@ -10,7 +10,6 @@ import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
 import 'register_screen.dart';
 import 'main_container_screen.dart';
-import 'specialty_selection_screen.dart';
 import 'study_goal_screen.dart';
 import 'forgot_password_screen.dart';
 import 'email_verification_screen.dart';
@@ -115,11 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
             context.read<DashboardProvider>().loadDashboardData();
             context.read<SpecialtyProvider>().loadUserSpecialties();
 
-            if (user?.hasSpecialties == false) {
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (_) => const SpecialtySelectionScreen()),
-              );
-            } else if (user?.hasStudyPlan == false) {
+            if (user?.hasStudyPlan == false) {
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (_) => const StudyGoalScreen()),
               );

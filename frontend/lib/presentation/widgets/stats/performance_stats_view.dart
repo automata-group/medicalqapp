@@ -106,13 +106,15 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final cardBg = isDark ? Theme.of(context).cardColor : Colors.white;
     final border = isDark ? Border.all(color: const Color(0xFF334155)) : null;
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+    final isAr = Localizations.localeOf(context).languageCode == 'ar';
 
     return Consumer<DashboardProvider>(
       builder: (context, provider, child) {
         final overview = provider.overview;
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: EdgeInsets.symmetric(vertical: isTablet ? 12 : 20),
           child: Center(
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 900),
@@ -124,7 +126,7 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.all(24),
+                      padding: EdgeInsets.all(isTablet ? 16 : 24),
                       decoration: BoxDecoration(
                         color: cardBg,
                         border: border,
@@ -142,7 +144,7 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                         children: [
                           RadialAccuracyGauge(
                             accuracy: (overview?.accuracy ?? 0).toDouble(),
-                            size: 130,
+                            size: isTablet ? 105 : 130,
                             progressColor: AppColors.primary,
                           ),
                           Column(
@@ -153,13 +155,15 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                                 value: '${overview?.totalSolved ?? 0}',
                                 icon: Icons.assignment_rounded,
                                 color: const Color(0xFF6366F1),
+                                isDark: isDark,
                               ),
-                              const SizedBox(height: 16),
+                              SizedBox(height: isTablet ? 10 : 16),
                               _buildMiniStat(
                                 label: l10n.studyStreak,
                                 value: '${overview?.currentStreak ?? 0}',
                                 icon: Icons.local_fire_department_rounded,
                                 color: const Color(0xFFF59E0B),
+                                isDark: isDark,
                               ),
                             ],
                           ),
@@ -168,17 +172,17 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: isTablet ? 14 : 24),
 
                   // Theme Header: Performance Trend
                   _buildSectionHeader(
-                      l10n.performanceTrend, Icons.insights_rounded),
+                      l10n.performanceTrend, Icons.insights_rounded, isDark),
 
                   // Main Chart Card
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(isTablet ? 16 : 20),
                       decoration: BoxDecoration(
                         color: cardBg,
                         border: border,
@@ -195,11 +199,13 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                         children: [
                           if (stats.isEmpty)
                             SizedBox(
-                              height: 200,
+                              height: isTablet ? 180 : 200,
                               child: Center(
                                 child: Text(
                                   l10n.noResultData,
-                                  style: const TextStyle(color: Color(0xFF64748B)),
+                                  style: TextStyle(
+                                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+                                  ),
                                 ),
                               ),
                             )
@@ -211,15 +217,17 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: isTablet ? 14 : 24),
 
                   // Subject Performance Bar Chart
                   _buildSectionHeader(
-                      'Performance by Category', Icons.bar_chart_rounded),
+                      isAr ? 'الأداء حسب التصنيف' : 'Performance by Category',
+                      Icons.bar_chart_rounded,
+                      isDark),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
-                      padding: const EdgeInsets.all(20),
+                      padding: EdgeInsets.all(isTablet ? 16 : 20),
                       decoration: BoxDecoration(
                         color: cardBg,
                         border: border,
@@ -241,7 +249,7 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
                   if (isMonthly) ...[
                     const SizedBox(height: 24),
                     _buildSectionHeader(
-                        l10n.studyStreak, Icons.event_available_rounded),
+                        l10n.studyStreak, Icons.event_available_rounded, isDark),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: StreaksCalendarWidget(
@@ -259,19 +267,19 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
     );
   }
 
-  Widget _buildSectionHeader(String title, IconData icon) {
+  Widget _buildSectionHeader(String title, IconData icon, bool isDark) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
       child: Row(
         children: [
-          Icon(icon, size: 18, color: const Color(0xFF64748B)),
+          Icon(icon, size: 18, color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B)),
           const SizedBox(width: 8),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF475569),
+              color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF475569),
             ),
           ),
         ],
@@ -284,13 +292,14 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
     required String value,
     required IconData icon,
     required Color color,
+    required bool isDark,
   }) {
     return Row(
       children: [
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
+            color: color.withValues(alpha: isDark ? 0.25 : 0.1),
             borderRadius: BorderRadius.circular(10),
           ),
           child: Icon(icon, color: color, size: 16),
@@ -301,17 +310,17 @@ class _PerformanceStatsViewState extends State<PerformanceStatsView>
           children: [
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1E293B),
+                color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
               ),
             ),
             Text(
               label,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 10,
-                color: Color(0xFF64748B),
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
                 fontWeight: FontWeight.w500,
               ),
             ),

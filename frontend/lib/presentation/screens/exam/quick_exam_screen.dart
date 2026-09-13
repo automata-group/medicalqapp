@@ -201,35 +201,49 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
                   question.text,
                   textAlign: TextAlign.left,
                   textDirection: TextDirection.ltr,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     height: 1.5,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? const Color(0xFFF8FAFC)
+                        : const Color(0xFF1E293B),
                   ),
                 ),
                 const SizedBox(height: 32),
 
                 // Options
                 ...question.options.map((option) {
+                  final isDark = Theme.of(context).brightness == Brightness.dark;
                   final isSelected = provider.selectedOptionId == option.id;
                   final isSubmitted =
                       provider.answerStatus == AnswerStatus.submitted;
 
-                  Color borderColor = const Color(0xFFE2E8F0);
-                  Color backgroundColor = Colors.white;
+                  Color borderColor = isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0);
+                  Color backgroundColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+                  Color textColor = isDark ? const Color(0xFFF1F5F9) : const Color(0xFF475569);
 
                   if (isSubmitted && provider.answerResult != null) {
                     if (option.id == provider.answerResult!.correctOptionId) {
-                      borderColor = Colors.green;
-                      backgroundColor = Colors.green.withValues(alpha: 0.1);
+                      borderColor = isDark ? const Color(0xFF10B981) : Colors.green;
+                      backgroundColor = isDark
+                          ? const Color(0xFF064E3B).withValues(alpha: 0.4)
+                          : Colors.green.withValues(alpha: 0.1);
+                      textColor = isDark ? const Color(0xFFECFDF5) : const Color(0xFF065F46);
                     } else if (isSelected &&
                         !provider.answerResult!.isCorrect) {
-                      borderColor = Colors.red;
-                      backgroundColor = Colors.red.withValues(alpha: 0.1);
+                      borderColor = isDark ? const Color(0xFFEF4444) : Colors.red;
+                      backgroundColor = isDark
+                          ? const Color(0xFF7F1D1D).withValues(alpha: 0.4)
+                          : Colors.red.withValues(alpha: 0.1);
+                      textColor = isDark ? const Color(0xFFFEF2F2) : const Color(0xFF991B1B);
                     }
                   } else if (isSelected) {
                     borderColor = AppColors.primary;
-                    backgroundColor = AppColors.primary.withValues(alpha: 0.05);
+                    backgroundColor = isDark
+                        ? AppColors.primary.withValues(alpha: 0.22)
+                        : AppColors.primary.withValues(alpha: 0.05);
+                    textColor = isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B);
                   }
 
                   return Padding(
@@ -270,7 +284,7 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
                                   border: Border.all(
                                     color: isSelected
                                         ? borderColor
-                                        : Colors.grey.shade400,
+                                        : (isDark ? const Color(0xFF475569) : Colors.grey.shade400),
                                     width: 2,
                                   ),
                                   color: isSelected ? borderColor : null,
@@ -288,9 +302,7 @@ class _QuickExamScreenState extends State<QuickExamScreen> {
                                   textDirection: TextDirection.ltr,
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: isSelected
-                                        ? const Color(0xFF1E293B)
-                                        : const Color(0xFF475569),
+                                    color: textColor,
                                     fontWeight: isSelected
                                         ? FontWeight.w600
                                         : FontWeight.normal,

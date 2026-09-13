@@ -803,16 +803,17 @@ class _PricingScreenState extends State<PricingScreen>
 
   Widget _buildFeaturesCard(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        border: Border.all(color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -826,8 +827,9 @@ class _PricingScreenState extends State<PricingScreen>
               Container(
                 padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
-                  color: const Color(0xFFEFF6FF),
+                  color: isDark ? const Color(0xFF1E293B) : const Color(0xFFEFF6FF),
                   borderRadius: BorderRadius.circular(8),
+                  border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
                 ),
                 child: const Icon(Icons.star_rounded,
                     size: 18, color: AppColors.primary),
@@ -835,10 +837,10 @@ class _PricingScreenState extends State<PricingScreen>
               const SizedBox(width: 10),
               Text(
                 l10n.whatsIncluded,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF0F172A),
+                  color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
                 ),
               ),
             ],

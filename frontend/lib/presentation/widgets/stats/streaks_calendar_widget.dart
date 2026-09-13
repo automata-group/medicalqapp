@@ -27,17 +27,22 @@ class _StreaksCalendarWidgetState extends State<StreaksCalendarWidget> {
       return DateTime(date.year, date.month, date.day);
     }).toSet();
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? Theme.of(context).cardColor : Colors.white,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
+        boxShadow: isDark
+            ? []
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 20,
+                  offset: const Offset(0, 10),
+                ),
+              ],
       ),
       child: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -58,10 +63,12 @@ class _StreaksCalendarWidgetState extends State<StreaksCalendarWidget> {
                 const SizedBox(width: 12),
                 Text(
                   l10n.studyStreak,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E293B),
+                    color: isDark
+                        ? const Color(0xFFF8FAFC)
+                        : const Color(0xFF1E293B),
                   ),
                 ),
               ],
@@ -73,20 +80,45 @@ class _StreaksCalendarWidgetState extends State<StreaksCalendarWidget> {
               focusedDay: _focusedDay,
               calendarFormat: CalendarFormat.month,
               rowHeight: 45,
-              headerStyle: const HeaderStyle(
+              headerStyle: HeaderStyle(
                 formatButtonVisible: false,
                 titleCentered: true,
                 titleTextStyle: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
-                  color: Color(0xFF1E293B),
+                  color: isDark
+                      ? const Color(0xFFF8FAFC)
+                      : const Color(0xFF1E293B),
                 ),
-                leftChevronIcon:
-                    Icon(Icons.chevron_left_rounded, color: Color(0xFF64748B)),
-                rightChevronIcon:
-                    Icon(Icons.chevron_right_rounded, color: Color(0xFF64748B)),
+                leftChevronIcon: Icon(
+                  Icons.chevron_left_rounded,
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
+                ),
+                rightChevronIcon: Icon(
+                  Icons.chevron_right_rounded,
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
+                ),
               ),
               calendarStyle: CalendarStyle(
+                defaultTextStyle: TextStyle(
+                  color: isDark
+                      ? const Color(0xFFF8FAFC)
+                      : const Color(0xFF1E293B),
+                ),
+                weekendTextStyle: TextStyle(
+                  color: isDark
+                      ? const Color(0xFF94A3B8)
+                      : const Color(0xFF64748B),
+                ),
+                outsideTextStyle: TextStyle(
+                  color: isDark
+                      ? const Color(0xFF475569)
+                      : const Color(0xFFCBD5E1),
+                ),
                 todayDecoration: BoxDecoration(
                   color: AppColors.primary.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
@@ -140,13 +172,16 @@ class _StreaksCalendarWidgetState extends State<StreaksCalendarWidget> {
                       margin: const EdgeInsets.all(6.0),
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.1),
+                        color: const Color(0xFF10B981)
+                            .withValues(alpha: isDark ? 0.25 : 0.1),
                         shape: BoxShape.circle,
                       ),
                       child: Text(
                         '${date.day}',
-                        style: const TextStyle(
-                          color: Color(0xFF065F46),
+                        style: TextStyle(
+                          color: isDark
+                              ? const Color(0xFF34D399)
+                              : const Color(0xFF065F46),
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -171,8 +206,10 @@ class _StreaksCalendarWidgetState extends State<StreaksCalendarWidget> {
                 const SizedBox(width: 8),
                 Text(
                   l10n.activeDays,
-                  style: const TextStyle(
-                    color: Color(0xFF64748B),
+                  style: TextStyle(
+                    color: isDark
+                        ? const Color(0xFF94A3B8)
+                        : const Color(0xFF64748B),
                     fontSize: 12,
                   ),
                 ),

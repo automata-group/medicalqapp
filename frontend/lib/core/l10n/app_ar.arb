@@ -453,5 +453,16 @@
   "continueWithApple": "المتابعة باستخدام Apple",
   "orContinueWith": "أو المتابعة عبر",
   "googleSignInFailed": "تعذر إكمال تسجيل الدخول بواسطة Google. يرجى المحاولة لاحقاً.",
-  "appleSignInFailed": "تعذر إكمال تسجيل الدخول بواسطة Apple. يرجى المحاولة لاحقاً."
+  "appleSignInFailed": "تعذر إكمال تسجيل الدخول بواسطة Apple. يرجى المحاولة لاحقاً.",
+  "takeMockExam": "بدء اختبار تجريبي",
+  "browseByTopic": "تصفح حسب المواضيع",
+  "noSubTopicsAvailable": "لا توجد مواضيع فرعية متاحة",
+  "questionsCount": "{count} سؤال",
+  "@questionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

@@ -36,6 +36,7 @@ class ExamHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
     final bool shouldShowTotal = showTotalQuestions && totalQuestions > 0;
     final String questionText = l10n != null
@@ -67,13 +68,15 @@ class ExamHeader extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
-                          color: AppColors.primary.withValues(alpha: 0.1),
+                          color: isDark
+                              ? const Color(0xFF1E293B)
+                              : AppColors.primary.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.arrow_back_ios_new,
                           size: 16,
-                          color: AppColors.primary,
+                          color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
                         ),
                       ),
                     ),
@@ -85,21 +88,26 @@ class ExamHeader extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: AppColors.primary.withValues(alpha: 0.1),
+                    color: isDark
+                        ? const Color(0xFF1E293B)
+                        : AppColors.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.timer_outlined,
-                          size: 16, color: AppColors.primary),
+                      Icon(
+                        Icons.timer_outlined,
+                        size: 16,
+                        color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
+                      ),
                       const SizedBox(width: 4),
                       Text(
                         timeElapsed,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Lexend',
                           fontWeight: FontWeight.w500,
-                          color: AppColors.primary,
+                          color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
                           fontSize: 13,
                         ),
                       ),
@@ -116,10 +124,10 @@ class ExamHeader extends StatelessWidget {
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
-                        color: AppColors.primary,
+                        color: isDark ? const Color(0xFF93C5FD) : AppColors.primary,
                       ),
                     ),
                   ),
@@ -140,7 +148,7 @@ class ExamHeader extends StatelessWidget {
                                 : Icons.visibility_off_outlined,
                             color: showCorrectAnswer
                                 ? const Color(0xFF10B981)
-                                : Colors.grey[400],
+                                : (isDark ? const Color(0xFF94A3B8) : Colors.grey[400]),
                             size: 22,
                           ),
                           onPressed: onToggleShowAnswer,
@@ -155,7 +163,9 @@ class ExamHeader extends StatelessWidget {
                     IconButton(
                       icon: Icon(
                         isBookmarked ? Icons.star : Icons.star_border,
-                        color: isBookmarked ? Colors.amber : Colors.grey[400],
+                        color: isBookmarked
+                            ? Colors.amber
+                            : (isDark ? const Color(0xFF94A3B8) : Colors.grey[400]),
                         size: 22,
                       ),
                       onPressed: onBookmark,
@@ -166,8 +176,11 @@ class ExamHeader extends StatelessWidget {
 
                     // Report
                     IconButton(
-                      icon: Icon(Icons.warning_amber_rounded,
-                          color: Colors.grey[400], size: 20),
+                      icon: Icon(
+                        Icons.warning_amber_rounded,
+                        color: isDark ? const Color(0xFF94A3B8) : Colors.grey[400],
+                        size: 20,
+                      ),
                       onPressed: onReport,
                       padding: const EdgeInsets.all(4),
                       constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
@@ -184,10 +197,15 @@ class ExamHeader extends StatelessWidget {
                           width: 36,
                           height: 36,
                           decoration: BoxDecoration(
-                            color: Colors.grey[100],
+                            color: isDark ? const Color(0xFF1E293B) : Colors.grey[100],
                             shape: BoxShape.circle,
+                            border: isDark ? Border.all(color: const Color(0xFF334155)) : null,
                           ),
-                          child: Icon(Icons.close, size: 20, color: Colors.grey[700]),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: isDark ? const Color(0xFFE2E8F0) : Colors.grey[700],
+                          ),
                         ),
                       ),
                     ),
@@ -202,7 +220,7 @@ class ExamHeader extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 child: LinearProgressIndicator(
                   value: progress,
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.grey[200],
                   valueColor:
                       const AlwaysStoppedAnimation<Color>(AppColors.primary),
                   minHeight: 6,

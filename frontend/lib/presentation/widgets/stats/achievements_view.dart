@@ -33,18 +33,24 @@ class _AchievementsViewState extends State<AchievementsView> {
           return Center(child: Text(l10n.noAchievements));
         }
 
-        return GridView.builder(
-          padding: const EdgeInsets.all(16),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 0.85,
+        return Align(
+          alignment: Alignment.topCenter,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 900),
+            child: GridView.builder(
+              padding: const EdgeInsets.all(16),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 180,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: 0.82,
+              ),
+              itemCount: provider.achievements.length,
+              itemBuilder: (context, index) {
+                return AchievementCard(achievement: provider.achievements[index]);
+              },
+            ),
           ),
-          itemCount: provider.achievements.length,
-          itemBuilder: (context, index) {
-            return AchievementCard(achievement: provider.achievements[index]);
-          },
         );
       },
     );

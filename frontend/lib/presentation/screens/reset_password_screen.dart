@@ -125,28 +125,29 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              color: AppColors.textPrimaryLight),
+          icon: Icon(Icons.arrow_back_ios,
+              color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: _isSuccess ? _buildSuccessView(l10n) : _buildFormView(l10n),
+          child: _isSuccess ? _buildSuccessView(l10n, isDark) : _buildFormView(l10n, isDark),
         ),
       ),
     );
   }
 
-  Widget _buildFormView(AppLocalizations l10n) {
+  Widget _buildFormView(AppLocalizations l10n, bool isDark) {
     return Form(
       key: _formKey,
       child: Column(
@@ -167,17 +168,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           Text(
             l10n.setNewPassword,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimaryLight),
+                color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight),
           ),
           const SizedBox(height: 8),
           Text(
             l10n.enterEmailAndOtp(widget.email),
             textDirection: Directionality.of(context),
-            style: const TextStyle(
-                fontSize: 14, color: AppColors.textLight, height: 1.5),
+            style: TextStyle(
+                fontSize: 14,
+                color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
+                height: 1.5),
           ),
           const SizedBox(height: 28),
 
@@ -197,23 +200,26 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             decoration: InputDecoration(
               counterText: '',
               labelText: l10n.verificationCode,
+              labelStyle: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              ),
               hintText: '------',
               hintStyle: TextStyle(
-                color: Colors.grey.shade400,
+                color: isDark ? const Color(0xFF64748B) : Colors.grey.shade400,
                 letterSpacing: 8,
                 fontSize: 22,
               ),
               prefixIcon:
                   const Icon(Icons.pin_outlined, color: AppColors.primary),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide.none),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide:
-                      BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
+                      BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.withValues(alpha: 0.2))),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: AppColors.primary, width: 2)),
@@ -230,25 +236,31 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           TextFormField(
             controller: _passwordController,
             obscureText: _obscurePass,
+            style: TextStyle(
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+            ),
             decoration: InputDecoration(
               labelText: l10n.newPassword,
+              labelStyle: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              ),
               prefixIcon:
                   const Icon(Icons.lock_outline, color: AppColors.primary),
               suffixIcon: IconButton(
                 icon: Icon(
                     _obscurePass ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.textLight),
+                    color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight),
                 onPressed: () => setState(() => _obscurePass = !_obscurePass),
               ),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide.none),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide:
-                      BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
+                      BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.withValues(alpha: 0.2))),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: AppColors.primary)),
@@ -271,26 +283,32 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           TextFormField(
             controller: _confirmController,
             obscureText: _obscureConfirm,
+            style: TextStyle(
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+            ),
             decoration: InputDecoration(
               labelText: l10n.confirmPassword,
+              labelStyle: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF64748B),
+              ),
               prefixIcon:
                   const Icon(Icons.lock_outline, color: AppColors.primary),
               suffixIcon: IconButton(
                 icon: Icon(
                     _obscureConfirm ? Icons.visibility_off : Icons.visibility,
-                    color: AppColors.textLight),
+                    color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight),
                 onPressed: () =>
                     setState(() => _obscureConfirm = !_obscureConfirm),
               ),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
               border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: BorderSide.none),
               enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide:
-                      BorderSide(color: Colors.grey.withValues(alpha: 0.2))),
+                      BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.withValues(alpha: 0.2))),
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(14),
                   borderSide: const BorderSide(color: AppColors.primary)),
@@ -306,7 +324,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           const SizedBox(height: 12),
 
           // Live Password Checklist
-          _buildPasswordChecklist(l10n),
+          _buildPasswordChecklist(l10n, isDark),
           const SizedBox(height: 24),
 
           // Resend Code Row
@@ -314,9 +332,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: _resendCountdown > 0
                 ? Text(
                     l10n.resendCodeIn(_resendCountdown),
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 14,
-                      color: AppColors.textLight,
+                      color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
                       fontWeight: FontWeight.w500,
                     ),
                   )
@@ -346,6 +364,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               onPressed: _isLoading ? null : _submit,
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14)),
@@ -367,7 +386,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildPasswordChecklist(AppLocalizations l10n) {
+  Widget _buildPasswordChecklist(AppLocalizations l10n, bool isDark) {
     return AnimatedBuilder(
       animation: Listenable.merge([_passwordController, _confirmController]),
       builder: (context, _) {
@@ -381,9 +400,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         return Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.grey.shade50,
+            color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade50,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade200),
+            border: Border.all(color: isDark ? const Color(0xFF334155) : Colors.grey.shade200),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -393,14 +412,14 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
-                  color: Colors.grey.shade700,
+                  color: isDark ? const Color(0xFFCBD5E1) : Colors.grey.shade700,
                 ),
               ),
               const SizedBox(height: 6),
-              _buildChecklistRule(l10n.passwordMinLength, isLengthValid),
-              _buildChecklistRule(l10n.passwordUppercase, isUppercaseValid),
-              _buildChecklistRule(l10n.passwordNumber, isNumberValid),
-              _buildChecklistRule(l10n.passwordsDoNotMatch, isMatchValid),
+              _buildChecklistRule(l10n.passwordMinLength, isLengthValid, isDark),
+              _buildChecklistRule(l10n.passwordUppercase, isUppercaseValid, isDark),
+              _buildChecklistRule(l10n.passwordNumber, isNumberValid, isDark),
+              _buildChecklistRule(l10n.passwordsDoNotMatch, isMatchValid, isDark),
             ],
           ),
         );
@@ -408,8 +427,8 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildChecklistRule(String text, bool isValid) {
-    final color = isValid ? AppColors.success : Colors.grey.shade400;
+  Widget _buildChecklistRule(String text, bool isValid, bool isDark) {
+    final color = isValid ? AppColors.success : (isDark ? const Color(0xFF64748B) : Colors.grey.shade400);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2.5),
       child: Row(
@@ -425,7 +444,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
               text,
               style: TextStyle(
                 fontSize: 12,
-                color: isValid ? Colors.green.shade800 : Colors.grey.shade600,
+                color: isValid
+                    ? (isDark ? const Color(0xFF34D399) : Colors.green.shade800)
+                    : (isDark ? const Color(0xFF94A3B8) : Colors.grey.shade600),
                 fontWeight: isValid ? FontWeight.w600 : FontWeight.normal,
               ),
             ),
@@ -435,7 +456,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
     );
   }
 
-  Widget _buildSuccessView(AppLocalizations l10n) {
+  Widget _buildSuccessView(AppLocalizations l10n, bool isDark) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -452,17 +473,19 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         const SizedBox(height: 28),
         Text(l10n.passwordResetSuccess,
             textDirection: Directionality.of(context),
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimaryLight)),
+                color: isDark ? const Color(0xFFF8FAFC) : AppColors.textPrimaryLight)),
         const SizedBox(height: 12),
         Text(
           l10n.passwordResetSuccessSubtitle,
           textAlign: TextAlign.center,
           textDirection: Directionality.of(context),
-          style: const TextStyle(
-              fontSize: 15, color: AppColors.textLight, height: 1.6),
+          style: TextStyle(
+              fontSize: 15,
+              color: isDark ? const Color(0xFF94A3B8) : AppColors.textLight,
+              height: 1.6),
         ),
         const SizedBox(height: 40),
         SizedBox(

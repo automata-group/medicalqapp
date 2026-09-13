@@ -46,12 +46,12 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
             padding: const EdgeInsets.only(bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const DashboardHeader(),
-                const WeeklyProgressCard(),
-                const QuestionBankCard(),
-                const ExamRecallCard(),
-                const SpecialtiesCarousel(),
+              children: const [
+                DashboardHeader(),
+                WeeklyProgressCard(),
+                QuestionBankCard(),
+                ExamRecallCard(),
+                SpecialtiesCarousel(),
               ],
             ),
           ),

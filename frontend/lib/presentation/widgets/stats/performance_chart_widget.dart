@@ -20,8 +20,10 @@ class PerformanceChartWidget extends StatelessWidget {
       return const Center(child: Text('No data available'));
     }
 
-    return AspectRatio(
-      aspectRatio: 1.5,
+    final isTablet = MediaQuery.of(context).size.width >= 600;
+
+    return SizedBox(
+      height: isTablet ? 210 : 190,
       child: LineChart(
         LineChartData(
           gridData: FlGridData(
