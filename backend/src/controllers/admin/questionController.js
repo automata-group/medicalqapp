@@ -71,12 +71,28 @@ exports.getQuestions = async (req, res, next) => {
             offset: parseInt(offset),
             include: [
                 { model: Specialty, as: 'specialty', attributes: ['name'] },
-                { model: Topic, as: 'topic', attributes: ['name'] },
-                { model: Option, as: 'options', attributes: ['id', 'order', 'text', 'isCorrect'] }
+                { model: Topic, as: 'topic', attributes: ['name'] }
             ],
-            distinct: true,
             order: [['createdAt', 'DESC']]
         });
+
+        // Fast batch fetch of options ONLY for the current 20 page rows
+        if (rows.length > 0) {
+            const pageQuestionIds = rows.map(r => r.id);
+            const pageOptions = await Option.findAll({
+                where: { questionId: { [Op.in]: pageQuestionIds } },
+                attributes: ['id', 'questionId', 'order', 'text', 'isCorrect'],
+                raw: true
+            });
+            const optionsByQ = {};
+            for (const opt of pageOptions) {
+                if (!optionsByQ[opt.questionId]) optionsByQ[opt.questionId] = [];
+                optionsByQ[opt.questionId].push(opt);
+            }
+            for (const r of rows) {
+                r.setDataValue('options', optionsByQ[r.id] || []);
+            }
+        }
 
         res.status(200).json({
             success: true,

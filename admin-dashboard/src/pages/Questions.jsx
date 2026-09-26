@@ -630,17 +630,39 @@ export default function Questions() {
                 </div>
             </div>
 
-            <div className={pageStyles.toolbar}>
-                <div className={pageStyles.filters}>
-                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+            <div style={{
+                background: '#161e2e',
+                border: '1px solid #1e293b',
+                borderRadius: '14px',
+                padding: '16px',
+                marginBottom: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.25)',
+                width: '100%',
+                boxSizing: 'border-box'
+            }}>
+                {/* Row 1: Search Bars (50% / 50% split) */}
+                <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '12px',
+                    width: '100%'
+                }}>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
                         <input
                             className={pageStyles.search}
-                            placeholder="🔍 Search question (البحث في السؤال)…"
+                            placeholder="🔍 Search question text (البحث في نص السؤال)…"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             style={{
-                                paddingRight: search ? '28px' : '14px',
-                                minWidth: '220px'
+                                width: '100%',
+                                maxWidth: '100%',
+                                paddingRight: search ? '32px' : '14px',
+                                boxSizing: 'border-box',
+                                background: '#0f172a',
+                                border: '1px solid #334155'
                             }}
                         />
                         {search && (
@@ -649,12 +671,12 @@ export default function Questions() {
                                 onClick={() => setSearch('')}
                                 style={{
                                     position: 'absolute',
-                                    right: '8px',
+                                    right: '10px',
                                     background: 'transparent',
                                     border: 'none',
                                     color: '#94a3b8',
                                     cursor: 'pointer',
-                                    fontSize: '13px',
+                                    fontSize: '14px',
                                     lineHeight: 1
                                 }}
                                 title="Clear"
@@ -664,17 +686,19 @@ export default function Questions() {
                         )}
                     </div>
 
-                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                    <div style={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%' }}>
                         <input
                             className={pageStyles.search}
-                            placeholder="💡 Search answers (البحث في الخيارات والأجوبة)…"
+                            placeholder="💡 Search answers & options (البحث في الخيارات والأجوبة)…"
                             value={searchAnswer}
                             onChange={(e) => setSearchAnswer(e.target.value)}
                             style={{
-                                paddingRight: searchAnswer ? '28px' : '14px',
-                                minWidth: '250px',
-                                borderColor: searchAnswer ? '#10b981' : undefined,
-                                backgroundColor: searchAnswer ? 'rgba(16, 185, 129, 0.08)' : undefined
+                                width: '100%',
+                                maxWidth: '100%',
+                                paddingRight: searchAnswer ? '32px' : '14px',
+                                borderColor: searchAnswer ? '#10b981' : '#334155',
+                                backgroundColor: searchAnswer ? 'rgba(16, 185, 129, 0.1)' : '#0f172a',
+                                boxSizing: 'border-box'
                             }}
                         />
                         {searchAnswer && (
@@ -683,12 +707,12 @@ export default function Questions() {
                                 onClick={() => setSearchAnswer('')}
                                 style={{
                                     position: 'absolute',
-                                    right: '8px',
+                                    right: '10px',
                                     background: 'transparent',
                                     border: 'none',
                                     color: '#94a3b8',
                                     cursor: 'pointer',
-                                    fontSize: '13px',
+                                    fontSize: '14px',
                                     lineHeight: 1
                                 }}
                                 title="Clear"
@@ -697,95 +721,131 @@ export default function Questions() {
                             </button>
                         )}
                     </div>
-                    <select
-                        className={pageStyles.select}
-                        value={selectedSpecialty}
-                        onChange={(e) => setSelectedSpecialty(e.target.value)}
-                    >
-                        <option value="">All Specialties</option>
-                        {specialties.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                    </select>
-                    <select
-                        className={pageStyles.select}
-                        value={selectedTopic}
-                        onChange={(e) => setSelectedTopic(e.target.value)}
-                        disabled={!selectedSpecialty}
-                    >
-                        <option value="">All Topics</option>
-                        {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
-                    </select>
-                    <select
-                        className={pageStyles.select}
-                        value={imageFilter}
-                        onChange={(e) => setImageFilter(e.target.value)}
-                        style={{
-                            borderColor: imageFilter === 'with_image' ? '#10b981' : imageFilter === 'without_image' ? '#f59e0b' : undefined,
-                            backgroundColor: imageFilter === 'with_image' ? 'rgba(16, 185, 129, 0.15)' : imageFilter === 'without_image' ? 'rgba(245, 158, 11, 0.15)' : undefined,
-                            color: imageFilter === 'with_image' ? '#34d399' : imageFilter === 'without_image' ? '#fbbf24' : '#e2e8f0',
-                            fontWeight: imageFilter ? 600 : 400
-                        }}
-                    >
-                        <option value="">🖼️ All Media (الكل)</option>
-                        <option value="with_image">📸 Images Only (أسئلة بصور فقط)</option>
-                        <option value="without_image">📝 Text Only (بدون صور)</option>
-                    </select>
-                    <button
-                        type="button"
-                        onClick={() => setImageFilter(prev => prev === 'with_image' ? '' : 'with_image')}
-                        style={{
-                            background: imageFilter === 'with_image' 
-                                ? 'linear-gradient(135deg, #059669 0%, #047857 100%)' 
-                                : '#1e293b',
-                            color: imageFilter === 'with_image' ? '#ffffff' : '#94a3b8',
-                            border: imageFilter === 'with_image' ? '1px solid #10b981' : '1px solid #334155',
-                            padding: '8px 14px',
-                            borderRadius: '10px',
-                            cursor: 'pointer',
-                            fontSize: '13px',
-                            fontWeight: 600,
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '6px',
-                            transition: 'all 0.15s ease',
-                            whiteSpace: 'nowrap',
-                            boxShadow: imageFilter === 'with_image' ? '0 2px 8px rgba(16, 185, 129, 0.35)' : 'none'
-                        }}
-                        title="Filter questions with images only / تصفية الأسئلة التي تحتوي على صور فقط"
-                    >
-                        <span>📸</span>
-                        <span>Images Only {imageFilter === 'with_image' ? '✓' : ''}</span>
-                    </button>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    {selectedIds.length > 0 && (
-                        <div style={{ display: 'flex', gap: '8px' }}>
+
+                {/* Row 2: Dropdowns, Filter Reset, Selected Actions, and Counter */}
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    paddingTop: '10px',
+                    borderTop: '1px solid rgba(255, 255, 255, 0.06)'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <select
+                            className={pageStyles.select}
+                            value={selectedSpecialty}
+                            onChange={(e) => {
+                                setSelectedSpecialty(e.target.value);
+                                setSelectedTopic('');
+                            }}
+                            style={{ minWidth: '180px', background: '#0f172a', border: '1px solid #334155' }}
+                        >
+                            <option value="">🏥 All Specialties (كل التخصصات)</option>
+                            {specialties.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                        </select>
+
+                        <select
+                            className={pageStyles.select}
+                            value={selectedTopic}
+                            onChange={(e) => setSelectedTopic(e.target.value)}
+                            disabled={!selectedSpecialty}
+                            style={{
+                                minWidth: '180px',
+                                background: '#0f172a',
+                                border: '1px solid #334155',
+                                opacity: !selectedSpecialty ? 0.6 : 1
+                            }}
+                        >
+                            <option value="">📑 All Topics (كل المواضيع)</option>
+                            {topics.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                        </select>
+
+                        <select
+                            className={pageStyles.select}
+                            value={imageFilter}
+                            onChange={(e) => setImageFilter(e.target.value)}
+                            style={{
+                                minWidth: '160px',
+                                borderColor: imageFilter === 'with_image' ? '#10b981' : imageFilter === 'without_image' ? '#f59e0b' : '#334155',
+                                backgroundColor: imageFilter === 'with_image' ? 'rgba(16, 185, 129, 0.15)' : imageFilter === 'without_image' ? 'rgba(245, 158, 11, 0.15)' : '#0f172a',
+                                color: imageFilter === 'with_image' ? '#34d399' : imageFilter === 'without_image' ? '#fbbf24' : '#e2e8f0',
+                                fontWeight: imageFilter ? 600 : 400
+                            }}
+                        >
+                            <option value="">🖼️ All Media (الكل)</option>
+                            <option value="with_image">📸 Images Only (صور فقط)</option>
+                            <option value="without_image">📝 Text Only (بدون صور)</option>
+                        </select>
+
+                        {/* Reset Filters button if any search or filter is active */}
+                        {(search || searchAnswer || selectedSpecialty || selectedTopic || imageFilter) && (
                             <button
+                                type="button"
+                                onClick={() => {
+                                    setSearch('');
+                                    setSearchAnswer('');
+                                    setSelectedSpecialty('');
+                                    setSelectedTopic('');
+                                    setImageFilter('');
+                                    setPage(1);
+                                }}
                                 style={{
-                                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-                                    color: '#ffffff',
-                                    border: 'none',
-                                    padding: '8px 16px',
+                                    background: 'rgba(239, 68, 68, 0.15)',
+                                    color: '#fca5a5',
+                                    border: '1px solid rgba(239, 68, 68, 0.3)',
                                     borderRadius: '8px',
+                                    padding: '7px 12px',
+                                    cursor: 'pointer',
+                                    fontSize: '12px',
                                     fontWeight: 600,
-                                    fontSize: '13px',
-                                    boxShadow: '0 4px 12px rgba(2, 132, 199, 0.35)',
                                     display: 'inline-flex',
                                     alignItems: 'center',
-                                    gap: '6px',
-                                    cursor: 'pointer',
+                                    gap: '5px',
                                     transition: 'all 0.15s ease'
                                 }}
-                                onClick={openBulkMoveModal}
+                                title="إلغاء جميع الفلاتر والبحث"
                             >
-                                <span>🔄</span>
-                                <span>Move Selected ({selectedIds.length})</span>
+                                <span>✕</span>
+                                <span>Reset (إعادة تعيين)</span>
                             </button>
-                            <button className={`${pageStyles.btn} ${pageStyles.btnDanger}`} onClick={handleDeleteSelected}>
-                                🗑️ Delete Selected ({selectedIds.length})
-                            </button>
-                        </div>
-                    )}
-                    <span className={pageStyles.count}>Page {page} of {totalPages} ({totalCount} total questions)</span>
+                        )}
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+                        {selectedIds.length > 0 && (
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                <button
+                                    style={{
+                                        background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                                        color: '#ffffff',
+                                        border: 'none',
+                                        padding: '7px 14px',
+                                        borderRadius: '8px',
+                                        fontWeight: 600,
+                                        fontSize: '12px',
+                                        boxShadow: '0 4px 12px rgba(2, 132, 199, 0.35)',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '6px',
+                                        cursor: 'pointer'
+                                    }}
+                                    onClick={openBulkMoveModal}
+                                >
+                                    <span>🔄</span>
+                                    <span>Move ({selectedIds.length})</span>
+                                </button>
+                                <button className={`${pageStyles.btn} ${pageStyles.btnDanger}`} onClick={handleDeleteSelected}>
+                                    🗑️ Delete ({selectedIds.length})
+                                </button>
+                            </div>
+                        )}
+                        <span style={{ color: '#94a3b8', fontSize: '13px', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                            Page <strong style={{ color: '#f8fafc' }}>{page}</strong> of <strong style={{ color: '#f8fafc' }}>{totalPages}</strong> ({totalCount.toLocaleString()} questions)
+                        </span>
+                    </div>
                 </div>
             </div>
 
@@ -800,31 +860,31 @@ export default function Questions() {
                                     onChange={toggleSelectAll}
                                 />
                             </th>
-                            <th>Question</th>
-                            <th>Specialty</th>
-                            <th>Topic</th>
-                            <th>Status</th>
-                            <th>Difficulty</th>
-                            <th>Action</th>
+                            <th style={{ minWidth: '240px' }}>Question</th>
+                            <th style={{ whiteSpace: 'nowrap' }}>Specialty</th>
+                            <th style={{ whiteSpace: 'nowrap' }}>Topic</th>
+                            <th style={{ whiteSpace: 'nowrap' }}>Status</th>
+                            <th style={{ whiteSpace: 'nowrap' }}>Difficulty</th>
+                            <th style={{ whiteSpace: 'nowrap' }}>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
-                            <tr><td colSpan="5" style={{ textAlign: 'center', color: '#64748b' }}>Loading…</td></tr>
+                            <tr><td colSpan="7" style={{ textAlign: 'center', color: '#64748b', padding: '32px' }}>⏳ Loading questions…</td></tr>
                         ) : filteredQuestions.length === 0 ? (
-                            <tr><td colSpan="5" style={{ textAlign: 'center', color: '#64748b' }}>No questions found</td></tr>
+                            <tr><td colSpan="7" style={{ textAlign: 'center', color: '#64748b', padding: '32px' }}>🔍 No questions found matching your criteria</td></tr>
                         ) : (
                             filteredQuestions.map((q) => (
                                 <tr key={q.id} style={{ backgroundColor: selectedIds.includes(q.id) ? '#334155' : 'transparent' }}>
-                                    <td style={{ textAlign: 'center' }}>
+                                    <td style={{ textAlign: 'center', width: '40px' }}>
                                         <input 
                                             type="checkbox" 
                                             checked={selectedIds.includes(q.id)}
                                             onChange={() => toggleSelect(q.id)}
                                         />
                                     </td>
-                                    <td style={{ maxWidth: 400 }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <td style={{ minWidth: '240px', maxWidth: '450px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             {q.image && (
                                                 <a 
                                                     href={getImageUrl(q.image)} 
@@ -837,19 +897,22 @@ export default function Questions() {
                                                     <img
                                                         src={getImageUrl(q.image)}
                                                         alt="Question"
+                                                        loading="lazy"
+                                                        decoding="async"
                                                         style={{
-                                                            width: '28px',
-                                                            height: '28px',
+                                                            width: '36px',
+                                                            height: '36px',
                                                             objectFit: 'cover',
-                                                            borderRadius: '5px',
+                                                            borderRadius: '6px',
                                                             border: '1px solid rgba(255,255,255,0.2)',
+                                                            backgroundColor: '#0f172a',
                                                             cursor: 'zoom-in'
                                                         }}
                                                         onError={(e) => { e.target.style.display = 'none'; }}
                                                     />
                                                 </a>
                                             )}
-                                            <span title={q.text} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{q.text}</span>
+                                            <span title={q.text} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block', fontSize: '13.5px' }}>{q.text}</span>
                                         </div>
                                         {debouncedSearchAnswer.trim() && q.options && (() => {
                                             const matchedOpt = q.options.find(opt => 

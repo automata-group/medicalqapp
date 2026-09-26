@@ -36,8 +36,11 @@ app.use(compression({
     }
 })); // Compress other responses
 
-// Serve static files from uploads directory
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+// Serve static files from uploads directory with 30-day cache
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
+    maxAge: '30d',
+    immutable: true
+}));
 
 // Routes
 app.use('/api/v1/auth', require('./routes/authRoutes'));
