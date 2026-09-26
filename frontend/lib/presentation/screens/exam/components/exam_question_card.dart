@@ -125,6 +125,23 @@ class ExamQuestionCard extends StatelessWidget {
                   child: Image.network(
                     resolvedImageUrl,
                     fit: BoxFit.contain,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 140,
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2.5,
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
                     errorBuilder: (context, error, stackTrace) => const SizedBox.shrink(),
                   ),
                 ),

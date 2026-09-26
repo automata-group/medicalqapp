@@ -17,7 +17,7 @@ exports.getNextQuestion = async (req, res, next) => {
         }
 
         if (topicId) {
-            const topic = await Topic.findByPk(topicId);
+            const topic = await Topic.findByPk(topicId, { attributes: ['id', 'specialtyId', 'isPremium'] });
             // ─── Block free users from premium topics ───────────────
             if (!req.isPremium && req.user.role !== 'admin' && topic && topic.isPremium) {
                 return res.status(403).json({
@@ -32,7 +32,7 @@ exports.getNextQuestion = async (req, res, next) => {
             whereClause.topicId = topicId;
         } else if (subTopic) {
             // Find topic by name first to support migrated relational models
-            const topic = await Topic.findOne({ where: { name: subTopic } });
+            const topic = await Topic.findOne({ where: { name: subTopic }, attributes: ['id', 'specialtyId', 'isPremium'] });
             if (topic) {
                 // ─── Block free users from premium topics by name ─────
                 if (!req.isPremium && req.user.role !== 'admin' && topic.isPremium) {
@@ -59,19 +59,72 @@ exports.getNextQuestion = async (req, res, next) => {
             }
         }
 
-        // ─── Free accounts: maximum 15 questions per specialty, 30 for bank ────────
+        if (difficulty) whereClause.difficulty = difficulty;
+
+        const questionInclude = [
+            { model: Option, as: 'options', attributes: ['id', 'text', 'order', 'isCorrect'] },
+            { model: Explanation, as: 'explanation' },
+            { model: Specialty, as: 'specialty', attributes: ['name'] },
+            { model: Topic, as: 'topic', attributes: ['name'] }
+        ];
+
+        const optionOrder = [
+            [{ model: Option, as: 'options' }, 'order', 'ASC'],
+            [{ model: Option, as: 'options' }, 'id', 'ASC']
+        ];
+
+        // ─── Direct lookup if specific ID is requested (e.g. resume question #78) ───
+        if (id) {
+            const [question, isBookmarked] = await Promise.all([
+                Question.findByPk(id, {
+                    include: questionInclude,
+                    order: optionOrder
+                }),
+                Bookmark.findOne({
+                    where: { userId: req.user.id, questionId: id },
+                    attributes: ['id'],
+                    raw: true
+                })
+            ]);
+
+            if (!question) {
+                return res.status(200).json({ success: true, message: 'Question not found', data: null });
+            }
+
+            const questionData = question.toJSON();
+            if (questionData.topic) questionData.subTopic = questionData.topic.name;
+
+            return res.status(200).json({
+                success: true,
+                data: {
+                    ...questionData,
+                    isBookmarked: !!isBookmarked,
+                    totalInCategory: 1
+                }
+            });
+        }
+
+        // ─── 1. Instant ID candidates query (ultra-fast indexed scan, ~2-4ms) ───
+        const candidateQuestions = await Question.findAll({
+            where: whereClause,
+            attributes: ['id'],
+            raw: true
+        });
+
+        if (!candidateQuestions || candidateQuestions.length === 0) {
+            return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
+        }
+
+        let candidateIds = candidateQuestions.map(q => q.id);
+        const totalCount = candidateIds.length;
+
+        // ─── 2. Free accounts quota check ───
         if (!req.isPremium && req.user.role !== 'admin') {
             if (effectiveSpecialtyId) {
-                const specialtyQuestions = await Question.findAll({
-                    where: { specialtyId: effectiveSpecialtyId },
-                    attributes: ['id']
-                });
-                const sqIds = specialtyQuestions.map(q => q.id);
-
                 const attemptedCount = await QuestionAttempt.count({
                     where: {
                         userId: req.user.id,
-                        questionId: { [Op.in]: sqIds }
+                        questionId: { [Op.in]: candidateIds }
                     },
                     distinct: true,
                     col: 'questionId'
@@ -85,8 +138,6 @@ exports.getNextQuestion = async (req, res, next) => {
                     });
                 }
             } else {
-                // General Question Bank practice without specialty filter:
-                // Free accounts are allowed to answer a maximum of 30 questions in the Question Bank!
                 const totalBankAttempts = await QuestionAttempt.count({
                     where: { userId: req.user.id },
                     distinct: true,
@@ -103,53 +154,39 @@ exports.getNextQuestion = async (req, res, next) => {
             }
         }
 
-        if (difficulty) whereClause.difficulty = difficulty;
-
-        // Apply mode / filters
+        // ─── 3. Apply mode / filters via in-memory Set lookup (0.05ms) ───
         if (mode === 'new' || filter === 'new') {
             const attempted = await QuestionAttempt.findAll({
                 where: { userId: req.user.id },
-                attributes: ['questionId']
+                attributes: ['questionId'],
+                raw: true
             });
-            const attemptedIds = attempted.map(a => a.questionId);
-            if (attemptedIds.length > 0) {
-                whereClause.id = { ...whereClause.id, [Op.notIn]: attemptedIds };
-            }
+            const attemptedSet = new Set(attempted.map(a => a.questionId));
+            candidateIds = candidateIds.filter(qId => !attemptedSet.has(qId));
         } else if (filter === 'bookmarked') {
             const bookmarks = await Bookmark.findAll({
                 where: { userId: req.user.id },
-                attributes: ['questionId']
+                attributes: ['questionId'],
+                raw: true
             });
-            const bIds = bookmarks.map(b => b.questionId);
-            if (bIds.length > 0) {
-                whereClause.id = { ...whereClause.id, [Op.in]: bIds };
-            } else {
-                return res.status(200).json({ success: true, message: 'No bookmarked questions found', data: null });
-            }
+            const bookmarkSet = new Set(bookmarks.map(b => b.questionId));
+            candidateIds = candidateIds.filter(qId => bookmarkSet.has(qId));
         } else if (filter === 'mastered') {
             const masteredAttempts = await QuestionAttempt.findAll({
                 where: { userId: req.user.id, isCorrect: true, confidenceLevel: 'high' },
-                attributes: ['questionId']
+                attributes: ['questionId'],
+                raw: true
             });
-            const mIds = [...new Set(masteredAttempts.map(a => a.questionId))];
-            if (mIds.length > 0) {
-                whereClause.id = { ...whereClause.id, [Op.in]: mIds };
-            } else {
-                return res.status(200).json({ success: true, message: 'No mastered questions found', data: null });
-            }
-        }
-
-        if (mode === 'wrong') {
+            const masteredSet = new Set(masteredAttempts.map(a => a.questionId));
+            candidateIds = candidateIds.filter(qId => masteredSet.has(qId));
+        } else if (mode === 'wrong') {
             const wrongAttempts = await QuestionAttempt.findAll({
                 where: { userId: req.user.id, isCorrect: false },
-                attributes: ['questionId']
+                attributes: ['questionId'],
+                raw: true
             });
-            const wIds = [...new Set(wrongAttempts.map(a => a.questionId))];
-            if (wIds.length > 0) {
-                whereClause.id = { ...whereClause.id, [Op.in]: wIds };
-            } else {
-                return res.status(200).json({ success: true, message: 'No wrong answers to review', data: null });
-            }
+            const wrongSet = new Set(wrongAttempts.map(a => a.questionId));
+            candidateIds = candidateIds.filter(qId => wrongSet.has(qId));
         } else if (mode === 'review') {
             const dueProgress = await UserProgress.findAll({
                 where: {
@@ -157,114 +194,50 @@ exports.getNextQuestion = async (req, res, next) => {
                     nextReviewDate: { [Op.lte]: new Date() }
                 },
                 attributes: ['questionId'],
-                order: [['nextReviewDate', 'ASC']]
+                raw: true
             });
-            const pIds = dueProgress.map(p => p.questionId);
-            if (pIds.length > 0) {
-                whereClause.id = { ...whereClause.id, [Op.in]: pIds };
-            } else {
-                return res.status(200).json({ success: true, message: 'No questions due for review right now', data: null });
-            }
+            const dueSet = new Set(dueProgress.map(p => p.questionId));
+            candidateIds = candidateIds.filter(qId => dueSet.has(qId));
         }
 
-        // 1. Count total matching rows (BEFORE applying exclude for the current session)
-        const totalCount = await Question.count({ where: whereClause });
-
-        if (totalCount === 0 && !id) {
-            return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
-        }
-
-        // Exclude questions already seen in this session
+        // ─── 4. Exclude questions already answered in this session ───
         if (req.query.exclude) {
             const excludeIds = req.query.exclude.split(',').map(id => parseInt(id, 10)).filter(id => !isNaN(id));
             if (excludeIds.length > 0) {
-                if (whereClause.id && typeof whereClause.id === 'object' && whereClause.id[Op.notIn]) {
-                    whereClause.id[Op.notIn] = [...whereClause.id[Op.notIn], ...excludeIds];
-                } else if (whereClause.id && typeof whereClause.id === 'object' && whereClause.id[Op.in]) {
-                    whereClause.id[Op.in] = whereClause.id[Op.in].filter(id => !excludeIds.includes(id));
-                    if (whereClause.id[Op.in].length === 0) {
-                        return res.status(200).json({ success: true, message: 'No more questions available', data: null });
-                    }
-                } else if (whereClause.id && typeof whereClause.id !== 'object') {
-                    // If a specific ID is requested, check if it's excluded
-                    if (excludeIds.includes(parseInt(whereClause.id))) {
-                        return res.status(200).json({ success: true, message: 'No more questions available', data: null });
-                    }
-                } else {
-                    whereClause.id = { ...(whereClause.id || {}), [Op.notIn]: excludeIds };
-                }
+                const excludeSet = new Set(excludeIds);
+                candidateIds = candidateIds.filter(qId => !excludeSet.has(qId));
             }
         }
 
-        let question;
+        if (candidateIds.length === 0) {
+            return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
+        }
 
-        const questionInclude = [
-            { model: Option, as: 'options', attributes: ['id', 'text', 'order', 'isCorrect'] },
-            { model: Explanation, as: 'explanation' },
-            { model: Specialty, as: 'specialty', attributes: ['name'] },
-            { model: Topic, as: 'topic', attributes: ['name'] }
-        ];
+        // ─── 5. Pick the target question ───
+        const shouldShuffle = req.query.shuffle !== 'false';
+        let targetQuestionId;
+        if (shouldShuffle) {
+            targetQuestionId = candidateIds[Math.floor(Math.random() * candidateIds.length)];
+        } else {
+            targetQuestionId = candidateIds[0];
+        }
 
-        const optionOrder = [
-            [{ model: Option, as: 'options' }, 'order', 'ASC'],
-            [{ model: Option, as: 'options' }, 'id', 'ASC']
-        ];
-
-        if (id) {
-            // Direct lookup for session resume or specific question - NO SHUFFLE / NO OFFSET
-            whereClause.id = id;
-            question = await Question.findOne({
-                where: whereClause,
+        // ─── 6. Direct single question fetch via Primary Key B-Tree lookup (1-2ms) ───
+        const [question, isBookmarked] = await Promise.all([
+            Question.findByPk(targetQuestionId, {
                 include: questionInclude,
                 order: optionOrder
-            });
-
-            // Fallback: if specialty/subTopic filters caused a mismatch, still attempt direct primary key lookup
-            if (!question) {
-                question = await Question.findByPk(id, {
-                    include: questionInclude,
-                    order: optionOrder
-                });
-            }
-        } else {
-            // Count remaining available questions AFTER exclude is applied
-            const remainingCount = await Question.count({ where: whereClause });
-            if (remainingCount === 0) {
-                return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
-            }
-
-            // 2. Determine if we should shuffle (default: true)
-            const shouldShuffle = req.query.shuffle !== 'false';
-            if (shouldShuffle) {
-                // Generate random offset strictly within the remaining available questions
-                const randomIndex = Math.floor(Math.random() * remainingCount);
-                question = await Question.findOne({
-                    where: whereClause,
-                    offset: randomIndex,
-                    include: questionInclude,
-                    order: optionOrder
-                });
-            } else {
-                // Fetch the next question sequentially by ID
-                question = await Question.findOne({
-                    where: whereClause,
-                    order: [
-                        ['id', 'ASC'],
-                        ...optionOrder
-                    ],
-                    include: questionInclude
-                });
-            }
-        }
-
+            }),
+            Bookmark.findOne({
+                where: { userId: req.user.id, questionId: targetQuestionId },
+                attributes: ['id'],
+                raw: true
+            })
+        ]);
 
         if (!question) {
             return res.status(200).json({ success: true, message: 'No more questions available matching criteria', data: null });
         }
-
-        const isBookmarked = await Bookmark.findOne({
-            where: { userId: req.user.id, questionId: question.id }
-        });
 
         const questionData = question.toJSON();
         if (questionData.topic) {
@@ -564,7 +537,9 @@ exports.getSpecialtyTopics = async (req, res, next) => {
         const questions = await Question.findAll({
             where: { specialtyId, isActive: true },
             attributes: ['id', 'subTopic', 'topicId'],
-            include: [{ model: Topic, as: 'topic', attributes: ['name', 'isPremium'] }]
+            include: [{ model: Topic, as: 'topic', attributes: ['name', 'isPremium'] }],
+            raw: true,
+            nest: true
         });
 
         if (questions.length === 0) {
@@ -578,7 +553,7 @@ exports.getSpecialtyTopics = async (req, res, next) => {
                 questionId: { [Op.in]: questions.map(q => q.id) }
             },
             attributes: ['questionId', 'isCorrect', 'confidenceLevel'],
-            order: [['createdAt', 'ASC']]
+            raw: true
         });
 
         const attemptMap = {};

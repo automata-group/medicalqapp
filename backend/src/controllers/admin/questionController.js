@@ -65,16 +65,20 @@ exports.getQuestions = async (req, res, next) => {
 
         const whereClause = andConditions.length > 0 ? { [Op.and]: andConditions } : {};
 
-        const { count, rows } = await Question.findAndCountAll({
-            where: whereClause,
-            limit: parseInt(limit),
-            offset: parseInt(offset),
-            include: [
-                { model: Specialty, as: 'specialty', attributes: ['name'] },
-                { model: Topic, as: 'topic', attributes: ['name'] }
-            ],
-            order: [['createdAt', 'DESC']]
-        });
+        const [count, rows] = await Promise.all([
+            Question.count({ where: whereClause }),
+            Question.findAll({
+                where: whereClause,
+                limit: parseInt(limit),
+                offset: parseInt(offset),
+                attributes: ['id', 'text', 'subTopic', 'image', 'difficulty', 'isActive', 'specialtyId', 'topicId', 'createdAt'],
+                include: [
+                    { model: Specialty, as: 'specialty', attributes: ['id', 'name'] },
+                    { model: Topic, as: 'topic', attributes: ['id', 'name'] }
+                ],
+                order: [['id', 'DESC']]
+            })
+        ]);
 
         // Fast batch fetch of options ONLY for the current 20 page rows
         if (rows.length > 0) {

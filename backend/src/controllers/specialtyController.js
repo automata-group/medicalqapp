@@ -6,31 +6,39 @@ const sequelize = require('../config/database');
 // @access  Public
 exports.getAllSpecialties = async (req, res, next) => {
     try {
-        const specialties = await Specialty.findAll({
-            where: { isActive: true },
-            attributes: {
-                include: [
-                    [
-                        sequelize.fn('COUNT', sequelize.col('questions.id')),
-                        'totalQuestions'
-                    ]
-                ]
-            },
-            include: [{
-                model: Question,
-                as: 'questions',
+        const [specialties, questionCounts] = await Promise.all([
+            Specialty.findAll({
                 where: { isActive: true },
-                required: false,
-                attributes: []
-            }],
-            group: ['Specialty.id'],
-            order: [['sortOrder', 'ASC'], ['name', 'ASC']]
+                order: [['sortOrder', 'ASC'], ['name', 'ASC']]
+            }),
+            Question.findAll({
+                where: { isActive: true },
+                attributes: [
+                    'specialtyId',
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+                ],
+                group: ['specialtyId'],
+                raw: true
+            })
+        ]);
+
+        const countsMap = {};
+        for (const item of questionCounts) {
+            if (item.specialtyId) {
+                countsMap[item.specialtyId] = parseInt(item.count, 10) || 0;
+            }
+        }
+
+        const data = specialties.map(s => {
+            const sJson = s.toJSON();
+            sJson.totalQuestions = countsMap[s.id] || 0;
+            return sJson;
         });
 
         res.status(200).json({
             success: true,
-            count: specialties.length,
-            data: specialties
+            count: data.length,
+            data
         });
     } catch (error) {
         next(error);
@@ -97,39 +105,47 @@ exports.updateUserSpecialties = async (req, res, next) => {
 // @access  Private
 exports.getUserSpecialties = async (req, res, next) => {
     try {
-        const specialties = await Specialty.findAll({
-            include: [
-                {
-                    model: User,
-                    as: 'users',
-                    where: { id: req.user.id },
-                    attributes: [],
-                    through: { attributes: [] }
-                },
-                {
-                    model: Question,
-                    as: 'questions',
-                    where: { isActive: true },
-                    required: false,
-                    attributes: []
-                }
-            ],
-            attributes: {
+        const [specialties, questionCounts] = await Promise.all([
+            Specialty.findAll({
                 include: [
-                    [
-                        sequelize.fn('COUNT', sequelize.col('questions.id')),
-                        'totalQuestions'
-                    ]
-                ]
-            },
-            group: ['Specialty.id'],
-            order: [['name', 'ASC']]
+                    {
+                        model: User,
+                        as: 'users',
+                        where: { id: req.user.id },
+                        attributes: [],
+                        through: { attributes: [] }
+                    }
+                ],
+                order: [['name', 'ASC']]
+            }),
+            Question.findAll({
+                where: { isActive: true },
+                attributes: [
+                    'specialtyId',
+                    [sequelize.fn('COUNT', sequelize.col('id')), 'count']
+                ],
+                group: ['specialtyId'],
+                raw: true
+            })
+        ]);
+
+        const countsMap = {};
+        for (const item of questionCounts) {
+            if (item.specialtyId) {
+                countsMap[item.specialtyId] = parseInt(item.count, 10) || 0;
+            }
+        }
+
+        const data = specialties.map(s => {
+            const sJson = s.toJSON();
+            sJson.totalQuestions = countsMap[s.id] || 0;
+            return sJson;
         });
 
         res.status(200).json({
             success: true,
-            count: specialties.length,
-            data: specialties
+            count: data.length,
+            data
         });
     } catch (error) {
         next(error);

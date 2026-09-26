@@ -54,6 +54,32 @@ async function autoMigrate() {
             console.warn("⚠️ AutoMigrate MockExams check:", e.message);
         }
 
+        // 3. Performance Indexes
+        const ensureIndex = async (table, indexName, columns) => {
+            try {
+                const [results] = await sequelize.query(
+                    `SELECT 1 FROM information_schema.statistics WHERE table_schema = DATABASE() AND table_name = '${table}' AND index_name = '${indexName}'`
+                );
+                if (results.length === 0) {
+                    await sequelize.query(`ALTER TABLE \`${table}\` ADD INDEX \`${indexName}\` (${columns})`);
+                    console.log(`⚡ AutoMigrate: Created performance index '${indexName}' on table '${table}'`);
+                }
+            } catch (idxErr) {
+                // Table might not exist yet or warning
+                console.warn(`⚠️ AutoMigrate index ${indexName}:`, idxErr.message);
+            }
+        };
+
+        await ensureIndex('Questions', 'idx_q_specialty_active', '`specialtyId`, `isActive`');
+        await ensureIndex('Questions', 'idx_q_topic_active', '`topicId`, `isActive`');
+        await ensureIndex('Questions', 'idx_q_active', '`isActive`');
+        await ensureIndex('Questions', 'idx_q_created_at', '`createdAt`');
+        await ensureIndex('Options', 'idx_opt_question_id', '`questionId`');
+        await ensureIndex('QuestionAttempts', 'idx_qa_user_q', '`userId`, `questionId`');
+        await ensureIndex('QuestionAttempts', 'idx_qa_user_correct', '`userId`, `isCorrect`');
+        await ensureIndex('Bookmarks', 'idx_bm_user_q', '`userId`, `questionId`');
+        await ensureIndex('UserProgress', 'idx_up_user_due', '`userId`, `nextReviewDate`');
+
     } catch (err) {
         console.warn("⚠️ AutoMigrate general error:", err.message);
     }
