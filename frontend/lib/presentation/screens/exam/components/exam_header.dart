@@ -47,36 +47,52 @@ class ExamHeader extends StatelessWidget {
             ? 'Question ${currentQuestionIndex + 1} of $totalQuestions'
             : 'Question ${currentQuestionIndex + 1}');
 
-    return MediaQuery(
+    final isTablet = MediaQuery.of(context).size.width >= 700;
+
+    final headerContent = MediaQuery(
       data: MediaQuery.of(context).copyWith(
         textScaler: MediaQuery.textScalerOf(context).clamp(maxScaleFactor: 1.15),
       ),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+        padding: EdgeInsets.fromLTRB(
+          isTablet ? 24 : 16,
+          isTablet ? 14 : 12,
+          isTablet ? 24 : 16,
+          isTablet ? 14 : 12,
+        ),
         child: Column(
           children: [
             // Top Row: Back button (if available), Timer, Question Count, Actions
             Row(
               children: [
                 // Previous Question Button
-                if (hasPrevious && onPrevious != null) ...[
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: onPrevious,
-                      borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? const Color(0xFF1E293B)
-                              : AppColors.primary.withValues(alpha: 0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          Icons.arrow_back_ios_new,
-                          size: 16,
-                          color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
+                if (onPrevious != null) ...[
+                  Tooltip(
+                    message: hasPrevious ? 'السؤال السابق' : 'أنت في أول سؤال متاح',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: hasPrevious ? onPrevious : null,
+                        borderRadius: BorderRadius.circular(20),
+                        child: Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: hasPrevious
+                                ? (isDark
+                                    ? const Color(0xFF1E293B)
+                                    : AppColors.primary.withValues(alpha: 0.1))
+                                : (isDark
+                                    ? const Color(0xFF1E293B).withValues(alpha: 0.4)
+                                    : Colors.grey.withValues(alpha: 0.1)),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.arrow_back_ios_new,
+                            size: 16,
+                            color: hasPrevious
+                                ? (isDark ? const Color(0xFF60A5FA) : AppColors.primary)
+                                : (isDark ? const Color(0xFF475569) : Colors.grey[400]),
+                          ),
                         ),
                       ),
                     ),
@@ -231,5 +247,29 @@ class ExamHeader extends StatelessWidget {
         ),
       ),
     );
+
+    if (isTablet) {
+      return Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          border: Border(
+            bottom: BorderSide(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              width: 1,
+            ),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF0F172A).withValues(alpha: 0.03),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: headerContent,
+      );
+    }
+
+    return headerContent;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import '../../widgets/stats/performance_stats_view.dart';
-import '../../widgets/stats/achievements_view.dart';
 import '../../../core/theme/app_colors.dart';
 
 import 'ai_feedback_screen.dart';
@@ -16,7 +15,7 @@ class StatsScreen extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         backgroundColor: isDark
             ? Theme.of(context).scaffoldBackgroundColor
@@ -61,13 +60,11 @@ class StatsScreen extends StatelessWidget {
                     indicator: UnderlineTabIndicator(
                       borderSide:
                           BorderSide(width: 3.0, color: AppColors.primary),
-                      insets: const EdgeInsets.symmetric(horizontal: 16.0),
+                      insets: const EdgeInsets.symmetric(horizontal: 24.0),
                     ),
-                    isScrollable: true,
-                    tabAlignment: TabAlignment.center,
+                    isScrollable: false,
                     tabs: [
                       Tab(text: l10n.performanceTrend),
-                      Tab(text: l10n.achievements),
                       Tab(text: l10n.aiCoachTab),
                     ],
                   ),
@@ -78,7 +75,6 @@ class StatsScreen extends StatelessWidget {
           body: const TabBarView(
             children: [
               PerformanceStatsView(),
-              AchievementsView(),
               AIFeedbackScreen(),
             ],
           ),
@@ -116,7 +112,10 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
       ),
       alignment: Alignment.center,
       child: Center(
-        child: _tabBar,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 500),
+          child: _tabBar,
+        ),
       ),
     );
   }

@@ -12,12 +12,12 @@ class SpecialtyModel extends Specialty {
 
   factory SpecialtyModel.fromJson(Map<String, dynamic> json) {
     return SpecialtyModel(
-      id: json['id'],
-      name: json['name'],
-      icon: json['icon'],
+      id: json['id'] is int ? json['id'] as int : int.tryParse(json['id']?.toString() ?? '0') ?? 0,
+      name: json['name']?.toString() ?? '',
+      icon: json['icon']?.toString() ?? '',
       totalQuestions: int.tryParse(json['totalQuestions']?.toString() ?? '0') ?? 0,
       percentage: (json['percentage'] as num?)?.toDouble() ?? 0.0,
-      isPremium: json['isPremium'] ?? false,
+      isPremium: json['isPremium'] == true || json['isPremium'] == 1,
     );
   }
 

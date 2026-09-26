@@ -922,24 +922,6 @@ class _PricingScreenState extends State<PricingScreen>
               ),
             ],
           ),
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Icon(Icons.verified_user_outlined,
-                  size: 18, color: Color(0xFF64748B)),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  l10n.moneyBackGuarantee,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isDark ? const Color(0xFF94A3B8) : const Color(0xFF475569),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
         ],
       ),
     );
@@ -1013,15 +995,6 @@ class _PricingScreenState extends State<PricingScreen>
                     ),
                   ],
                 ),
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.cancelAnytime,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF94A3B8),
               ),
             ),
           ],

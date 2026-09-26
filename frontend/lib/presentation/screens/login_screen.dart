@@ -15,6 +15,7 @@ import 'forgot_password_screen.dart';
 import 'email_verification_screen.dart';
 import 'admin/admin_scaffold.dart';
 import '../widgets/social_auth_buttons.dart';
+import '../widgets/auth_hero_panel.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -152,179 +153,252 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final isArabic = Localizations.localeOf(context).languageCode == 'ar';
+    final doctorGreeting = l10n.welcomeBack(isArabic ? 'دكتور' : 'Doctor');
 
     return Scaffold(
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isTablet = constraints.maxWidth >= 700;
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+
+          if (isTablet) {
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 40),
-                // Logo or Title
-                Center(
+                // Branding Showcase Side (Full Bleed Hero)
+                const Expanded(
+                  flex: 5,
+                  child: AuthHeroPanel(),
+                ),
+
+                // Form Side (Full Bleed Spacious Panel)
+                Expanded(
+                  flex: 6,
+                  child: Container(
+                    color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                    child: SafeArea(
+                      child: Center(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(horizontal: 48.0, vertical: 36.0),
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 440),
+                            child: Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    doctorGreeting,
+                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.primary,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    l10n.login,
+                                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                          color: isDark ? const Color(0xFF94A3B8) : AppColors.textSecondaryLight,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 36),
+                                  _buildFormFields(context, l10n, isDark),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }
+
+          // Mobile View
+          return SafeArea(
+            child: Center(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: Form(
+                  key: _formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width > 600 ? 120 : 80,
-                        height: MediaQuery.of(context).size.width > 600 ? 120 : 80,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width > 600 ? 28 : 20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.08),
-                              blurRadius: 15,
-                              offset: const Offset(0, 4),
+                      const SizedBox(height: 32),
+                      Center(
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.08),
+                                    blurRadius: 15,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: Image.asset(
+                                  'assets/images/logo.jpeg',
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              doctorGreeting,
+                              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.primary,
+                                  ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              l10n.login,
+                              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: AppColors.textSecondaryLight,
+                                  ),
                             ),
                           ],
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width > 600 ? 28 : 20),
-                          child: Image.asset(
-                            'assets/images/logo.jpeg',
-                            fit: BoxFit.cover,
-                          ),
-                        ),
                       ),
-                      const SizedBox(height: 16),
-                      Text(
-                        l10n.welcomeBack('Doctor'),
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.primary,
-                            ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        l10n.login,
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppColors.textSecondaryLight,
-                            ),
-                      ),
+                      const SizedBox(height: 36),
+                      _buildFormFields(context, l10n, isDark),
                     ],
                   ),
                 ),
-                const SizedBox(height: 40),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-                // Email Field
-                CustomTextField(
-                  label: l10n.email,
-                  hint: 'example@email.com',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.fieldRequired;
-                    }
-                    if (!value.contains('@')) {
-                      return l10n.invalidEmail;
-                    }
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
+  Widget _buildFormFields(BuildContext context, AppLocalizations l10n, bool isDark) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Email Field
+        CustomTextField(
+          label: l10n.email,
+          hint: 'example@email.com',
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          prefixIcon: const Icon(Icons.email_outlined),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return l10n.fieldRequired;
+            }
+            if (!value.contains('@')) {
+              return l10n.invalidEmail;
+            }
+            return null;
+          },
+        ),
+        const SizedBox(height: 16),
 
-                // Password Field
-                CustomTextField(
-                  label: l10n.password,
-                  hint: '••••••••',
-                  isPassword: _obscurePassword,
-                  controller: _passwordController,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                      color: Colors.grey,
-                    ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+        // Password Field
+        CustomTextField(
+          label: l10n.password,
+          hint: '••••••••',
+          isPassword: _obscurePassword,
+          controller: _passwordController,
+          prefixIcon: const Icon(Icons.lock_outline),
+          suffixIcon: IconButton(
+            icon: Icon(
+              _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+              color: Colors.grey,
+            ),
+            onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+          ),
+          validator: (value) {
+            if (value == null || value.isEmpty) {
+              return l10n.fieldRequired;
+            }
+            return null;
+          },
+        ),
+
+        // Forgot Password
+        Align(
+          alignment: AlignmentDirectional.centerStart,
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ForgotPasswordScreen(
+                    initialEmail: _emailController.text.trim(),
                   ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return l10n.fieldRequired;
-                    }
-                    return null;
-                  },
                 ),
-
-                // Forgot Password
-                Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ForgotPasswordScreen(
-                            initialEmail: _emailController.text.trim(),
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      l10n.forgotPassword,
-                      style: const TextStyle(
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                // Login Button
-                CustomButton(
-                  text: l10n.signIn,
-                  onPressed: _submit,
-                  isLoading: _isLoading,
-                ),
-
-                const SizedBox(height: 24),
-
-                // Social Auth Buttons (Google & Apple)
-                const SocialAuthButtons(),
-
-                const SizedBox(height: 24),
-
-                // Register Link
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      l10n.dontHaveAccount,
-                      style:
-                          const TextStyle(color: AppColors.textSecondaryLight),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const RegisterScreen(),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        l10n.signUp,
-                        style: const TextStyle(
-                          color: AppColors.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+              );
+            },
+            child: Text(
+              l10n.forgotPassword,
+              style: const TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
-      ),
+
+        const SizedBox(height: 24),
+
+        // Login Button
+        CustomButton(
+          text: l10n.signIn,
+          onPressed: _submit,
+          isLoading: _isLoading,
+        ),
+
+        const SizedBox(height: 24),
+
+        // Social Auth Buttons (Google & Apple)
+        const SocialAuthButtons(),
+
+        const SizedBox(height: 24),
+
+        // Register Link
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              l10n.dontHaveAccount,
+              style: TextStyle(
+                color: isDark ? const Color(0xFF94A3B8) : AppColors.textSecondaryLight,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const RegisterScreen(),
+                  ),
+                );
+              },
+              child: Text(
+                l10n.signUp,
+                style: const TextStyle(
+                  color: AppColors.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

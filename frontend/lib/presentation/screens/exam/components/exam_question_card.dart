@@ -32,14 +32,70 @@ class ExamQuestionCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Header: Specialty Badge + Question Type Indicator
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: isDark
+                      ? const Color(0xFF1E3A8A).withValues(alpha: 0.3)
+                      : const Color(0xFFEFF6FF),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: isDark
+                        ? const Color(0xFF3B82F6).withValues(alpha: 0.3)
+                        : const Color(0xFFBFDBFE),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.medical_services_outlined,
+                      size: 13,
+                      color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      specialtyName.isNotEmpty ? specialtyName : 'General Medical',
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: isDark ? const Color(0xFF93C5FD) : const Color(0xFF1D4ED8),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: Text(
+                  'Single Best Answer',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+
           // Question Text
           Text(
             questionText,
             style: TextStyle(
-              fontSize: 20, // text-xl
+              fontSize: 18, // text-lg high legibility
               height: 1.6, // leading-relaxed
-              fontWeight: FontWeight.bold,
-              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF1E293B),
+              fontWeight: FontWeight.w600,
+              color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
               fontFamily: 'IBM Plex Sans Arabic',
             ),
             textAlign: TextAlign.left,

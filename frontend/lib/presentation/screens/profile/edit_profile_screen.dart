@@ -61,9 +61,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: AppColors.primary,
         iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
+      body: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 540),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
           children: [
             const CircleAvatar(
               radius: 50,
@@ -118,6 +121,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ],
         ),
       ),
-    );
+    ),
+  ),
+);
   }
 }

@@ -50,7 +50,8 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
                 );
                 return;
               }
-              context.read<AIFeedbackProvider>().generateNewFeedback();
+              final lang = Localizations.localeOf(context).languageCode;
+              context.read<AIFeedbackProvider>().generateNewFeedback(language: lang);
             },
             tooltip: l10n.refreshAnalysis,
           ),
@@ -58,6 +59,8 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
       ),
       body: Consumer<AIFeedbackProvider>(
         builder: (context, provider, child) {
+          final lang = Localizations.localeOf(context).languageCode;
+
           // If we have an error and we just tried to refresh, show a toast
           if (provider.error != null && provider.isLoading == false) {
              WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -76,45 +79,51 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
             final isLimitExceeded = provider.error!.toLowerCase().contains('weekly limit') || provider.error!.contains('الحد الأسبوعي');
             
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    isLimitExceeded ? Icons.timer_outlined : (isNotEnough ? Icons.quiz_outlined : Icons.error_outline),
-                    size: 64,
-                    color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        isLimitExceeded ? Icons.timer_outlined : (isNotEnough ? Icons.quiz_outlined : Icons.error_outline),
+                        size: 64,
+                        color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        isLimitExceeded 
+                            ? 'لقد وصلت للحد الأقصى الأسبوعي\n(مرتين فقط في الأسبوع)'
+                            : (isNotEnough ? 'تحتاج إلى خطأ واحد على الأقل\nلإنشاء تحليل ذكي' : provider.error!),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      if (isNotEnough)
+                        const Text(
+                          'أجب على بعض الأسئلة أولاً\nوسيقوم النظام بتحليل أخطائك تلقائياً',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+                      if (isLimitExceeded)
+                        const Text(
+                          'يمكنك طلب تحليل جديد بعد مرور أسبوع\nعلى طلبك الأول',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey, fontSize: 13),
+                        ),
+                      if (!isNotEnough && !isLimitExceeded)
+                        ElevatedButton(
+                          onPressed: () => provider.generateNewFeedback(language: lang),
+                          child: Text(l10n.tryAgain),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  Text(
-                    isLimitExceeded 
-                        ? 'لقد وصلت للحد الأقصى الأسبوعي\n(مرتين فقط في الأسبوع)'
-                        : (isNotEnough ? 'تحتاج إلى خطأ واحد على الأقل\nلإنشاء تحليل ذكي' : provider.error!),
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: isLimitExceeded ? Colors.blue : (isNotEnough ? Colors.orange : Colors.grey),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (isNotEnough)
-                    const Text(
-                      'أجب على بعض الأسئلة أولاً\nوسيقوم النظام بتحليل أخطائك تلقائياً',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
-                    ),
-                  if (isLimitExceeded)
-                    const Text(
-                      'يمكنك طلب تحليل جديد بعد مرور أسبوع\nعلى طلبك الأول',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey, fontSize: 13),
-                    ),
-                  if (!isNotEnough && !isLimitExceeded)
-                    ElevatedButton(
-                      onPressed: () => provider.generateNewFeedback(),
-                      child: Text(l10n.tryAgain),
-                    ),
-                ],
+                ),
               ),
             );
           }
@@ -123,132 +132,145 @@ class _AIFeedbackScreenState extends State<AIFeedbackScreen> {
 
           if (feedback == null) {
             return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.auto_awesome,
-                        size: 80, color: Colors.blueAccent),
-                    const SizedBox(height: 24),
-                    Text(
-                      l10n.letAiAnalyze,
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      l10n.aiAnalyzeDescription,
-                      style: const TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.primary,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12)),
-                        ),
-                        onPressed: () {
-                          final authProvider = context.read<AuthProvider>();
-                          if (!(authProvider.user?.isPremium ?? false)) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (_) => const PricingScreen()),
-                            );
-                            return;
-                          }
-                          provider.generateNewFeedback();
-                        },
-                        child: Text(l10n.startAnalysis),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border:
-                        Border.all(color: Colors.blue.withValues(alpha: 0.3)),
-                  ),
-                  child: Row(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 550),
+                child: Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.tips_and_updates, color: Colors.blue),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          l10n.analysisValidPeriod,
-                          style:
-                              const TextStyle(fontSize: 12, color: Colors.blue),
+                      const Icon(Icons.auto_awesome,
+                          size: 80, color: Colors.blueAccent),
+                      const SizedBox(height: 24),
+                      Text(
+                        l10n.letAiAnalyze,
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        l10n.aiAnalyzeDescription,
+                        style: const TextStyle(color: Colors.grey),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 32),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppColors.primary,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12)),
+                          ),
+                          onPressed: () {
+                            final authProvider = context.read<AuthProvider>();
+                            if (!(authProvider.user?.isPremium ?? false)) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (_) => const PricingScreen()),
+                              );
+                              return;
+                            }
+                            provider.generateNewFeedback(language: lang);
+                          },
+                          child: Text(l10n.startAnalysis),
                         ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
-                Text(
-                  l10n.smartPerformanceAnalysis,
-                  style: const TextStyle(
-                      fontSize: 22, fontWeight: FontWeight.bold),
+              ),
+            );
+          }
+
+          final isArabicContent = RegExp(r'[\u0600-\u06FF]').hasMatch(feedback.content);
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 850),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.blue.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border:
+                            Border.all(color: Colors.blue.withValues(alpha: 0.3)),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.tips_and_updates, color: Colors.blue),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              l10n.analysisValidPeriod,
+                              style:
+                                  const TextStyle(fontSize: 12, color: Colors.blue),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      l10n.smartPerformanceAnalysis,
+                      style: const TextStyle(
+                          fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.createdAt(
+                          '${feedback.createdAt.day}/${feedback.createdAt.month}/${feedback.createdAt.year}'),
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                    const Divider(height: 32),
+                    Directionality(
+                      textDirection: isArabicContent ? TextDirection.rtl : TextDirection.ltr,
+                      child: MarkdownBody(
+                        data: feedback.content,
+                        selectable: true,
+                        styleSheet: MarkdownStyleSheet(
+                          p: TextStyle(
+                            fontSize: 16,
+                            height: 1.6,
+                            color: isDark ? const Color(0xFFF1F5F9) : Colors.black87,
+                          ),
+                          h1: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          h2: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          h3: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
+                          listBullet: const TextStyle(fontSize: 16, color: AppColors.primary),
+                          tableBorder: TableBorder.all(
+                            color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
+                            width: 1,
+                          ),
+                          tableHead: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? const Color(0xFFF8FAFC) : Colors.black87,
+                          ),
+                          tableCellsPadding: const EdgeInsets.all(12),
+                          blockquote: TextStyle(
+                            color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
+                            fontStyle: FontStyle.italic,
+                          ),
+                          blockquoteDecoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                            border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 100),
+                  ],
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  l10n.createdAt(
-                      '${feedback.createdAt.day}/${feedback.createdAt.month}/${feedback.createdAt.year}'),
-                  style: const TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                const Divider(height: 32),
-                MarkdownBody(
-                  data: feedback.content,
-                  selectable: true,
-                  styleSheet: MarkdownStyleSheet(
-                    p: TextStyle(
-                      fontSize: 16,
-                      height: 1.6,
-                      color: isDark ? const Color(0xFFF1F5F9) : Colors.black87,
-                    ),
-                    h1: GoogleFonts.outfit(fontSize: 24, fontWeight: FontWeight.bold, color: AppColors.primary),
-                    h2: GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.primary),
-                    h3: GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary),
-                    listBullet: const TextStyle(fontSize: 16, color: AppColors.primary),
-                    tableBorder: TableBorder.all(
-                      color: isDark ? const Color(0xFF334155) : Colors.grey.shade300,
-                      width: 1,
-                    ),
-                    tableHead: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: isDark ? const Color(0xFFF8FAFC) : Colors.black87,
-                    ),
-                    tableCellsPadding: const EdgeInsets.all(12),
-                    blockquote: TextStyle(
-                      color: isDark ? const Color(0xFF94A3B8) : Colors.grey,
-                      fontStyle: FontStyle.italic,
-                    ),
-                    blockquoteDecoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(8),
-                      border: const Border(left: BorderSide(color: AppColors.primary, width: 4)),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 100),
-              ],
+              ),
             ),
           );
         },

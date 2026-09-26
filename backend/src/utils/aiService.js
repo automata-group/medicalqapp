@@ -13,15 +13,15 @@ if (process.env.OPENAI_API_KEY) {
 
 /**
  * Local smart analysis when no API key is configured.
- * Parses the prompt to extract topics and generates a structured Arabic report.
+ * Parses the prompt to extract topics and generates a structured report in the requested language.
  */
-function generateLocalAnalysis(content) {
+function generateLocalAnalysis(content, lang = 'ar') {
     // Extract topic lines from the prompt
     const lines = content.split('\n');
     const topicCounts = {};
 
     lines.forEach(line => {
-        const match = line.match(/الموضوع:\s*(.+)/);
+        const match = line.match(/(?:الموضوع|Topic):\s*(.+)/i);
         if (match) {
             const topic = match[1].trim();
             topicCounts[topic] = (topicCounts[topic] || 0) + 1;
@@ -33,12 +33,41 @@ function generateLocalAnalysis(content) {
 
     const totalMistakes = Object.values(topicCounts).reduce((a, b) => a + b, 0);
 
+    if (lang === 'ar') {
+        let report = `## 📊 تحليل أخطائك الأخيرة\n\n`;
+        report += `قمت بمراجعة **${totalMistakes} من الأخطاء** في إجاباتك السابقة.\n\n`;
+        report += `---\n\n`;
+        report += `### 🎯 مواضيع تحتاج إلى مراجعة\n\n`;
+        report += `| الموضوع | عدد الأخطاء | الأولوية |\n`;
+        report += `|:---|:---:|:---:|\n`;
+
+        sortedTopics.forEach(([topic, count]) => {
+            const priority = count >= 3 ? '🔴 عالي' : count >= 2 ? '🟡 متوسط' : '🟢 منخفض';
+            report += `| ${topic} | ${count} | ${priority} |\n`;
+        });
+
+        report += `\n---\n\n`;
+        report += `### 💡 نصائح وتوجيهات للتحسين\n\n`;
+
+        if (sortedTopics.length > 0) {
+            const topTopic = sortedTopics[0][0];
+            report += `- 🎯 **ابدأ بمراجعة**: "${topTopic}" — هذا الموضوع سجل أكبر عدد من الأخطاء لديك.\n`;
+        }
+        report += `- 📖 **راجع الأسئلة غير الصحيحة** مجدداً عبر وضع "مراجعة الأخطاء".\n`;
+        report += `- ⏰ **خصّص 15 دقيقة يومياً** للدراسة بنظام التكرار المتباعد.\n`;
+        report += `- 💪 **لا تستسلم** — تحديد الأخطاء هو الخطوة الأولى نحو الإتقان والنجاح!\n\n`;
+        report += `---\n_📌 ملاحظة: لتفعيل الذكاء الاصطناعي الكامل، يرجى ضبط OPENAI_API_KEY في إعدادات الخادم._`;
+
+        return report;
+    }
+
+    // English fallback
     let report = `## 📊 Your Recent Mistake Analysis\n\n`;
     report += `I have reviewed **${totalMistakes} mistakes** from your recent answers.\n\n`;
     report += `---\n\n`;
     report += `### 🎯 Topics Needing Review\n\n`;
     report += `| Topic | Mistake Count | Priority |\n`;
-    report += `|---------|-------------|----------|\n`;
+    report += `|:---|:---:|:---:|\n`;
 
     sortedTopics.forEach(([topic, count]) => {
         const priority = count >= 3 ? '🔴 High' : count >= 2 ? '🟡 Medium' : '🟢 Low';
@@ -60,18 +89,22 @@ function generateLocalAnalysis(content) {
     return report;
 }
 
-exports.generateAnalysis = async (content) => {
+exports.generateAnalysis = async (content, lang = 'ar') => {
     try {
         if (!process.env.OPENAI_API_KEY || process.env.OPENAI_API_KEY === 'your_openai_api_key_here') {
-            return generateLocalAnalysis(content);
+            return generateLocalAnalysis(content, lang);
         }
+
+        const systemPrompt = lang === 'ar'
+            ? "أنت مدرب ومساعد دراسي طبي ذكي. حلل أخطاء المستخدم وقدم ملخصاً تشجيعياً واضحاً باللغة العربية. استخدم جداول الماركداون والرموز التعبيرية لتنظيم المعلومات، ووضح المواضيع التي تتطلب أولوية واهتماماً أكبر."
+            : "You are a medical study assistant. Analyze the user's mistakes and provide a clear, encouraging summary in English. Use markdown tables and emojis to organize the information. Show which topics need most attention.";
 
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: [
                 {
                     role: "system",
-                    content: "You are a medical study assistant. Analyze the user's mistakes and provide a clear, encouraging summary in English. Use markdown tables and emojis to organize the information. Show which topics need most attention."
+                    content: systemPrompt
                 },
                 {
                     role: "user",
@@ -85,6 +118,6 @@ exports.generateAnalysis = async (content) => {
     } catch (error) {
         console.error('AI Service Error:', error);
         // Fallback to local analysis on API error
-        return generateLocalAnalysis(content);
+        return generateLocalAnalysis(content, lang);
     }
 };

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:sqflite/sqflite.dart';
 import '../models/question_model.dart';
 import '../models/topic_model.dart';
@@ -10,8 +9,10 @@ class QuestionLocalDataSource {
 
   QuestionLocalDataSource({required this.dbHelper});
 
+  bool get _isSupported => DatabaseHelper.isSupported;
+
   Future<void> saveBankLocally(List<dynamic> questionsJson) async {
-    if (kIsWeb) return;
+    if (!_isSupported) return;
     final db = await dbHelper.database;
     await db.transaction((txn) async {
       for (var qJson in questionsJson) {
@@ -63,7 +64,7 @@ class QuestionLocalDataSource {
     String? subTopic,
     String? exclude,
   }) async {
-    if (kIsWeb) return null;
+    if (!_isSupported) return null;
     final db = await dbHelper.database;
 
     String query = '''
@@ -126,7 +127,7 @@ class QuestionLocalDataSource {
     int optionId, {
     int? timeTaken,
   }) async {
-    if (kIsWeb) {
+    if (!_isSupported) {
       return AnswerResponseModel(
         isCorrect: false,
         correctOptionId: -1,
@@ -173,13 +174,13 @@ class QuestionLocalDataSource {
   }
 
   Future<List<Map<String, dynamic>>> getUnsyncedAttempts() async {
-    if (kIsWeb) return [];
+    if (!_isSupported) return [];
     final db = await dbHelper.database;
     return await db.query('local_attempts', where: 'synced = 0');
   }
 
   Future<List<Map<String, dynamic>>> getRichUnsyncedAttempts() async {
-    if (kIsWeb) return [];
+    if (!_isSupported) return [];
     final db = await dbHelper.database;
     return await db.rawQuery('''
       SELECT 
@@ -194,7 +195,7 @@ class QuestionLocalDataSource {
   }
 
   Future<void> markAttemptsSynced(List<int> attemptIds) async {
-    if (kIsWeb || attemptIds.isEmpty) return;
+    if (!_isSupported || attemptIds.isEmpty) return;
     final db = await dbHelper.database;
     await db.update(
       'local_attempts',
@@ -205,7 +206,7 @@ class QuestionLocalDataSource {
   }
 
   Future<SpecialtyTopicsResponse> getSpecialtyTopicsOffline(int specialtyId) async {
-    if (kIsWeb) {
+    if (!_isSupported) {
       return SpecialtyTopicsResponse(
         topics: [],
         quotaExceeded: false,
@@ -249,7 +250,7 @@ class QuestionLocalDataSource {
   // --- Specialty Methods ---
 
   Future<void> saveSpecialtieslocally(List<entity.Specialty> specialties) async {
-    if (kIsWeb) return;
+    if (!_isSupported) return;
     final db = await dbHelper.database;
     await db.transaction((txn) async {
       for (var s in specialties) {
@@ -282,7 +283,7 @@ class QuestionLocalDataSource {
   }
 
   Future<List<entity.Specialty>> getLocalSpecialties() async {
-    if (kIsWeb) return [];
+    if (!_isSupported) return [];
     final db = await dbHelper.database;
     final result = await db.query('local_specialties');
 
@@ -298,7 +299,7 @@ class QuestionLocalDataSource {
   }
 
   Future<void> markSpecialtyDownloaded(int specialtyId, bool isDownloaded) async {
-    if (kIsWeb) return;
+    if (!_isSupported) return;
     final db = await dbHelper.database;
     await db.update(
       'local_specialties',
@@ -309,7 +310,7 @@ class QuestionLocalDataSource {
   }
 
   Future<bool> isSpecialtyDownloaded(int specialtyId) async {
-    if (kIsWeb) return false;
+    if (!_isSupported) return false;
     final db = await dbHelper.database;
     final result = await db.query(
       'local_specialties',

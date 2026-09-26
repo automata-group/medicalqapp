@@ -1,6 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 
 import '../datasources/question_local_data_source.dart';
 import '../datasources/question_remote_data_source.dart';
@@ -63,14 +63,20 @@ class QuestionRepositoryImpl implements QuestionRepository {
     bool forceOffline = false,
     bool shuffle = true,
   }) async {
-    if (!forceOffline && await _isOnline()) {
-      return await remoteDataSource.getNextQuestion(
-          specialtyId: specialtyId,
-          subTopic: subTopic,
-          filter: filter,
-          exclude: exclude,
-          questionId: questionId,
-          shuffle: shuffle);
+    if (!forceOffline) {
+      try {
+        return await remoteDataSource.getNextQuestion(
+            specialtyId: specialtyId,
+            subTopic: subTopic,
+            filter: filter,
+            exclude: exclude,
+            questionId: questionId,
+            shuffle: shuffle);
+      } catch (e) {
+        debugPrint('Remote getNextQuestion failed, attempting offline: $e');
+        return await localDataSource.getNextQuestionOffline(
+            specialtyId: specialtyId, subTopic: subTopic, exclude: exclude);
+      }
     } else {
       return await localDataSource.getNextQuestionOffline(
           specialtyId: specialtyId, subTopic: subTopic, exclude: exclude);
@@ -80,10 +86,10 @@ class QuestionRepositoryImpl implements QuestionRepository {
   @override
   Future<AnswerResponseModel> submitAnswer(int questionId, int optionId,
       {String? confidenceLevel, int? timeTaken, String? sessionType, String? specialtyId}) async {
-    if (await _isOnline()) {
+    try {
       return await remoteDataSource.submitAnswer(questionId, optionId,
           confidenceLevel: confidenceLevel, timeTaken: timeTaken, sessionType: sessionType, specialtyId: specialtyId);
-    } else {
+    } catch (_) {
       return await localDataSource.submitAnswerOffline(
         questionId,
         optionId,
@@ -94,9 +100,9 @@ class QuestionRepositoryImpl implements QuestionRepository {
 
   @override
   Future<SpecialtyTopicsResponse> getSpecialtyTopics(int specialtyId) async {
-    if (await _isOnline()) {
+    try {
       return await remoteDataSource.getSpecialtyTopics(specialtyId);
-    } else {
+    } catch (_) {
       return await localDataSource.getSpecialtyTopicsOffline(specialtyId);
     }
   }

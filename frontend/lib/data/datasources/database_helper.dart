@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -8,9 +8,14 @@ class DatabaseHelper {
 
   DatabaseHelper._init();
 
+  static bool get isSupported =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
   Future<Database> get database async {
-    if (kIsWeb) {
-      throw UnsupportedError('SQLite is not supported on Web');
+    if (!isSupported) {
+      throw UnsupportedError('SQLite is only supported on mobile platforms (Android/iOS)');
     }
     if (_database != null) return _database!;
     _database = await _initDB('mastery_offline.db');

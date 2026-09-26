@@ -12,7 +12,7 @@ const queueEvents = new QueueEvents('docx-extraction', { connection: redisConnec
 // @access  Private (Admin)
 exports.getQuestions = async (req, res, next) => {
     try {
-        const { page = 1, limit = 10, specialtyId, topicId, search, hasImage } = req.query;
+        const { page = 1, limit = 10, specialtyId, topicId, search, searchAnswer, hasImage } = req.query;
         const offset = (page - 1) * limit;
 
         const andConditions = [];
@@ -48,6 +48,21 @@ exports.getQuestions = async (req, res, next) => {
             });
         }
 
+        const answerQueryTerm = (searchAnswer || req.query.answer || '').trim();
+        if (answerQueryTerm) {
+            const matchingOptions = await Option.findAll({
+                where: {
+                    text: { [Op.like]: `%${answerQueryTerm}%` }
+                },
+                attributes: ['questionId'],
+                raw: true
+            });
+            const matchingQuestionIds = [...new Set(matchingOptions.map(o => o.questionId).filter(Boolean))];
+            andConditions.push({
+                id: { [Op.in]: matchingQuestionIds.length > 0 ? matchingQuestionIds : [-1] }
+            });
+        }
+
         const whereClause = andConditions.length > 0 ? { [Op.and]: andConditions } : {};
 
         const { count, rows } = await Question.findAndCountAll({
@@ -56,8 +71,10 @@ exports.getQuestions = async (req, res, next) => {
             offset: parseInt(offset),
             include: [
                 { model: Specialty, as: 'specialty', attributes: ['name'] },
-                { model: Topic, as: 'topic', attributes: ['name'] }
+                { model: Topic, as: 'topic', attributes: ['name'] },
+                { model: Option, as: 'options', attributes: ['id', 'order', 'text', 'isCorrect'] }
             ],
+            distinct: true,
             order: [['createdAt', 'DESC']]
         });
 

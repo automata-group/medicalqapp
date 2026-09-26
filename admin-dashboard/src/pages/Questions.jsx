@@ -22,6 +22,8 @@ export default function Questions() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [searchAnswer, setSearchAnswer] = useState('');
+    const [debouncedSearchAnswer, setDebouncedSearchAnswer] = useState('');
     const [selectedIds, setSelectedIds] = useState([]);
 
     // Pagination
@@ -90,6 +92,7 @@ export default function Questions() {
             if (selectedSpecialty) params.specialtyId = selectedSpecialty;
             if (selectedTopic) params.topicId = selectedTopic;
             if (debouncedSearch.trim()) params.search = debouncedSearch.trim();
+            if (debouncedSearchAnswer.trim()) params.searchAnswer = debouncedSearchAnswer.trim();
             if (imageFilter) params.hasImage = imageFilter;
 
             const res = await getQuestions(params);
@@ -101,7 +104,7 @@ export default function Questions() {
         } finally {
             setLoading(false);
         }
-    }, [selectedSpecialty, selectedTopic, page, debouncedSearch, imageFilter]);
+    }, [selectedSpecialty, selectedTopic, page, debouncedSearch, debouncedSearchAnswer, imageFilter]);
 
     // Debounce search input to query server across all pages
     useEffect(() => {
@@ -111,6 +114,15 @@ export default function Questions() {
         }, 350);
         return () => clearTimeout(timer);
     }, [search]);
+
+    // Debounce answer search input to query server across all pages
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchAnswer(searchAnswer);
+            setPage(1);
+        }, 350);
+        return () => clearTimeout(timer);
+    }, [searchAnswer]);
 
     useEffect(() => {
         getSpecialties()
@@ -620,12 +632,71 @@ export default function Questions() {
 
             <div className={pageStyles.toolbar}>
                 <div className={pageStyles.filters}>
-                    <input
-                        className={pageStyles.search}
-                        placeholder="Search text…"
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                    />
+                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                        <input
+                            className={pageStyles.search}
+                            placeholder="🔍 Search question (البحث في السؤال)…"
+                            value={search}
+                            onChange={(e) => setSearch(e.target.value)}
+                            style={{
+                                paddingRight: search ? '28px' : '14px',
+                                minWidth: '220px'
+                            }}
+                        />
+                        {search && (
+                            <button
+                                type="button"
+                                onClick={() => setSearch('')}
+                                style={{
+                                    position: 'absolute',
+                                    right: '8px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: '#94a3b8',
+                                    cursor: 'pointer',
+                                    fontSize: '13px',
+                                    lineHeight: 1
+                                }}
+                                title="Clear"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
+
+                    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                        <input
+                            className={pageStyles.search}
+                            placeholder="💡 Search answers (البحث في الخيارات والأجوبة)…"
+                            value={searchAnswer}
+                            onChange={(e) => setSearchAnswer(e.target.value)}
+                            style={{
+                                paddingRight: searchAnswer ? '28px' : '14px',
+                                minWidth: '250px',
+                                borderColor: searchAnswer ? '#10b981' : undefined,
+                                backgroundColor: searchAnswer ? 'rgba(16, 185, 129, 0.08)' : undefined
+                            }}
+                        />
+                        {searchAnswer && (
+                            <button
+                                type="button"
+                                onClick={() => setSearchAnswer('')}
+                                style={{
+                                    position: 'absolute',
+                                    right: '8px',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    color: '#94a3b8',
+                                    cursor: 'pointer',
+                                    fontSize: '13px',
+                                    lineHeight: 1
+                                }}
+                                title="Clear"
+                            >
+                                ✕
+                            </button>
+                        )}
+                    </div>
                     <select
                         className={pageStyles.select}
                         value={selectedSpecialty}
@@ -752,7 +823,7 @@ export default function Questions() {
                                             onChange={() => toggleSelect(q.id)}
                                         />
                                     </td>
-                                    <td title={q.text} style={{ maxWidth: 350, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                    <td style={{ maxWidth: 400 }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                             {q.image && (
                                                 <a 
@@ -778,8 +849,36 @@ export default function Questions() {
                                                     />
                                                 </a>
                                             )}
-                                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{q.text}</span>
+                                            <span title={q.text} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'block' }}>{q.text}</span>
                                         </div>
+                                        {debouncedSearchAnswer.trim() && q.options && (() => {
+                                            const matchedOpt = q.options.find(opt => 
+                                                opt.text && opt.text.toLowerCase().includes(debouncedSearchAnswer.trim().toLowerCase())
+                                            );
+                                            if (!matchedOpt) return null;
+                                            return (
+                                                <div style={{
+                                                    marginTop: '4px',
+                                                    fontSize: '11px',
+                                                    color: '#34d399',
+                                                    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+                                                    border: '1px solid rgba(16, 185, 129, 0.3)',
+                                                    borderRadius: '4px',
+                                                    padding: '2px 7px',
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '5px',
+                                                    maxWidth: '100%',
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis',
+                                                    whiteSpace: 'nowrap'
+                                                }}>
+                                                    <span style={{ fontWeight: 700 }}>🎯 خيار مطابق [{matchedOpt.order || (matchedOpt.isCorrect ? '✓' : '•')}]:</span>
+                                                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{matchedOpt.text}</span>
+                                                    {matchedOpt.isCorrect && <span style={{ color: '#10b981', fontWeight: 600 }}>(الإجابة الصحيحة)</span>}
+                                                </div>
+                                            );
+                                        })()}
                                     </td>
                                     <td><span className={pageStyles.badge} style={{ background: '#1e3a5f', color: '#60a5fa' }}>
                                         {q.specialty?.name || '—'}

@@ -27,18 +27,20 @@ class ExamExplanationSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E293B) : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
-        boxShadow: [
-          BoxShadow(
-            color: isDark ? Colors.black45 : Colors.black12,
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
+          boxShadow: [
+            BoxShadow(
+              color: isDark ? Colors.black45 : Colors.black12,
+              blurRadius: 20,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -260,6 +262,7 @@ class ExamExplanationSheet extends StatelessWidget {
           ),
         ],
       ),
+    ),
     );
   }
 

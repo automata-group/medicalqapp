@@ -13,7 +13,6 @@ import 'components/exam_explanation_sheet.dart';
 import 'components/exam_report_sheet.dart';
 import '../subscription/pricing_screen.dart';
 import '../../../core/utils/toast_utils.dart';
-import '../../../core/theme/app_colors.dart';
 
 class ExamScreen extends StatefulWidget {
   final String? specialtyId;
@@ -39,8 +38,16 @@ class _ExamScreenState extends State<ExamScreen> {
   int? _selectedAnswerIndex;
   bool _isAnswerChecked = false;
   bool _showCorrectAnswer = false;
+  bool _autoShowAnswerMode = false;
   Timer? _timer;
   int _secondsElapsed = 0;
+
+  void _toggleShowAnswer() {
+    setState(() {
+      _autoShowAnswerMode = !_autoShowAnswerMode;
+      _showCorrectAnswer = _autoShowAnswerMode;
+    });
+  }
 
   @override
   void initState() {
@@ -172,14 +179,16 @@ class _ExamScreenState extends State<ExamScreen> {
     );
   }
 
-  void _loadPreviousQuestion() {
+  Future<void> _loadPreviousQuestion() async {
     final provider = context.read<QuestionProvider>();
-    provider.loadPreviousQuestion();
-    setState(() {
-      _selectedAnswerIndex = provider.selectedAnswerIndex;
-      _isAnswerChecked = provider.isCurrentAnswerChecked;
-      _showCorrectAnswer = false;
-    });
+    await provider.loadPreviousQuestion();
+    if (mounted) {
+      setState(() {
+        _selectedAnswerIndex = provider.selectedAnswerIndex;
+        _isAnswerChecked = provider.isCurrentAnswerChecked;
+        _showCorrectAnswer = _autoShowAnswerMode;
+      });
+    }
   }
 
   void _loadNextQuestion() {
@@ -212,7 +221,7 @@ class _ExamScreenState extends State<ExamScreen> {
       setState(() {
         _selectedAnswerIndex = provider.selectedAnswerIndex;
         _isAnswerChecked = provider.isCurrentAnswerChecked;
-        _showCorrectAnswer = false;
+        _showCorrectAnswer = _autoShowAnswerMode;
       });
       return;
     }
@@ -220,7 +229,7 @@ class _ExamScreenState extends State<ExamScreen> {
     setState(() {
       _selectedAnswerIndex = null;
       _isAnswerChecked = false;
-      _showCorrectAnswer = false;
+      _showCorrectAnswer = _autoShowAnswerMode;
     });
     _startTimer();
     provider.loadNextQuestion(
@@ -731,7 +740,7 @@ class _ExamScreenState extends State<ExamScreen> {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: SafeArea(
         child: Column(
           children: [
@@ -746,11 +755,7 @@ class _ExamScreenState extends State<ExamScreen> {
               onPrevious: _loadPreviousQuestion,
               showTotalQuestions: !widget.shuffle && dashboardProvider.showQuestionCount,
               showCorrectAnswer: _showCorrectAnswer,
-              onToggleShowAnswer: () {
-                setState(() {
-                  _showCorrectAnswer = !_showCorrectAnswer;
-                });
-              },
+              onToggleShowAnswer: _toggleShowAnswer,
               onBookmark: () async {
                 await provider.toggleBookmark();
                 if (context.mounted) {
@@ -766,210 +771,592 @@ class _ExamScreenState extends State<ExamScreen> {
               onClose: _exitExam,
             ),
 
-            // Scrollable Content
+            // Responsive Content: Tablet 2-Column Split vs Mobile Single Column
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
-                child: Column(
-                  children: [
-                    // Question Card
-                    TweenAnimationBuilder<Color?>(
-                      duration: const Duration(milliseconds: 600),
-                      tween: ColorTween(
-                        begin: Colors.transparent,
-                        end: (isAnswerSubmitted &&
-                                provider.answerResult?.isCorrect == true)
-                            ? (isDark
-                                ? const Color(0xFF064E3B).withValues(alpha: 0.25)
-                                : Colors.green.withValues(alpha: 0.1))
-                            : Colors.transparent,
-                      ),
-                      builder: (context, color, child) {
-                        return Container(
-                          padding: const EdgeInsets.all(24),
-                          margin: const EdgeInsets.symmetric(vertical: 12),
-                          decoration: BoxDecoration(
-                            color: color ?? (isDark ? const Color(0xFF1E293B).withValues(alpha: 0.4) : Colors.transparent),
-                            borderRadius: BorderRadius.circular(24),
-                            border: Border.all(
-                              color: color ?? (isDark ? const Color(0xFF334155).withValues(alpha: 0.6) : Colors.grey.withValues(alpha: 0.1)),
-                              width: 1.5,
-                            ),
-                            boxShadow: [
-                              if (isAnswerSubmitted)
-                                BoxShadow(
-                                  color: (provider.answerResult?.isCorrect == true ? Colors.green : Colors.red)
-                                      .withValues(alpha: isDark ? 0.2 : 0.1),
-                                  blurRadius: 10,
-                                  spreadRadius: 2,
-                                )
-                            ],
-                          ),
-                          child: ExamQuestionCard(
-                            specialtyName: question.specialty ?? 'General',
-                            questionText: question.text,
-                            imageUrl: question.imageUrl,
-                          ),
-                        );
-                      },
-                    ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final isTablet = constraints.maxWidth >= 700;
 
-                    // Show/Hide Answer quick toggle bar
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4, bottom: 12),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  _showCorrectAnswer = !_showCorrectAnswer;
-                                });
-                              },
-                              borderRadius: BorderRadius.circular(20),
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 200),
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: _showCorrectAnswer
-                                      ? (isDark
-                                          ? const Color(0xFF065F46).withValues(alpha: 0.35)
-                                          : const Color(0xFF10B981).withValues(alpha: 0.12))
-                                      : (isDark
-                                          ? const Color(0xFF1E293B)
-                                          : Colors.grey.withValues(alpha: 0.08)),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: _showCorrectAnswer
-                                        ? const Color(0xFF10B981)
-                                        : (isDark
-                                            ? const Color(0xFF334155)
-                                            : Colors.grey.withValues(alpha: 0.25)),
-                                    width: 1.2,
+                  if (isTablet) {
+                    return Directionality(
+                      textDirection: TextDirection.ltr, // Enforces Left=Question, Right=Options for medical exam
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 1260),
+                          child: SingleChildScrollView(
+                            padding: const EdgeInsets.fromLTRB(28, 20, 28, 32),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Left Column: Question Vignette Card & Tools (flex: 12)
+                                Expanded(
+                                  flex: 12,
+                                  child: _buildTabletQuestionPanel(
+                                    question,
+                                    provider,
+                                    isDark,
+                                    isAnswerSubmitted,
+                                    l10n,
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      _showCorrectAnswer
-                                          ? Icons.visibility_rounded
-                                          : Icons.visibility_off_outlined,
-                                      size: 16,
-                                      color: _showCorrectAnswer
-                                          ? const Color(0xFF34D399)
-                                          : (isDark ? const Color(0xFF94A3B8) : Colors.grey[600]),
-                                    ),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      _showCorrectAnswer ? 'إخفاء الإجابة' : 'إظهار الإجابة',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: _showCorrectAnswer
-                                            ? const Color(0xFF34D399)
-                                            : (isDark ? const Color(0xFFCBD5E1) : Colors.grey[700]),
-                                      ),
-                                    ),
-                                  ],
+                                const SizedBox(width: 24),
+                                // Right Column: Options & Actions Workstation (flex: 11)
+                                Expanded(
+                                  flex: 11,
+                                  child: _buildTabletOptionsPanel(
+                                    question,
+                                    provider,
+                                    isDark,
+                                    isAnswerSubmitted,
+                                    activeAnswerIndex,
+                                    l10n,
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
+                    );
+                  }
+
+                  // Mobile Single Column
+                  return SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    child: Column(
+                      children: [
+                        _buildQuestionCard(question, provider, isDark, isAnswerSubmitted, isTablet: false),
+                        _buildShowAnswerToggle(isDark),
+                        _buildOptionsList(question, provider, isAnswerSubmitted, activeAnswerIndex, isTablet: false),
+                        if (isAnswerSubmitted || _showCorrectAnswer) ...[
+                          const SizedBox(height: 16),
+                          _buildInlineActions(provider, isDark, l10n),
+                        ],
+                        const SizedBox(height: 80),
+                      ],
                     ),
-
-                    // Options
-                    ...List.generate(question.options.length, (index) {
-                      final option = question.options[index];
-                      AnswerState state = AnswerState.idle;
-
-                      if (_showCorrectAnswer) {
-                        if (option.isCorrect || (provider.answerResult?.correctOptionId == option.id)) {
-                          state = AnswerState.correct;
-                        } else if (index == activeAnswerIndex && isAnswerSubmitted) {
-                          state = AnswerState.wrong;
-                        } else if (index == activeAnswerIndex) {
-                          state = AnswerState.selected;
-                        }
-                      } else if (isAnswerSubmitted) {
-                        if (provider.answerResult?.correctOptionId == option.id || option.isCorrect) {
-                          state = AnswerState.correct;
-                        } else if (index == activeAnswerIndex) {
-                          state = AnswerState.wrong;
-                        }
-                      } else if (activeAnswerIndex == index) {
-                        state = AnswerState.selected;
-                      }
-
-                      return ExamAnswerOption(
-                        label: String.fromCharCode(65 + index),
-                        text: option.text,
-                        state: state,
-                        onTap: () => _handleAnswerSelection(index, option.id),
-                      );
-                    }),
-
-                    // Inline Review Actions when question is answered or answer is revealed
-                    if (isAnswerSubmitted || _showCorrectAnswer) ...[
-                      const SizedBox(height: 24),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: OutlinedButton.icon(
-                              onPressed: () {
-                                _showExplanationSheet(provider.answerResult?.isCorrect);
-                              },
-                              icon: Icon(
-                                Icons.lightbulb_outline,
-                                color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
-                              ),
-                              label: Text(
-                                l10n.viewExplanation,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: isDark ? const Color(0xFF60A5FA) : AppColors.primary,
-                                ),
-                              ),
-                              style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.transparent,
-                                side: BorderSide(
-                                  color: isDark ? const Color(0xFF3B82F6) : AppColors.primary,
-                                ),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: _loadNextQuestion,
-                              icon: const Icon(Icons.arrow_forward),
-                              label: Text(l10n.nextQuestion, style: const TextStyle(fontWeight: FontWeight.bold)),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 14),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-
-                    const SizedBox(height: 80),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTabletQuestionPanel(
+    dynamic question,
+    QuestionProvider provider,
+    bool isDark,
+    bool isAnswerSubmitted,
+    AppLocalizations l10n,
+  ) {
+    return TweenAnimationBuilder<Color?>(
+      duration: const Duration(milliseconds: 600),
+      tween: ColorTween(
+        begin: isDark ? const Color(0xFF1E293B) : Colors.white,
+        end: (isAnswerSubmitted && provider.answerResult?.isCorrect == true)
+            ? (isDark
+                ? const Color(0xFF064E3B).withValues(alpha: 0.35)
+                : const Color(0xFFF0FDF4))
+            : (isAnswerSubmitted && provider.answerResult?.isCorrect == false)
+                ? (isDark
+                    ? const Color(0xFF7F1D1D).withValues(alpha: 0.35)
+                    : const Color(0xFFFEF2F2))
+                : (isDark ? const Color(0xFF1E293B) : Colors.white),
+      ),
+      builder: (context, cardBgColor, child) {
+        return Container(
+          padding: const EdgeInsets.all(26),
+          decoration: BoxDecoration(
+            color: cardBgColor ?? (isDark ? const Color(0xFF1E293B) : Colors.white),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.05),
+                blurRadius: 18,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ExamQuestionCard(
+                specialtyName: question.specialty ?? 'General Medical',
+                questionText: question.text,
+                imageUrl: question.imageUrl,
+              ),
+              const SizedBox(height: 24),
+              Divider(
+                color: isDark ? const Color(0xFF334155) : const Color(0xFFF1F5F9),
+                height: 1,
+              ),
+              const SizedBox(height: 16),
+
+              // Bottom Question Toolbar: Auto-show answer toggle, Bookmark, Report
+              Row(
+                children: [
+                  // Auto-Show Answer Toggle
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: _toggleShowAnswer,
+                      borderRadius: BorderRadius.circular(10),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: _showCorrectAnswer
+                              ? (isDark
+                                  ? const Color(0xFF065F46).withValues(alpha: 0.4)
+                                  : const Color(0xFF10B981).withValues(alpha: 0.12))
+                              : (isDark
+                                  ? const Color(0xFF0F172A)
+                                  : const Color(0xFFF8FAFC)),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: _showCorrectAnswer
+                                ? const Color(0xFF10B981)
+                                : (isDark
+                                    ? const Color(0xFF334155)
+                                    : const Color(0xFFE2E8F0)),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _showCorrectAnswer
+                                  ? Icons.visibility_rounded
+                                  : Icons.visibility_off_outlined,
+                              size: 16,
+                              color: _showCorrectAnswer
+                                  ? const Color(0xFF10B981)
+                                  : (isDark ? const Color(0xFF94A3B8) : Colors.grey[600]),
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              _showCorrectAnswer ? 'إظهار الإجابة مفعّل' : 'إظهار الإجابة',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold,
+                                color: _showCorrectAnswer
+                                    ? const Color(0xFF10B981)
+                                    : (isDark ? const Color(0xFFCBD5E1) : Colors.grey[700]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+
+                  // Bookmark Button
+                  Tooltip(
+                    message: provider.isBookmarked ? 'إزالة من المحفوظات' : 'حفظ السؤال',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () async {
+                          await provider.toggleBookmark();
+                          if (context.mounted) {
+                            ToastUtils.showInfo(
+                              context,
+                              provider.isBookmarked ? 'Question Bookmarked ⭐' : 'Bookmark Removed',
+                            );
+                          }
+                        },
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                            ),
+                          ),
+                          child: Icon(
+                            provider.isBookmarked ? Icons.star_rounded : Icons.star_border_rounded,
+                            color: provider.isBookmarked ? Colors.amber : (isDark ? const Color(0xFF94A3B8) : Colors.grey[500]),
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+
+                  // Report Button
+                  Tooltip(
+                    message: 'إبلاغ عن خطأ في السؤال',
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _showReportDialog,
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.outlined_flag_rounded,
+                            color: isDark ? const Color(0xFF94A3B8) : Colors.grey[500],
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTabletOptionsPanel(
+    dynamic question,
+    QuestionProvider provider,
+    bool isDark,
+    bool isAnswerSubmitted,
+    int? activeAnswerIndex,
+    AppLocalizations l10n,
+  ) {
+    final bool hasAnsweredOrRevealed = isAnswerSubmitted || _showCorrectAnswer;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Options Header
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1E293B) : Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.03),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(
+                Icons.radio_button_checked_rounded,
+                size: 16,
+                color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF2563EB),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'خيارات الإجابة • Options',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: isDark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                'اختر إجابة واحدة',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: isDark ? Colors.grey[400] : Colors.grey[500],
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+
+        // The Option Cards
+        _buildOptionsList(question, provider, isAnswerSubmitted, activeAnswerIndex, isTablet: true),
+        const SizedBox(height: 8),
+
+        // Action Buttons Dock
+        if (hasAnsweredOrRevealed)
+          _buildInlineActions(provider, isDark, l10n)
+        else
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _loadNextQuestion,
+                  icon: const Icon(Icons.skip_next_rounded),
+                  label: const Text(
+                    'تخطي للسؤال التالي • Skip',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    foregroundColor: isDark ? const Color(0xFF94A3B8) : Colors.grey[700],
+                    side: BorderSide(
+                      color: isDark ? const Color(0xFF334155) : const Color(0xFFCBD5E1),
+                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+
+  Widget _buildQuestionCard(
+    dynamic question,
+    QuestionProvider provider,
+    bool isDark,
+    bool isAnswerSubmitted, {
+    bool isTablet = false,
+  }) {
+    return TweenAnimationBuilder<Color?>(
+      duration: const Duration(milliseconds: 600),
+      tween: ColorTween(
+        begin: isDark ? const Color(0xFF1E293B) : Colors.white,
+        end: (isAnswerSubmitted && provider.answerResult?.isCorrect == true)
+            ? (isDark
+                ? const Color(0xFF064E3B).withValues(alpha: 0.25)
+                : const Color(0xFFF0FDF4))
+            : (isAnswerSubmitted && provider.answerResult?.isCorrect == false)
+                ? (isDark
+                    ? const Color(0xFF7F1D1D).withValues(alpha: 0.25)
+                    : const Color(0xFFFEF2F2))
+                : (isDark ? const Color(0xFF1E293B) : Colors.white),
+      ),
+      builder: (context, color, child) {
+        return Container(
+          padding: EdgeInsets.all(isTablet ? 20 : 20),
+          margin: EdgeInsets.symmetric(vertical: isTablet ? 8 : 8),
+          decoration: BoxDecoration(
+            color: color ?? (isDark ? const Color(0xFF1E293B) : Colors.white),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF0F172A).withValues(alpha: 0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ExamQuestionCard(
+            specialtyName: question.specialty ?? 'General Medical',
+            questionText: question.text,
+            imageUrl: question.imageUrl,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShowAnswerToggle(bool isDark) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 2, bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: _toggleShowAnswer,
+              borderRadius: BorderRadius.circular(20),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: _showCorrectAnswer
+                      ? (isDark
+                          ? const Color(0xFF065F46).withValues(alpha: 0.35)
+                          : const Color(0xFF10B981).withValues(alpha: 0.12))
+                      : (isDark
+                          ? const Color(0xFF1E293B)
+                          : Colors.grey.withValues(alpha: 0.08)),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: _showCorrectAnswer
+                        ? const Color(0xFF10B981)
+                        : (isDark
+                            ? const Color(0xFF334155)
+                            : Colors.grey.withValues(alpha: 0.25)),
+                    width: 1.2,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      _showCorrectAnswer
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_outlined,
+                      size: 16,
+                      color: _showCorrectAnswer
+                          ? const Color(0xFF34D399)
+                          : (isDark ? const Color(0xFF94A3B8) : Colors.grey[600]),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      _showCorrectAnswer ? 'إخفاء الإجابة' : 'إظهار الإجابة',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: _showCorrectAnswer
+                            ? const Color(0xFF34D399)
+                            : (isDark ? const Color(0xFFCBD5E1) : Colors.grey[700]),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOptionsList(
+    dynamic question,
+    QuestionProvider provider,
+    bool isAnswerSubmitted,
+    int? activeAnswerIndex, {
+    bool isTablet = false,
+  }) {
+    return Column(
+      children: List.generate(question.options.length, (index) {
+        final option = question.options[index];
+        AnswerState state = AnswerState.idle;
+
+        if (_showCorrectAnswer) {
+          if (option.isCorrect || (provider.answerResult?.correctOptionId == option.id)) {
+            state = AnswerState.correct;
+          } else if (index == activeAnswerIndex && isAnswerSubmitted) {
+            state = AnswerState.wrong;
+          } else if (index == activeAnswerIndex) {
+            state = AnswerState.selected;
+          }
+        } else if (isAnswerSubmitted) {
+          if (provider.answerResult?.correctOptionId == option.id || option.isCorrect) {
+            state = AnswerState.correct;
+          } else if (index == activeAnswerIndex) {
+            state = AnswerState.wrong;
+          }
+        } else if (activeAnswerIndex == index) {
+          state = AnswerState.selected;
+        }
+
+        return ExamAnswerOption(
+          label: String.fromCharCode(65 + index),
+          text: option.text,
+          state: state,
+          onTap: () => _handleAnswerSelection(index, option.id),
+        );
+      }),
+    );
+  }
+
+  Widget _buildInlineActions(QuestionProvider provider, bool isDark, AppLocalizations l10n) {
+    return Row(
+      children: [
+        Expanded(
+          child: OutlinedButton.icon(
+            onPressed: () {
+              _showExplanationSheet(provider.answerResult?.isCorrect);
+            },
+            icon: Icon(
+              Icons.lightbulb_rounded,
+              color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8),
+            ),
+            label: Text(
+              l10n.viewExplanation,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8),
+              ),
+            ),
+            style: OutlinedButton.styleFrom(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              backgroundColor: isDark
+                  ? const Color(0xFF1E3A8A).withValues(alpha: 0.15)
+                  : const Color(0xFFEFF6FF),
+              side: BorderSide(
+                color: isDark ? const Color(0xFF3B82F6) : const Color(0xFFBFDBFE),
+                width: 1.5,
+              ),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: InkWell(
+            onTap: _loadNextQuestion,
+            borderRadius: BorderRadius.circular(14),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [
+                    Color(0xFF1E3A8A), // Royal Navy
+                    Color(0xFF137FEC), // Electric Sapphire
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(14),
+                boxShadow: [
+                  BoxShadow(
+                    color: const Color(0xFF137FEC).withValues(alpha: 0.3),
+                    blurRadius: 12,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    l10n.nextQuestion,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 18),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

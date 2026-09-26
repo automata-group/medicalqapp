@@ -16,35 +16,48 @@ class NotificationService {
   static const String _studyChannelDesc =
       'Daily reminders to keep your study streak going';
 
+  bool get _isSupported =>
+      !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
   Future<void> initialize() async {
-    if (kIsWeb) return;
+    if (!_isSupported) return;
 
-    tz.initializeTimeZones();
+    try {
+      tz.initializeTimeZones();
 
-    const androidSettings =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
+      const androidSettings =
+          AndroidInitializationSettings('@mipmap/ic_launcher');
+      const iosSettings = DarwinInitializationSettings(
+        requestAlertPermission: true,
+        requestBadgePermission: true,
+        requestSoundPermission: true,
+      );
 
-    const initSettings = InitializationSettings(
-      android: androidSettings,
-      iOS: iosSettings,
-    );
+      const initSettings = InitializationSettings(
+        android: androidSettings,
+        iOS: iosSettings,
+      );
 
-    await _plugin.initialize(initSettings);
+      await _plugin.initialize(initSettings);
+    } catch (e) {
+      debugPrint('NotificationService init error: $e');
+    }
   }
 
   Future<bool> requestPermission() async {
-    if (kIsWeb) return true;
+    if (!_isSupported) return true;
 
-    final android = _plugin.resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>();
-    if (android != null) {
-      final granted = await android.requestNotificationsPermission();
-      return granted ?? false;
+    try {
+      final android = _plugin.resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>();
+      if (android != null) {
+        final granted = await android.requestNotificationsPermission();
+        return granted ?? false;
+      }
+    } catch (e) {
+      debugPrint('NotificationService requestPermission error: $e');
     }
     return true; // iOS handled on initialize
   }
@@ -57,47 +70,59 @@ class NotificationService {
     required int hour,
     required int minute,
   }) async {
-    if (kIsWeb) return;
+    if (!_isSupported) return;
 
-    const androidDetails = AndroidNotificationDetails(
-      _studyChannelId,
-      _studyChannelName,
-      channelDescription: _studyChannelDesc,
-      importance: Importance.high,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
-    );
+    try {
+      const androidDetails = AndroidNotificationDetails(
+        _studyChannelId,
+        _studyChannelName,
+        channelDescription: _studyChannelDesc,
+        importance: Importance.high,
+        priority: Priority.high,
+        icon: '@mipmap/ic_launcher',
+      );
 
-    const iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
+      const iosDetails = DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      );
 
-    const details = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
+      const details = NotificationDetails(
+        android: androidDetails,
+        iOS: iosDetails,
+      );
 
-    await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      _nextInstanceOfTime(hour, minute),
-      details,
-      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      matchDateTimeComponents: DateTimeComponents.time,
-    );
+      await _plugin.zonedSchedule(
+        id,
+        title,
+        body,
+        _nextInstanceOfTime(hour, minute),
+        details,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        matchDateTimeComponents: DateTimeComponents.time,
+      );
+    } catch (e) {
+      debugPrint('NotificationService scheduleDailyReminder error: $e');
+    }
   }
 
   Future<void> cancelReminder(int id) async {
-    if (kIsWeb) return;
-    await _plugin.cancel(id);
+    if (!_isSupported) return;
+    try {
+      await _plugin.cancel(id);
+    } catch (e) {
+      debugPrint('NotificationService cancelReminder error: $e');
+    }
   }
 
   Future<void> cancelAllReminders() async {
-    if (kIsWeb) return;
-    await _plugin.cancelAll();
+    if (!_isSupported) return;
+    try {
+      await _plugin.cancelAll();
+    } catch (e) {
+      debugPrint('NotificationService cancelAllReminders error: $e');
+    }
   }
 
   tz.TZDateTime _nextInstanceOfTime(int hour, int minute) {

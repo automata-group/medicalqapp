@@ -23,6 +23,13 @@ class _SpecialtiesCarouselState extends State<SpecialtiesCarousel> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final provider = context.read<SpecialtyProvider>();
+      if (provider.specialties.isEmpty && !provider.isLoading) {
+        provider.loadSpecialties();
+      }
+    });
   }
 
   void _onScroll() {
@@ -64,7 +71,19 @@ class _SpecialtiesCarouselState extends State<SpecialtiesCarousel> {
         }
 
         if (specialties.isEmpty) {
-          return const SizedBox.shrink();
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isTablet ? 28 : 24,
+              vertical: 12,
+            ),
+            child: Center(
+              child: TextButton.icon(
+                onPressed: () => provider.loadSpecialties(),
+                icon: const Icon(Icons.refresh, size: 18),
+                label: Text('${l10n.specialties} - ${l10n.retry}'),
+              ),
+            ),
+          );
         }
 
         return Column(

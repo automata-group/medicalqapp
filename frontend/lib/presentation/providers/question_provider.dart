@@ -101,9 +101,21 @@ class QuestionProvider with ChangeNotifier {
   final List<ExamHistoryItem> _history = [];
   int _historyIndex = -1;
 
+  int? _getPreviousAttemptedQuestionId() {
+    if (_history.isEmpty) return null;
+    final firstId = _history.first.question.id;
+    final pos = _sessionAttemptedIds.indexOf(firstId);
+    if (pos > 0) {
+      return _sessionAttemptedIds[pos - 1];
+    } else if (pos == -1 && _sessionAttemptedIds.isNotEmpty) {
+      return _sessionAttemptedIds.last;
+    }
+    return null;
+  }
+
   int get currentHistoryIndex => _historyIndex;
   int get historyLength => _history.length;
-  bool get hasPreviousQuestion => _historyIndex > 0;
+  bool get hasPreviousQuestion => _historyIndex > 0 || _getPreviousAttemptedQuestionId() != null;
   bool get hasNextInHistory => _historyIndex < _history.length - 1;
   bool get isCurrentAnswerChecked => _answerStatus == AnswerStatus.submitted;
 
@@ -207,11 +219,44 @@ class QuestionProvider with ChangeNotifier {
 
   bool _shuffle = true;
 
-  void loadPreviousQuestion() {
+  Future<void> loadPreviousQuestion() async {
     if (!hasPreviousQuestion) return;
-    _historyIndex--;
-    _restoreHistoryItem(_history[_historyIndex]);
-    notifyListeners();
+    if (_historyIndex > 0) {
+      _historyIndex--;
+      _restoreHistoryItem(_history[_historyIndex]);
+      notifyListeners();
+      return;
+    }
+
+    final prevId = _getPreviousAttemptedQuestionId();
+    if (prevId != null) {
+      _status = QuestionStatus.loading;
+      notifyListeners();
+      try {
+        final question = await repository.getNextQuestion(
+          specialtyId: _lastSpecialtyId,
+          subTopic: _lastSubTopic,
+          filter: _lastFilter,
+          questionId: prevId,
+          shuffle: false,
+        );
+        if (question != null) {
+          final item = ExamHistoryItem(
+            question: question,
+            answerStatus: AnswerStatus.submitted,
+            isAnswerChecked: true,
+          );
+          _history.insert(0, item);
+          _historyIndex = 0;
+          _restoreHistoryItem(item);
+          _status = QuestionStatus.loaded;
+        }
+      } catch (e) {
+        debugPrint('Failed to load previous question $prevId: $e');
+        _status = QuestionStatus.loaded;
+      }
+      notifyListeners();
+    }
   }
 
   Future<void> loadNextQuestion({
@@ -555,6 +600,20 @@ class QuestionProvider with ChangeNotifier {
       _errorMessage = 'Failed to load bookmarks: ${e.toString()}';
     } finally {
       _isLoadingBookmarks = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> removeBookmark(int questionId) async {
+    try {
+      await repository.toggleBookmark(questionId);
+      _bookmarkedQuestions.removeWhere((q) => q.id == questionId);
+      if (_currentQuestion?.id == questionId) {
+        _currentQuestion = _currentQuestion!.copyWith(isBookmarked: false);
+      }
+      notifyListeners();
+    } catch (e) {
+      _errorMessage = 'Failed to remove bookmark: ${e.toString()}';
       notifyListeners();
     }
   }

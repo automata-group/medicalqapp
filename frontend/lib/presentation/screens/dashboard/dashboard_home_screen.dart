@@ -8,6 +8,7 @@ import '../../widgets/dashboard/specialties_carousel.dart';
 import '../../widgets/dashboard/exam_recall_card.dart';
 
 import '../../providers/dashboard_provider.dart';
+import '../../providers/specialty_provider.dart';
 
 class DashboardHomeScreen extends StatefulWidget {
   const DashboardHomeScreen({super.key});
@@ -22,8 +23,10 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
     super.initState();
     // Fetch initial data
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       context.read<NotificationProvider>().fetchUnreadCount();
       context.read<DashboardProvider>().loadDashboardData();
+      context.read<SpecialtyProvider>().loadSpecialties();
     });
   }
 
@@ -36,9 +39,13 @@ class _DashboardHomeScreenState extends State<DashboardHomeScreen> {
           onRefresh: () async {
             final dashboardProvider = context.read<DashboardProvider>();
             final notificationProvider = context.read<NotificationProvider>();
-            
-            await dashboardProvider.loadDashboardData();
-            await notificationProvider.fetchUnreadCount();
+            final specialtyProvider = context.read<SpecialtyProvider>();
+
+            await Future.wait([
+              dashboardProvider.loadDashboardData(),
+              notificationProvider.fetchUnreadCount(),
+              specialtyProvider.loadSpecialties(),
+            ]);
           },
           color: Theme.of(context).primaryColor,
           child: LayoutBuilder(

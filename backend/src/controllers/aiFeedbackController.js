@@ -53,17 +53,23 @@ exports.generateFeedback = async (req, res, next) => {
             });
         }
 
-        // 4. Format content for AI
+        // 4. Determine language (default to 'ar')
+        const requestedLang = req.body?.language || (req.headers['accept-language']?.includes('en') ? 'en' : 'ar');
+        const lang = requestedLang === 'en' ? 'en' : 'ar';
+
+        // 5. Format content for AI
         const mistakeList = attempts.map(a => {
-            const topicName = a.question?.topic?.name || a.question?.specialty?.name || 'عام';
-            const questionText = a.question?.text ? a.question.text.substring(0, 100) : 'سؤال غير معروف';
+            const topicName = a.question?.topic?.name || a.question?.specialty?.name || (lang === 'ar' ? 'عام' : 'General');
+            const questionText = a.question?.text ? a.question.text.substring(0, 100) : (lang === 'ar' ? 'سؤال غير معروف' : 'Unknown question');
             return `- Question: ${questionText}\n  Topic: ${topicName}`;
         }).join('\n');
         
-        const prompt = `Analyze my recent medical study mistakes:\n${mistakeList}\nPlease provide a summary table and advice for improvement in English.`;
+        const prompt = lang === 'ar'
+            ? `حلل أخطائي الأخيرة في دراسة الاختبار الطبي:\n${mistakeList}\nيرجى تقديم جدول ملخص ونصائح للتحسين باللغة العربية.`
+            : `Analyze my recent medical study mistakes:\n${mistakeList}\nPlease provide a summary table and advice for improvement in English.`;
 
-        // 5. Call AI
-        const analysis = await aiService.generateAnalysis(prompt);
+        // 6. Call AI
+        const analysis = await aiService.generateAnalysis(prompt, lang);
 
         // 6. Save to DB
         const feedback = await AIFeedback.create({

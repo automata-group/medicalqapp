@@ -30,13 +30,13 @@ class AIFeedbackProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> generateNewFeedback() async {
+  Future<void> generateNewFeedback({String language = 'ar'}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
     try {
-      _latestFeedback = await remoteDataSource.generateFeedback();
+      _latestFeedback = await remoteDataSource.generateFeedback(language: language);
     } catch (e) {
       _error = e.toString();
     } finally {

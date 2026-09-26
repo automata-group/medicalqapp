@@ -22,6 +22,7 @@ import 'presentation/providers/locale_provider.dart';
 import 'presentation/providers/theme_provider.dart';
 import 'core/services/notification_service.dart';
 import 'presentation/screens/splash_screen.dart';
+import 'dart:io';
 import 'package:frontend/core/l10n/generated/app_localizations.dart';
 import 'core/di/service_locator.dart' as di;
 
@@ -30,29 +31,55 @@ import 'package:flutter/foundation.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  FlutterError.onError = (details) {
+    debugPrint('FlutterError: ${details.exception}');
+    try {
+      File('app_crash.log').writeAsStringSync(
+        '${DateTime.now()}: FlutterError: ${details.exception}\n${details.stack}\n---\n',
+        mode: FileMode.append,
+      );
+    } catch (_) {}
+  };
 
-  // Register background message handler on mobile
-  if (!kIsWeb) {
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  }
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('PlatformDispatcher error: $error');
+    try {
+      File('app_crash.log').writeAsStringSync(
+        '${DateTime.now()}: PlatformDispatcher error: $error\n$stack\n---\n',
+        mode: FileMode.append,
+      );
+    } catch (_) {}
+    return true; // Prevents crash / process exit
+  };
 
   await di.init();
 
-  // Initialize FCM service (permissions, token registration, etc.)
-  if (!kIsWeb) {
-    FCMService.instance.initialize(baseUrl: 'https://healthlicenseprep.com/api/v1');
-  }
-
-  // Initialize Notification Service for local reminders
-  if (!kIsWeb) {
-    await NotificationService.instance.initialize();
-  }
-
   runApp(const MyApp());
+
+  // Initialize push notifications and cloud services in background without blocking UI
+  _initServicesAsync();
+}
+
+void _initServicesAsync() async {
+  final isMobile = !kIsWeb &&
+      (defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS);
+
+  if (kIsWeb || isMobile) {
+    try {
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      ).timeout(const Duration(seconds: 4));
+
+      if (isMobile) {
+        FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+        FCMService.instance.initialize(baseUrl: 'https://healthlicenseprep.com/api/v1');
+        await NotificationService.instance.initialize();
+      }
+    } catch (e) {
+      debugPrint('Background services warning: $e');
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {

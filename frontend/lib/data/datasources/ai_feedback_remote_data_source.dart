@@ -17,9 +17,11 @@ class AIFeedbackRemoteDataSource {
     }
   }
 
-  Future<AIFeedbackModel> generateFeedback() async {
+  Future<AIFeedbackModel> generateFeedback({String language = 'ar'}) async {
     try {
-      final response = await dio.post('/ai-feedback/generate', data: {});
+      final response = await dio.post('/ai-feedback/generate', data: {
+        'language': language,
+      });
       if (response.data['success'] != true) {
         throw Exception(response.data['message_ar'] ?? response.data['message'] ?? 'Failed to generate feedback');
       }
